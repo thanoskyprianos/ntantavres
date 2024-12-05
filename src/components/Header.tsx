@@ -1,3 +1,5 @@
+import HelpIcon from '@mui/icons-material/Help';
+import PersonIcon from '@mui/icons-material/Person2';
 import WorkIcon from '@mui/icons-material/Work';
 import { Divider, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -7,33 +9,50 @@ import { NtantaVresButton } from './NtantaVresButton';
 
 export const Header = () => {
   return (
-    <>
-      <Stack>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ flexWrap: 'wrap' }}
-          divider={<Divider orientation="vertical" flexItem />}
-        >
-          <NtantaVresButton />
-          <Stack direction="row" spacing={1}>
-            <IconLabelButton
-              icon={<UserHeart />}
-              label="ΓΟΝΕΑΣ"
-              sx={{ borderRadius: '15px' }}
-              component={Link}
-              to="/parent"
-            />
-            <IconLabelButton
-              icon={<WorkIcon />}
-              label="ΝΤΑΝΤΑ"
-              sx={{ borderRadius: '15px' }}
-              component={Link}
-              to="/babysitter"
-            />
-          </Stack>
+    <Stack
+      direction="row"
+      sx={{
+        justifyContent: 'space-between',
+        backgroundColor: 'secondary.main',
+        padding: '10px',
+      }}
+    >
+      <Stack
+        direction="row"
+        spacing={1}
+        divider={<Divider orientation="vertical" flexItem />}
+      >
+        <NtantaVresButton />
+        <Stack direction="row" spacing={1}>
+          <IconLabelButton
+            icon={<UserHeart />}
+            label="ΓΟΝΕΑΣ"
+            sx={{ borderRadius: '15px' }}
+            component={Link}
+            to="/parent"
+          />
+          <IconLabelButton
+            icon={<WorkIcon />}
+            label="ΝΤΑΝΤΑ"
+            sx={{ borderRadius: '15px' }}
+            component={Link}
+            to="/babysitter"
+          />
         </Stack>
       </Stack>
-    </>
+      <Stack direction="row" spacing={1}>
+        <IconLabelButton
+          icon={<HelpIcon />}
+          label="ΕΡΩΤΗΣΕΙΣ"
+          sx={{ padding: '0 10px', borderRadius: '15px' }}
+        />
+        <IconLabelButton
+          icon={<PersonIcon />}
+          // TODO: CONDITIONALLY RENDER
+          label="ΣΥΝΔΕΣΗ"
+          sx={{ borderRadius: '15px' }}
+        />
+      </Stack>
+    </Stack>
   );
 };

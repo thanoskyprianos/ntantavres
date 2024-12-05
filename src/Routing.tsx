@@ -1,7 +1,8 @@
+import { Button } from '@mui/material';
 import { ThemeProvider, useColorScheme } from '@mui/material/styles';
-import { Header } from './components/Header';
-import { Button, useMediaQuery } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BreadcrumbsWrapper as Breadcrumbs } from './components/BreadcrumbsWrapper';
+import { Header } from './components/Header';
 import { theme } from './config/theme.config';
 import { HomePage } from './pages/HomePage';
 
@@ -28,9 +29,11 @@ export const Routing = () => {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Header />
+        <Breadcrumbs />
         <Routes>
           <Route path="/" element={<HomePage />} />
         </Routes>
+        <Switch />
       </BrowserRouter>
     </ThemeProvider>
   );

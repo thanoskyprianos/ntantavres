@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Stack } from '@mui/material';
+import { Button, ButtonProps, Stack, Typography } from '@mui/material';
 import { ReactElement } from 'react';
 import { To } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ export const IconLabelButton = ({
         }}
       >
         {icon}
-        <p>{label}</p>
+        <Typography variant="subtitle2">{label}</Typography>
       </Stack>
     </Button>
   );

@@ -1,43 +1,37 @@
-export const UserHeart = () => {
+import { SvgIcon } from '@mui/material';
+
+const UserHeartSvg = () => {
   return (
-    <svg
-      width="30"
-      height="25"
-      viewBox="0 0 25 25"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="30" height="25" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.5264 15.3409H8.64949C6.47434 15.3409 4.71103 17.1725 4.71103 19.4318V21.4773H20.4649V19.4318C20.4649 17.1725 18.7016 15.3409 16.5264 15.3409Z" />
+      <path d="M12.588 11.25C14.7631 11.25 16.5264 9.41844 16.5264 7.15909C16.5264 4.89974 14.7631 3.06818 12.588 3.06818C10.4128 3.06818 8.64949 4.89974 8.64949 7.15909C8.64949 9.41844 10.4128 11.25 12.588 11.25Z" />
       <path
         d="M16.5264 15.3409H8.64949C6.47434 15.3409 4.71103 17.1725 4.71103 19.4318V21.4773H20.4649V19.4318C20.4649 17.1725 18.7016 15.3409 16.5264 15.3409Z"
-        fill="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M12.588 11.25C14.7631 11.25 16.5264 9.41844 16.5264 7.15909C16.5264 4.89974 14.7631 3.06818 12.588 3.06818C10.4128 3.06818 8.64949 4.89974 8.64949 7.15909C8.64949 9.41844 10.4128 11.25 12.588 11.25Z"
-        fill="white"
-      />
-      <path
-        d="M16.5264 15.3409H8.64949C6.47434 15.3409 4.71103 17.1725 4.71103 19.4318V21.4773H20.4649V19.4318C20.4649 17.1725 18.7016 15.3409 16.5264 15.3409Z"
-        stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M12.588 11.25C14.7631 11.25 16.5264 9.41844 16.5264 7.15909C16.5264 4.89974 14.7631 3.06818 12.588 3.06818C10.4128 3.06818 8.64949 4.89974 8.64949 7.15909C8.64949 9.41844 10.4128 11.25 12.588 11.25Z"
-        stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M20.825 9.29223L20.6787 9.14445C20.4389 8.90227 20.1136 8.76622 19.7744 8.76622C19.0583 8.76622 18.4956 9.31411 18.4956 10.3315C18.4956 12.0536 21.0275 13.1493 21.0275 13.1493C21.0275 13.1493 23.5594 12.0536 23.5594 10.3315C23.5594 9.31411 22.9868 8.76622 22.2806 8.76622C21.9414 8.76622 21.6162 8.90227 21.3764 9.14445L21.23 9.29223C21.1194 9.40395 20.9356 9.40395 20.825 9.29223Z"
-        stroke="white"
-        fill="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         transform="translate(2, 0)"
       />
     </svg>
+  );
+};
+
+export const UserHeart = () => {
+  return (
+    <SvgIcon viewBox="0 0 25 25" sx={{ width: 30 }}>
+      <UserHeartSvg />
+    </SvgIcon>
   );
 };

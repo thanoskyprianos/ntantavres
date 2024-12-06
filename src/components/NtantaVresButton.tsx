@@ -3,10 +3,13 @@ import { Button, Stack } from '@mui/material';
 import { Dispatch, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IconLabelButton } from './IconLabelButton';
+import { useTranslation } from 'react-i18next';
 
 export const NtantaVresButton = () => {
   const [isHovering, setIsHovering]: [boolean, Dispatch<boolean>] =
     useState(false);
+
+  const { t } = useTranslation();
 
   return (
     <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
@@ -40,7 +43,7 @@ export const NtantaVresButton = () => {
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         icon={<HomeIcon />}
-        label="ΑΡΧΙΚΗ"
+        label={t('header.home')}
       ></IconLabelButton>
     </Stack>
   );

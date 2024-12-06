@@ -1,0 +1,21 @@
+{
+  "header": {
+    "home": "ΑΡΧΙΚΗ",
+    "parent": "ΓΟΝΕΑΣ",
+    "babysitter": "ΝΤΑΝΤΑ",
+    "questions": "ΕΡΩΤΗΣΕΙΣ",
+    "login": "ΣΥΝΔΕΣΗ",
+    "profile": "ΠΡΟΦΙΛ"
+  },
+  "breadcrumbs": {
+    "home": "Αρχική",
+    "parent": "Γονέας",
+    "babysitter": "Νταντά"
+  },
+  "language": {
+    "label": "Γλώσσα",
+    "el-GR": "Ελληνικά",
+    "en-US": "Αγγλικά",
+    "de-DE": "Γερμανικά"
+  }
+}

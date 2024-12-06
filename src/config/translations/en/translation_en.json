@@ -1,0 +1,21 @@
+{
+  "header": {
+    "home": "HOME",
+    "parent": "PARENT",
+    "babysitter": "BABYSITTER",
+    "questions": "QUESTIONS",
+    "login": "LOGIN",
+    "profile": "PROFILE"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "parent": "Parent",
+    "babysitter": "Babysitter"
+  },
+  "language": {
+    "label": "Language",
+    "el-GR": "Greek",
+    "en-US": "English",
+    "de-DE": "German"
+  }
+}

@@ -5,6 +5,9 @@ import { BreadcrumbsWrapper as Breadcrumbs } from './components/BreadcrumbsWrapp
 import { Header } from './components/Header';
 import { theme } from './config/theme.config';
 import { HomePage } from './pages/HomePage';
+import { ParentPage } from './pages/parent/ParentPage.tsx';
+import { BabysitterPage } from './pages/babysitter/Babysitter.tsx';
+import { QuestionsPage } from './pages/questions/Questions.tsx';
 
 export const Routing = () => {
   return (
@@ -14,7 +17,16 @@ export const Routing = () => {
         <Header />
         <Breadcrumbs />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route index element={<HomePage />} />
+          <Route path="parent">
+            <Route index element={<ParentPage />} />
+          </Route>
+          <Route path="babysitter">
+            <Route index element={<BabysitterPage />} />
+          </Route>
+          <Route path="questions">
+            <Route index element={<QuestionsPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

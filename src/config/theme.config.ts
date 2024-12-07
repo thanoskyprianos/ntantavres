@@ -2,7 +2,8 @@ import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   colorSchemes: {
-    dark: true,
+    light: {},
+    dark: {},
   },
   typography: {
     fontFamily: 'Ubuntu Mono',

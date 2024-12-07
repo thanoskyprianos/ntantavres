@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import translation_en from './translations/en/translation_en.json';
 import translation_el from './translations/el/translation_el.json';
 import translation_de from './translations/de/translation_de.json';
+import translation_fr from './translations/fr/translation_fr.json';
 import languages from './translations/languages.json';
 
 i18n
@@ -29,7 +30,11 @@ i18n
         translation: translation_de,
         languages: languages,
       },
+      'fr-FR': {
+        translation: translation_fr,
+        languages: languages,
+      },
     },
   });
 
-export const langs = ['en-US', 'el-GR', 'de-DE'];
+export const langs = ['en-US', 'el-GR', 'de-DE', 'fr-FR'];

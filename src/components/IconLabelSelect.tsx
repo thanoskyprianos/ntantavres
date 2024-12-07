@@ -13,7 +13,7 @@ interface IconLabelSelectProps {
   icon: ReactElement;
   options: string[];
   variant?: string;
-  value?: string;
+  label?: string;
   handleChange?:
     | ((event: SelectChangeEvent<string>, child: ReactNode) => void)
     | undefined;
@@ -24,7 +24,7 @@ interface IconLabelSelectProps {
 export const IconLabelSelect = ({
   icon,
   options,
-  value,
+  label,
   handleChange,
   variant = 'filled',
   valueFormat,
@@ -37,7 +37,7 @@ export const IconLabelSelect = ({
         variant={variant}
         sx={{ ...rest.sx }}
         hiddenLabel
-        value={value}
+        value={label}
         onChange={handleChange}
         renderValue={value => {
           return (

@@ -6,7 +6,6 @@ import translation_en from './translations/en/translation_en.json';
 import translation_el from './translations/el/translation_el.json';
 import translation_de from './translations/de/translation_de.json';
 import translation_fr from './translations/fr/translation_fr.json';
-import languages from './translations/languages.json';
 
 i18n
   .use(LanguageDetector)
@@ -20,21 +19,24 @@ i18n
     resources: {
       'en-US': {
         translation: translation_en,
-        languages: languages,
       },
       'el-GR': {
         translation: translation_el,
-        languages: languages,
       },
       'de-DE': {
         translation: translation_de,
-        languages: languages,
       },
       'fr-FR': {
         translation: translation_fr,
-        languages: languages,
       },
     },
   });
 
-export const langs = ['en-US', 'el-GR', 'de-DE', 'fr-FR'];
+export const langsMap = new Map<string, string>([
+  ['en-US', 'English'],
+  ['el-GR', 'Ελληνικά'],
+  ['de-DE', 'Deutsch'],
+  ['fr-FR', 'Français'],
+]);
+
+export const langs = Array.from(langsMap.keys());

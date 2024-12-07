@@ -10,8 +10,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import { DeviceUsed, useDeviceDetect } from '../hooks/useDeviceDetect.hook.ts';
 import { IconLabelSelect } from './IconLabelSelect.tsx';
 import LanguageIcon from '@mui/icons-material/Language';
-import { langs } from '../config/i18n.ts';
-import i18n, { TFunction } from 'i18next';
+import { langs, langsMap } from '../config/i18n.ts';
+import { TFunction } from 'i18next';
 import { useColorScheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -87,12 +87,10 @@ const LeftPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
   );
 };
 
-interface ThemeAndLanguageProps {
-  t: TFunction;
-}
-
-const ThemeAndLanguage = ({ t }: ThemeAndLanguageProps) => {
+const ThemeAndLanguage = () => {
   const { mode, systemMode, setMode } = useColorScheme();
+  const { i18n } = useTranslation();
+  
   if (!mode) {
     setMode(systemMode || null);
   }
@@ -117,10 +115,32 @@ const ThemeAndLanguage = ({ t }: ThemeAndLanguageProps) => {
           },
           ...commonTheme,
         }}
-        value={i18n.resolvedLanguage}
+        label={i18n.resolvedLanguage}
         handleChange={e => i18n.changeLanguage(e.target.value)}
         valueFormat={(value: string) => value.substring(3)}
-        optionFormat={(option: string) => t(`languages:language.${option}`)}
+        optionFormat={(option: string) => langsMap.get(option) || 'Unknown'}
+      />
+    </Stack>
+  );
+};
+
+const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
+  return (
+    <Stack direction="row">
+      <IconLabelButton
+        icon={<HelpIcon />}
+        label={t('header.questions')}
+        sx={commonTheme}
+        showLabel={device === 'desktop'}
+        component={Link}
+        to="/questions"
+      />
+      <IconLabelButton
+        icon={<PersonIcon />}
+        // TODO: CONDITIONALLY RENDER
+        label={t('header.login')}
+        sx={commonTheme}
+        showLabel={device === 'desktop'}
       />
     </Stack>
   );
@@ -135,22 +155,8 @@ const RightPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
         device !== 'mobile' && <Divider orientation="vertical" flexItem />
       }
     >
-      <ThemeAndLanguage t={t} />
-      <Stack direction="row">
-        <IconLabelButton
-          icon={<HelpIcon />}
-          label={t('header.questions')}
-          sx={commonTheme}
-          showLabel={device === 'desktop'}
-        />
-        <IconLabelButton
-          icon={<PersonIcon />}
-          // TODO: CONDITIONALLY RENDER
-          label={t('header.login')}
-          sx={commonTheme}
-          showLabel={device === 'desktop'}
-        />
-      </Stack>
+      <ThemeAndLanguage />
+      <QuestionsAndProfile device={device} t={t} />
     </Stack>
   );
 };

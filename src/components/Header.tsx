@@ -12,6 +12,9 @@ import { IconLabelSelect } from './IconLabelSelect.tsx';
 import LanguageIcon from '@mui/icons-material/Language';
 import { langs } from '../config/i18n.ts';
 import i18n, { TFunction } from 'i18next';
+import { useColorScheme } from '@mui/material/styles';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 interface PartOfHeaderProps {
   device: DeviceUsed;
@@ -22,6 +25,14 @@ interface HomePageIconProps {
   device: DeviceUsed;
 }
 
+const commonTheme = {
+  borderRadius: '25px',
+  backgroundColor: 'transparent',
+  '&:hover': {
+    backgroundColor: 'primary.dark',
+  },
+};
+
 const HomePageIcon = ({ device }: HomePageIconProps) => {
   return (
     <IconLabelButton
@@ -31,7 +42,7 @@ const HomePageIcon = ({ device }: HomePageIconProps) => {
       to="/"
       sx={{
         textTransform: 'none',
-        borderRadius: '25px',
+        ...commonTheme,
       }}
       direction={device === 'desktop' ? 'row' : 'column'}
     />
@@ -40,11 +51,11 @@ const HomePageIcon = ({ device }: HomePageIconProps) => {
 
 const MainServicesButtons = ({ device, t }: PartOfHeaderProps) => {
   return (
-    <Stack direction="row">
+    <Stack direction="row" spacing={0.5}>
       <IconLabelButton
         icon={<UserHeart />}
         label={t('header.parent')}
-        sx={{ borderRadius: '25px' }}
+        sx={commonTheme}
         component={Link}
         to="/parent"
         direction={device === 'desktop' ? 'row' : 'column'}
@@ -52,7 +63,7 @@ const MainServicesButtons = ({ device, t }: PartOfHeaderProps) => {
       <IconLabelButton
         icon={<WorkIcon />}
         label={t('header.babysitter')}
-        sx={{ borderRadius: '25px' }}
+        sx={commonTheme}
         component={Link}
         to="/babysitter"
         direction={device === 'desktop' ? 'row' : 'column'}
@@ -66,7 +77,9 @@ const LeftPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
     <Stack
       direction="row"
       spacing={1}
-      divider={<Divider orientation="vertical" flexItem />}
+      divider={
+        device !== 'mobile' && <Divider orientation="vertical" flexItem />
+      }
     >
       <HomePageIcon device={device} />
       <MainServicesButtons device={device} t={t} />
@@ -74,42 +87,70 @@ const LeftPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
   );
 };
 
-const RightPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
+interface ThemeAndLanguageProps {
+  t: TFunction;
+}
+
+const ThemeAndLanguage = ({ t }: ThemeAndLanguageProps) => {
+  const { mode, systemMode, setMode } = useColorScheme();
+  if (!mode) {
+    setMode(systemMode || null);
+  }
+
   return (
-    <Stack direction="row">
+    <Stack direction="row" spacing={1}>
+      <IconLabelButton
+        label={''}
+        icon={mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+        sx={commonTheme}
+        showLabel={false}
+        onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+      />
       <IconLabelSelect
         icon={<LanguageIcon sx={{ paddingRight: '5px' }} />}
         options={langs}
         sx={{
           height: '50px',
-          borderRadius: '25px',
           color: 'primary.contrastText', // for some reason not set by theme
-          backgroundColor: 'primary.main',
           '.MuiSvgIcon-root': {
             color: 'inherit',
           },
-          '&:hover': {
-            backgroundColor: 'primary.dark',
-          },
+          ...commonTheme,
         }}
         value={i18n.resolvedLanguage}
         handleChange={e => i18n.changeLanguage(e.target.value)}
         valueFormat={(value: string) => value.substring(3)}
         optionFormat={(option: string) => t(`languages:language.${option}`)}
       />
-      <IconLabelButton
-        icon={<HelpIcon />}
-        label={t('header.questions')}
-        sx={{ padding: '0 10px', borderRadius: '25px' }}
-        showLabel={device === 'desktop'}
-      />
-      <IconLabelButton
-        icon={<PersonIcon />}
-        // TODO: CONDITIONALLY RENDER
-        label={t('header.login')}
-        sx={{ borderRadius: '25px' }}
-        showLabel={device === 'desktop'}
-      />
+    </Stack>
+  );
+};
+
+const RightPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
+  return (
+    <Stack
+      direction="row"
+      spacing={1}
+      divider={
+        device !== 'mobile' && <Divider orientation="vertical" flexItem />
+      }
+    >
+      <ThemeAndLanguage t={t} />
+      <Stack direction="row">
+        <IconLabelButton
+          icon={<HelpIcon />}
+          label={t('header.questions')}
+          sx={commonTheme}
+          showLabel={device === 'desktop'}
+        />
+        <IconLabelButton
+          icon={<PersonIcon />}
+          // TODO: CONDITIONALLY RENDER
+          label={t('header.login')}
+          sx={commonTheme}
+          showLabel={device === 'desktop'}
+        />
+      </Stack>
     </Stack>
   );
 };
@@ -119,14 +160,11 @@ export const Header = () => {
   const { device } = useDeviceDetect();
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="sticky" sx={{ bgcolor: 'primary.main' }}>
       <Stack
         direction="row"
         sx={{
-          justifyContent: {
-            xs: 'space-evenly',
-            sm: 'space-between',
-          },
+          justifyContent: device === 'mobile' ? 'center' : 'space-between',
           padding: '10px',
           flexWrap: 'wrap',
         }}

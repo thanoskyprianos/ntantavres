@@ -7,9 +7,9 @@ export const useDeviceDetect = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 420) {
+      if (window.innerWidth <= 638) {
         setDevice('mobile');
-      } else if (window.innerWidth <= 770) {
+      } else if (window.innerWidth <= 852) {
         setDevice('tablet');
       } else {
         setDevice('desktop');

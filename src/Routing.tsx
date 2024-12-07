@@ -15,7 +15,7 @@ export const Routing = () => {
       <CssBaseline />
       <BrowserRouter>
         <Header />
-        <Breadcrumbs />
+        <Breadcrumbs sx={{ margin: '15px' }} />
         <Routes>
           <Route index element={<HomePage />} />
           <Route path="parent">

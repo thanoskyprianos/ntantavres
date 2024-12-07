@@ -11,11 +11,5 @@
     "home": "Home",
     "parent": "Parent",
     "babysitter": "Babysitter"
-  },
-  "language": {
-    "label": "Language",
-    "el-GR": "Greek",
-    "en-US": "English",
-    "de-DE": "German"
   }
 }

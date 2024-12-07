@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import translation_en from './translations/en/translation_en.json';
 import translation_el from './translations/el/translation_el.json';
 import translation_de from './translations/de/translation_de.json';
+import languages from './translations/languages.json';
 
 i18n
   .use(LanguageDetector)
@@ -18,12 +19,15 @@ i18n
     resources: {
       'en-US': {
         translation: translation_en,
+        languages: languages,
       },
       'el-GR': {
         translation: translation_el,
+        languages: languages,
       },
       'de-DE': {
         translation: translation_de,
+        languages: languages,
       },
     },
   });

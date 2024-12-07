@@ -7,32 +7,47 @@ import {
   Typography,
 } from '@mui/material';
 import { langs } from '../config/i18n.ts';
-import HomeIcon from '@mui/icons-material/Home';
+import LanguageIcon from '@mui/icons-material/Language';
 
 export const LanguageSelect = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['translation', 'languages']);
 
   return (
-    <FormControl sx={{ padding: 0 }}>
+    <FormControl
+      sx={{
+        '&& .Mui-selected': {
+          backgroundColor: 'primary.dark',
+        },
+      }}
+    >
       <Select
-        variant="outlined"
+        variant="filled"
         sx={{
           borderRadius: '15px',
+          color: 'primary.contrastText', // for some reason not set by theme
+          backgroundColor: 'primary.main',
+          '.MuiSvgIcon-root': {
+            color: 'inherit',
+          },
+          '&:hover': {
+            backgroundColor: 'primary.dark',
+          },
         }}
+        hiddenLabel
+        value={i18n.resolvedLanguage}
         onChange={e => i18n.changeLanguage(e.target.value)}
-        displayEmpty
         renderValue={(value: string) => {
           return (
-            <Stack sx={{ margin: 0, alignItems: 'center' }}>
-              <HomeIcon />
-              <Typography sx={{ padding: 0, margin: 0 }}>{value}</Typography>
+            <Stack direction="row">
+              <LanguageIcon sx={{ paddingRight: '5px' }} />
+              <Typography>{value.substring(3)}</Typography>
             </Stack>
           );
         }}
       >
         {langs.map(lang => (
-          <MenuItem value={lang} key={lang} sx={{ margin: 0 }}>
-            {t(`language.${lang}`).slice(0, 2)}
+          <MenuItem value={lang} key={lang}>
+            {t(`languages:language.${lang}`)}
           </MenuItem>
         ))}
       </Select>

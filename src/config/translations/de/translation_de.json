@@ -1,0 +1,15 @@
+{
+  "header": {
+    "home": "HEIM",
+    "parent": "ELTERNTEIL",
+    "babysitter": "BABYSITTER",
+    "questions": "FRAGEN",
+    "login": "LOGIN",
+    "profile": "PROFIL"
+  },
+  "breadcrumbs": {
+    "home": "Heim",
+    "parent": "Elternteil",
+    "babysitter": "Babysitter"
+  }
+}

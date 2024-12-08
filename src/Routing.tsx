@@ -6,8 +6,8 @@ import { Header } from './components/Header';
 import { theme } from './config/theme.config';
 import { HomePage } from './pages/HomePage';
 import { ParentPage } from './pages/parent/ParentPage.tsx';
-import { BabysitterPage } from './pages/babysitter/Babysitter.tsx';
-import { QuestionsPage } from './pages/questions/Questions.tsx';
+import { BabysitterPage } from './pages/babysitter/BabysitterPage.tsx';
+import { QuestionsPage } from './pages/questions/QuestionsPage.tsx';
 import { TitleSetter } from './components/TitleSetter.tsx';
 
 export const Routing = () => {

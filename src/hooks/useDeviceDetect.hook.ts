@@ -16,6 +16,7 @@ export const useDeviceDetect = () => {
       }
     };
 
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => {

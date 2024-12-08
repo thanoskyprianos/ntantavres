@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
+import { Typography } from '@mui/material';
 
 export const HomePage = () => {
-  return <Button sx={{ textTransform: 'none' }}>Hello World!</Button>;
+  return <Typography>Hello, World!</Typography>;
 };

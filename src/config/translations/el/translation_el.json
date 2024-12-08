@@ -12,5 +12,10 @@
     "parent": "Γονέας",
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις"
+  },
+  "title": {
+    "parent": "Γονέας",
+    "babysitter": "Νταντά",
+    "questions": "Ερωτήσεις"
   }
 }

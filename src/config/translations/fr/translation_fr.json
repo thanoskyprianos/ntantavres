@@ -12,5 +12,10 @@
     "parent": "Mère",
     "babysitter": "Baby-sitter",
     "questions": "Questions"
+  },
+  "title": {
+    "parent": "Mère",
+    "babysitter": "Baby-sitter",
+    "questions": "Questions"
   }
 }

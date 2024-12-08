@@ -12,5 +12,10 @@
     "parent": "Elternteil",
     "babysitter": "Babysitter",
     "questions": "Fragen"
+  },
+  "title": {
+    "parent": "Elternteil",
+    "babysitter": "Babysitter",
+    "questions": "Fragen"
   }
 }

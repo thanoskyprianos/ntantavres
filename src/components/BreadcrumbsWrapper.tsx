@@ -14,7 +14,6 @@ export const BreadcrumbsWrapper = ({ sx }: BreadcrumbsProps) => {
   const { t } = useTranslation();
   const location = useLocation();
   const breadcrumbs: string[] = location.pathname.split('/').filter(x => x);
-  console.log(breadcrumbs);
 
   if (!breadcrumbs.length) {
     return <></>;

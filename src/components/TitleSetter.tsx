@@ -16,7 +16,7 @@ export const TitleSetter = () => {
   useEffect(() => {
     document.title =
       titles.get(location.pathname.split('/')[1]) || 'NtantaVres';
-  }, [location]);
+  }, [location, t]);
 
   return <></>;
 };

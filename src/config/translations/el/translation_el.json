@@ -17,5 +17,9 @@
     "parent": "Γονέας",
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις"
+  },
+  "error": {
+    "emailExists": "Το email '{{email}}' χρησιμοποιείται ήδη",
+    "invalidCredentials": "Τα στοιχεία σύνδεσης είναι εσφαλμένα"
   }
 }

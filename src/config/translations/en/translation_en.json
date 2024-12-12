@@ -17,5 +17,9 @@
     "parent": "Parent",
     "babysitter": "Babysitter",
     "questions": "Questions"
+  },
+  "error": {
+    "emailExists": "Email '{{email}}' is already in use",
+    "invalidCredentials": "Login credentials are invalid"
   }
 }

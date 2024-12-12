@@ -16,6 +16,7 @@ import { useColorScheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth.hook.ts';
 
 interface PartOfHeaderProps {
   device: DeviceUsed;
@@ -128,6 +129,8 @@ const ThemeAndLanguage = () => {
 };
 
 const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
+  const { user } = useAuth();
+
   return (
     <Stack direction="row">
       <IconLabelButton
@@ -140,8 +143,7 @@ const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
       />
       <IconLabelButton
         icon={<PersonIcon />}
-        // TODO: CONDITIONALLY RENDER
-        label={t('header.login')}
+        label={user ? t('header.profile') : t('header.login')}
         sx={commonTheme}
         showLabel={device === 'desktop'}
       />

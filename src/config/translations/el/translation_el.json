@@ -21,5 +21,17 @@
   "error": {
     "emailExists": "Το email '{{email}}' χρησιμοποιείται ήδη",
     "invalidCredentials": "Τα στοιχεία σύνδεσης είναι εσφαλμένα"
+  },
+  "textField": {
+    "firstName": "Όνομα",
+    "middleName": "Μεσαίο όνομα",
+    "lastName": "Επώνυμο",
+    "email": "Email",
+    "password": "Κωδικός",
+    "confirmPassword": "Επιβεβαίωση κωδικού"
+  },
+  "auth": {
+    "register": "ΕΓΓΡΑΦΗ",
+    "clear": "ΚΑΘΑΡΙΣΜΑ"
   }
 }

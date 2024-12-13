@@ -21,5 +21,17 @@
   "error": {
     "emailExists": "Email '{{email}}' is already in use",
     "invalidCredentials": "Login credentials are invalid"
+  },
+  "textField": {
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password"
+  },
+  "auth": {
+    "register": "REGISTER",
+    "clear": "CLEAR"
   }
 }

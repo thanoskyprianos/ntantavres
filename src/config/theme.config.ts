@@ -18,6 +18,7 @@ export const theme = createTheme({
         },
         background: {
           default: '#e3f2fd',
+          paper: '#ffffff',
         },
       },
     },
@@ -58,13 +59,6 @@ export const theme = createTheme({
     MuiAppBar: {
       defaultProps: {
         enableColorOnDark: true,
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-        },
       },
     },
   },

@@ -7,15 +7,19 @@ export const TitleSetter = () => {
   const location = useLocation();
 
   const titles = new Map<string, string>([
-    ['', 'NtantaVres'],
     ['parent', t('title.parent')],
     ['babysitter', t('title.babysitter')],
     ['questions', t('title.questions')],
+    ['auth', t('title.auth')],
   ]);
 
   useEffect(() => {
-    document.title =
-      titles.get(location.pathname.split('/')[1]) || 'NtantaVres';
+    let title = titles.get(location.pathname.split('/')[1]);
+    if (title) {
+      title = title + ' - NtantaVres';
+    }
+
+    document.title = title || 'NtantaVres';
   }, [location, t]);
 
   return <></>;

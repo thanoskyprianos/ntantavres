@@ -17,7 +17,8 @@
   "title": {
     "parent": "Parent",
     "babysitter": "Babysitter",
-    "questions": "Questions"
+    "questions": "Questions",
+    "auth": "Auth"
   },
   "error": {
     "emailExists": "Email '{{email}}' is already in use",

@@ -11,11 +11,33 @@
     "home": "Αρχική",
     "parent": "Γονέας",
     "babysitter": "Νταντά",
-    "questions": "Ερωτήσεις"
+    "questions": "Ερωτήσεις",
+    "auth": "Είσοδος"
   },
   "title": {
     "parent": "Γονέας",
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις"
+  },
+  "error": {
+    "emailExists": "Το email '{{email}}' χρησιμοποιείται ήδη",
+    "invalidCredentials": "Τα στοιχεία σύνδεσης είναι εσφαλμένα"
+  },
+  "textField": {
+    "firstName": "Όνομα",
+    "middleName": "Μεσαίο όνομα",
+    "lastName": "Επώνυμο",
+    "email": "Email",
+    "password": "Κωδικός",
+    "confirmPassword": "Επιβεβαίωση κωδικού",
+    "birthdate": "Ημερομηνία γέννησης"
+  },
+  "auth": {
+    "login": "ΣΥΝΔΕΣΗ",
+    "register": "ΕΓΓΡΑΦΗ",
+    "clear": "ΚΑΘΑΡΙΣΜΑ"
+  },
+  "general": {
+    "or": "ή"
   }
 }

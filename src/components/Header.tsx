@@ -146,6 +146,8 @@ const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
         label={user ? t('header.profile') : t('header.login')}
         sx={commonTheme}
         showLabel={device === 'desktop'}
+        component={Link}
+        to="/auth"
       />
     </Stack>
   );

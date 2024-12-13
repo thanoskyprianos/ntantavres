@@ -191,7 +191,7 @@ export const RegisterCard = () => {
             textField: { size: 'small', required: true },
             actionBar: {
               actions: ['clear', 'accept'],
-              sx: { button: { color: 'primary.contrastText' } },
+              sx: { button: { color: 'secondary.contrastText' } },
             },
           }}
         />

@@ -11,7 +11,8 @@
     "home": "Home",
     "parent": "Parent",
     "babysitter": "Babysitter",
-    "questions": "Questions"
+    "questions": "Questions",
+    "auth": "Auth"
   },
   "title": {
     "parent": "Parent",

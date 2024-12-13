@@ -11,7 +11,8 @@
     "home": "Αρχική",
     "parent": "Γονέας",
     "babysitter": "Νταντά",
-    "questions": "Ερωτήσεις"
+    "questions": "Ερωτήσεις",
+    "auth": "Είσοδος"
   },
   "title": {
     "parent": "Γονέας",

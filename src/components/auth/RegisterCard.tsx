@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  Grid2,
   IconButton,
   InputAdornment,
   Paper,
@@ -167,64 +166,50 @@ export const RegisterCard = () => {
   return (
     <Paper
       sx={{
-        maxWidth: '500px',
+        width: '300px',
         borderRadius: '15px',
       }}
     >
-      <Grid2
-        container
+      <Stack
         spacing={2}
         sx={{
           padding: '15px',
+          placeItems: 'center',
         }}
-        columns={6}
       >
-        <Grid2 size={2} sx={{ display: 'flex', placeContent: 'center' }}>
-          {/* TODO: replace avatar with image input */}
-          <Avatar src="maria1.jpg" sx={{ height: '150px', width: '150px' }} />
-        </Grid2>
-        <Grid2 size={4}>
-          <Stack spacing={2}>
-            <Names
-              t={t}
-              firstName={firstName}
-              setFirstName={setFirstName}
-              middleName={middleName}
-              setMiddleName={setMiddleName}
-              lastName={lastName}
-              setLastName={setLastName}
-            />
-          </Stack>
-        </Grid2>
-        <Grid2 size={6}>
-          <TextFieldSmall
-            type="email"
-            label={t('textField.email')}
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </Grid2>
-        <Grid2 size={3}>
-          <PasswordInput
-            t={t}
-            password={password}
-            setPassword={setPassword}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            isValidPassword={isValidPassword}
-          />
-        </Grid2>
-        <Grid2 size={3}>
-          <ConfirmPasswordInput
-            t={t}
-            password={password}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            passwordsMatch={passwordsMatch}
-          />
-        </Grid2>
-      </Grid2>
+        <Avatar src="maria1.jpg" sx={{ height: '100px', width: '100px' }} />
+        <Names
+          t={t}
+          firstName={firstName}
+          setFirstName={setFirstName}
+          middleName={middleName}
+          setMiddleName={setMiddleName}
+          lastName={lastName}
+          setLastName={setLastName}
+        />
+        <TextFieldSmall
+          type="email"
+          label={t('textField.email')}
+          required
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <PasswordInput
+          t={t}
+          password={password}
+          setPassword={setPassword}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          isValidPassword={isValidPassword}
+        />
+        <ConfirmPasswordInput
+          t={t}
+          password={password}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          passwordsMatch={passwordsMatch}
+        />
+      </Stack>
 
       <Stack
         direction="row"

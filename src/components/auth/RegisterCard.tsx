@@ -13,13 +13,12 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { isStrongPassword } from 'validator';
+import { DatePicker } from '@mui/x-date-pickers';
 
 interface NamesProps {
   t: TFunction;
   firstName: string;
   setFirstName: Dispatch<string>;
-  middleName: string;
-  setMiddleName: Dispatch<string>;
   lastName: string;
   setLastName: Dispatch<string>;
 }
@@ -45,8 +44,6 @@ const Names = ({
   t,
   firstName,
   setFirstName,
-  middleName,
-  setMiddleName,
   lastName,
   setLastName,
 }: NamesProps) => {
@@ -57,11 +54,6 @@ const Names = ({
         label={t('textField.firstName')}
         value={firstName}
         onChange={e => setFirstName(e.target.value)}
-      />
-      <TextFieldSmall
-        label={t('textField.middleName')}
-        value={middleName}
-        onChange={e => setMiddleName(e.target.value)}
       />
       <TextFieldSmall
         required
@@ -138,8 +130,8 @@ export const RegisterCard = () => {
   const { t } = useTranslation();
 
   const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [birthdate, setBirthdate] = useState<Date | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -148,10 +140,12 @@ export const RegisterCard = () => {
   const isValidPassword = isStrongPassword(password);
   const passwordsMatch = password === confirmPassword;
 
+  console.log(birthdate);
+
   const handleClear = () => {
     setFirstName('');
-    setMiddleName('');
     setLastName('');
+    setBirthdate(null);
     setEmail('');
     setPassword('');
     setConfirmPassword('');
@@ -178,14 +172,28 @@ export const RegisterCard = () => {
         }}
       >
         <Avatar src="maria1.jpg" sx={{ height: '100px', width: '100px' }} />
-        <Names
-          t={t}
-          firstName={firstName}
-          setFirstName={setFirstName}
-          middleName={middleName}
-          setMiddleName={setMiddleName}
-          lastName={lastName}
-          setLastName={setLastName}
+        <Stack direction="row" spacing={1}>
+          <Names
+            t={t}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+          />
+        </Stack>
+        <DatePicker
+          disableFuture
+          label={t('textField.birthdate')}
+          value={birthdate}
+          onChange={e => setBirthdate(e)}
+          sx={{ width: '100%' }}
+          slotProps={{
+            textField: { size: 'small', required: true },
+            actionBar: {
+              actions: ['clear', 'accept'],
+              sx: { button: { color: 'primary.contrastText' } },
+            },
+          }}
         />
         <TextFieldSmall
           type="email"

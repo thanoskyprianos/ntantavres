@@ -28,10 +28,15 @@
     "lastName": "Last Name",
     "email": "Email",
     "password": "Password",
-    "confirmPassword": "Confirm password"
+    "confirmPassword": "Confirm password",
+    "birthdate": "Date of birth"
   },
   "auth": {
+    "login": "LOGIN",
     "register": "REGISTER",
     "clear": "CLEAR"
+  },
+  "general": {
+    "or": "or"
   }
 }

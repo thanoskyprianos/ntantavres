@@ -28,10 +28,15 @@
     "lastName": "Επώνυμο",
     "email": "Email",
     "password": "Κωδικός",
-    "confirmPassword": "Επιβεβαίωση κωδικού"
+    "confirmPassword": "Επιβεβαίωση κωδικού",
+    "birthdate": "Ημερομηνία γέννησης"
   },
   "auth": {
+    "login": "ΣΥΝΔΕΣΗ",
     "register": "ΕΓΓΡΑΦΗ",
     "clear": "ΚΑΘΑΡΙΣΜΑ"
+  },
+  "general": {
+    "or": "ή"
   }
 }

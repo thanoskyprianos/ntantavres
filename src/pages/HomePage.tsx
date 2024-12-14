@@ -2,7 +2,7 @@ import { Button, Rating, Stack, Typography, Box, Card, CardHeader } from '@mui/m
 import { Link } from 'react-router-dom';
 import { UserCard } from '../components/UserCard.tsx';
 import { useDeviceDetect } from '../hooks/useDeviceDetect.hook.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import './HomePage.css';
 import { Footer } from './footer/Footer.tsx';
@@ -12,7 +12,7 @@ import CountUp from 'react-countup';
 import HelpIcon from '@mui/icons-material/Help';
 
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { EventAvailable, Task } from '@mui/icons-material';
+import { EventAvailable, ManageSearch, Task } from '@mui/icons-material';
 
 
 export const HomePage = () => {
@@ -22,6 +22,7 @@ export const HomePage = () => {
     triggerOnce: true, // Trigger the animation only once
     threshold: 0.1, // Trigger when 10% of the element is in view
   });
+  const [activeBox, setActiveBox] = useState('box1');
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--background-gradient', 
@@ -114,7 +115,7 @@ export const HomePage = () => {
               color: 'secondary.contrastText',
               height:'12px',
             }}
-          >ΔΕΣ ΠΕΡΙΣΣΟΤΕΡΕΣ ΑΓΓΕΛΙΕΣ ΓΟΝΕΩΝ</Button>
+          >ΠΕΡΙΣΣΟΤΕΡΕΣ ΑΓΓΕΛΙΕΣ ΓΟΝΕΩΝ</Button>
         <Stack direction="row" spacing={2}>
 
           <UserCard
@@ -150,7 +151,7 @@ export const HomePage = () => {
               color: 'secondary.contrastText',
               height:'12px',
             }}
-          >ΔΕΣ ΠΕΡΙΣΣΟΤΕΡΟΥΣ ΕΠΑΓΓΕΛΜΑΤΙΕΣ</Button>
+          >ΠΕΡΙΣΣΟΤΕΡΟΙ ΕΠΑΓΓΕΛΜΑΤΙΕΣ</Button>
       </Stack>
 
     </Stack>
@@ -181,40 +182,107 @@ export const HomePage = () => {
     </Box>
     
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
-      <Stack direction="column" spacing={3} alignItems="center">
-          <Typography variant="h5" fontWeight="bold">ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ</Typography>
-          <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
-            <CardHeader
-              avatar={<AutoAwesomeIcon />}
-              title={
-                  <Typography variant="h6">
-                      1. Βρίσκω τον επαγγελματία που μου ταιριάζει
-                  </Typography>
-              }
-            />
-          </Card>
-          <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>  
-            <CardHeader
-                avatar={<EventAvailable />}
-                title={
-                    <Typography variant="h6">
-                      2. Προγραμματίζω ραντεβού γνωριμίας
-                    </Typography>
-                }
-              />
-          </Card>
-          <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
-          <CardHeader
-                avatar={<Task />}
-                title={
-                    <Typography variant="h6" >
-                      3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
-                    </Typography>
-                }
-              />
-          </Card>
-      </Stack>
+      <Button
+        variant="contained"
+        onClick={() => setActiveBox('box1')}
+        sx={{
+          fontSize: '16px',
+          marginRight: 2,
+          backgroundColor: activeBox === 'box1' ? '#aeb5ff' : '#3a3a3a',
+          color: activeBox === 'box1' ? 'white' : 'default',
+          border: activeBox === 'box1' ? '2px solid #5361ff' : '2px solid transparent',
+        }}
+      >
+        ΓΟΝΕΙΣ
+      </Button>
+      <Button
+        variant="contained"
+        onClick={() => setActiveBox('box2')}
+        sx={{
+          fontSize: '16px',
+          marginRight: 2,
+          backgroundColor: activeBox === 'box2' ? '#aeb5ff' : '#3a3a3a',
+          color: activeBox === 'box2' ? 'white' : 'default',
+          border: activeBox === 'box2' ? '2px solid #5361ff' : '2px solid transparent',
+        }}
+      >
+        ΕΠΑΓΓΕΛΜΑΤΙΕΣ
+      </Button>
     </Box>
+            {activeBox === 'box1' && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+                    <Stack direction="column" spacing={3} alignItems="center">
+                        <Typography variant="h5" fontWeight="bold">ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΓΟΝΙΟΣ</Typography>
+                        <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                            <CardHeader
+                              avatar={<AutoAwesomeIcon />}
+                              title={
+                                <Typography variant="h6">
+                                  1. Βρίσκω τον επαγγελματία που μου ταιριάζει
+                                </Typography>
+                              }
+                            />
+                        </Card>
+                        <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                            <CardHeader
+                              avatar={<EventAvailable />}
+                              title={
+                                <Typography variant="h6">
+                                  2. Προγραμματίζω ραντεβού γνωριμίας με τον επαγγελματία
+                                </Typography>
+                              }
+                            />
+                        </Card>
+                        <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                            <CardHeader
+                              avatar={<Task />}
+                              title={
+                                <Typography variant="h6">
+                                  3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
+                                </Typography>
+                              }
+                            />
+                        </Card>
+                    </Stack>
+                </Box>
+            )}
+            {activeBox === 'box2' && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+                  <Stack direction="column" spacing={3} alignItems="center">
+                      <Typography variant="h5" fontWeight="bold">ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΕΠΑΓΓΕΛΜΑΤΙΑΣ</Typography>
+                      <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                        <CardHeader
+                          avatar={<ManageSearch />}
+                          title={
+                            <Typography variant="h6">
+                              1. Βρίσκω την αγγελία που μου ταιριάζει
+                            </Typography>
+                          }
+                        />
+                      </Card>
+                      <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                        <CardHeader
+                          avatar={<EventAvailable />}
+                          title={
+                            <Typography variant="h6">
+                              2. Προγραμματίζω ραντεβού γνωριμίας με τον γονέα/κηδεμονα
+                            </Typography>
+                          }
+                        />
+                      </Card>
+                      <Card sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 1, width: '270px' }}>
+                        <CardHeader
+                          avatar={<Task />}
+                          title={
+                            <Typography variant="h6">
+                              3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
+                            </Typography>
+                          }
+                        />
+                      </Card>
+                  </Stack>
+                </Box>
+            )}
     <Footer></Footer>
     </div>
   );

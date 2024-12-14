@@ -10,14 +10,27 @@ export const theme = createTheme({
           light: '#1e87e5',
           contrastText: '#e3f2fd',
         },
+        secondary: {
+          main: '#ee9038',
+          dark: '#e46300',
+          light: '#fbcfa5',
+          contrastText: '#001d78',
+        },
         background: {
           default: '#e3f2fd',
+          paper: '#ffffff',
         },
       },
     },
     dark: {
       palette: {
         primary: {
+          main: '#3a3a3a',
+          dark: '#121212',
+          light: '#595959',
+          contrastText: '#9acffa',
+        },
+        secondary: {
           main: '#3a3a3a',
           dark: '#121212',
           light: '#595959',
@@ -46,13 +59,6 @@ export const theme = createTheme({
     MuiAppBar: {
       defaultProps: {
         enableColorOnDark: true,
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-        },
       },
     },
   },

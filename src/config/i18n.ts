@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 
 import translation_en from './translations/en/translation_en.json';
 import translation_el from './translations/el/translation_el.json';
+import { el, enUS, Locale } from 'date-fns/locale';
 
 i18n
   .use(LanguageDetector)
@@ -27,6 +28,11 @@ i18n
 export const langsMap = new Map<string, string>([
   ['en-US', 'English'],
   ['el-GR', 'Ελληνικά'],
+]);
+
+export const localeTextMap = new Map<string, Locale>([
+  ['en-US', enUS],
+  ['el-GR', el],
 ]);
 
 export const langs = Array.from(langsMap.keys());

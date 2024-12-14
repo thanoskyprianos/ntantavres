@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { localeTextMap } from './config/i18n.ts';
+import { Ratings } from './pages/ratings/Ratings.tsx';
 
 export const Routing = () => {
   const { i18n } = useTranslation();
@@ -50,6 +51,9 @@ export const Routing = () => {
             </Route>
             <Route path="auth">
               <Route index element={<AuthPage />} />
+            </Route>
+            <Route path="ratings">
+              <Route index element={<Ratings />} />
             </Route>
           </Routes>
         </BrowserRouter>

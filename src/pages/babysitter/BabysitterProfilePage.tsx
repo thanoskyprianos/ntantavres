@@ -1,4 +1,6 @@
+import React from 'react';
 import {
+  useTheme,
   Avatar,
   Box,
   Button,
@@ -19,6 +21,7 @@ import EuroIcon from '@mui/icons-material/Euro';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { MonthCalendar } from '@mui/x-date-pickers/MonthCalendar';
 import Rating from '@mui/material/Rating';
+import { Link } from 'react-router-dom';
 
 interface profileBabysitter {
   name: string;
@@ -40,6 +43,12 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
   phoneNumber = '6912345678',
   reviews = '25',
 }) => {
+  const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+
   return (
     <div>
       <Stack
@@ -86,8 +95,10 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
                   alignItems: 'center',
                 }}
               >
+                <Button component={Link} to='/ratings'>
                 <Rating value={4} readOnly size="small" />
-                <Button>({reviews} ΑΞΙΟΛΟΓΗΣΕΙΣ)</Button>
+                ({reviews})
+                </Button>
               </Stack>
             </div>
           </Box>
@@ -239,12 +250,13 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
 
           <Card variant="outlined">
             <CardHeader title="ΗΜΕΡΟΛΟΓΙΟ ΔΙΑΘΕΣΙΜΟΤΗΤΑΣ" />
-            <DemoContainer components={['YearCalendar', 'MonthCalendar']}>
-              <DemoItem>
-                <MonthCalendar />
-              </DemoItem>
-            </DemoContainer>
+              <DemoContainer components={['YearCalendar', 'MonthCalendar']}>
+                <DemoItem>
+                  <MonthCalendar value={selectedDate} onChange={handleDateChange} />
+                </DemoItem>
+              </DemoContainer>
           </Card>
+
         </Stack>
       </Stack>
     </div>

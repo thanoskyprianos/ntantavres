@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles';
 import {
   Avatar,
   Button,
@@ -25,6 +26,8 @@ export const UserCard = ({
   description,
   rating,
 }: UserCardProps) => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   return (
     <>
       <Card
@@ -32,6 +35,7 @@ export const UserCard = ({
         sx={{
           maxWidth: '210px',
           padding: '5px',
+          background: isDarkMode ? '#444444' : 'main.color'
         }}
       >
         <CardHeader
@@ -59,6 +63,8 @@ export const UserCard = ({
             sx={{
               bgcolor: 'primary.main',
               width: '170px',
+              color: isDarkMode ? '#fff' : '#000',
+              background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)'
             }}
           >
             ΕΝΔΙΑΦΕΡΟΜΑΙ

@@ -19,7 +19,10 @@ export const HomePage = () => {
         <Typography variant="h5" gutterBottom>
           Είμαι..
         </Typography>
-        <Button component={Link} to="/parent" className="button"
+        <Button
+          component={Link}
+          to="/parent"
+          className="button"
           sx={{
             width: '350px',
             fontSize: '20px',
@@ -28,23 +31,24 @@ export const HomePage = () => {
         >
           Γονεας/Κηδεμονας
         </Button>
-        <Button component={Link} to="/babysitter" className="button"
-          sx={{ 
-            width: "350px", 
-            fontSize: "20px",
-            border: "2px solid",
-          }}
-        >
-        Επαγγελματιας/Νταντα
-        </Button>
         <Button
           component={Link}
-          to="/parent/profile"
-        >GONIOS PROF</Button>
-                <Button
-          component={Link}
-          to="/parent/sitterProfile"
-        >NTANTA PROF</Button>
+          to="/babysitter"
+          className="button"
+          sx={{
+            width: '350px',
+            fontSize: '20px',
+            border: '2px solid',
+          }}
+        >
+          Επαγγελματιας/Νταντα
+        </Button>
+        <Button component={Link} to="/parent/profile">
+          GONIOS PROF
+        </Button>
+        <Button component={Link} to="/babysitter/profile">
+          NTANTA PROF
+        </Button>
       </Stack>
       <Stack spacing={3}>
         <Stack direction="row" spacing={2}>

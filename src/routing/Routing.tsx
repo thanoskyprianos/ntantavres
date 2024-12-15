@@ -24,10 +24,16 @@ import {
   ScheduledMeetings,
   TempRequests,
 } from './lazy.routes.ts';
+import { ErrorPage } from '../pages/ErrorPage.tsx';
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
+    errorElement: (
+      <Layout>
+        <ErrorPage />
+      </Layout>
+    ),
     children: [
       {
         path: '/',

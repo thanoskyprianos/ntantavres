@@ -22,7 +22,8 @@
   },
   "error": {
     "emailExists": "Email '{{email}}' is already in use",
-    "invalidCredentials": "Login credentials are invalid"
+    "invalidCredentials": "Login credentials are invalid",
+    "404": "Oh no! The page you are looking for does not exist..."
   },
   "textField": {
     "firstName": "First Name",

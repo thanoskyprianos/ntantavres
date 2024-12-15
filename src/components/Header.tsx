@@ -15,7 +15,6 @@ import { TFunction } from 'i18next';
 import { useColorScheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth.hook.ts';
 
 interface PartOfHeaderProps {
@@ -90,14 +89,8 @@ const LeftPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
 };
 
 const ThemeAndLanguage = () => {
-  const { mode, systemMode, setMode } = useColorScheme();
+  const { mode, setMode } = useColorScheme();
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    if (!mode) {
-      setMode(systemMode || null);
-    }
-  }, []);
 
   return (
     <Stack direction="row" spacing={1}>

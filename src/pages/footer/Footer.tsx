@@ -1,26 +1,19 @@
-import React from 'react';
-import { Box, Typography, Divider, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
-export const Footer: React.FC = () => {
+export const Footer = (props: any) => {
   const theme = useTheme();
-  
+
   return (
     <Box
       component="footer"
       sx={{
+        ...props.sx,
         width: '100%',
         padding: '1rem',
-        marginTop: 'auto',
         backgroundColor: theme.palette.mode === 'dark' ? '#3a3a3a' : '#1976d2',
-        position: 'fixed',
-        bottom: 0,
       }}
     >
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        align="center"
-      >
+      <Typography variant="body2" color="text.secondary" align="center">
         © {2024} Network Team (Team 58)
       </Typography>
     </Box>

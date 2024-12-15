@@ -32,12 +32,12 @@ export const BreadcrumbsWrapper = ({ sx }: BreadcrumbsProps) => {
         i !== breadcrumbs.length - 1 ? (
           <LinkRouter to={{ pathname: `/${path}` }} key={path}>
             <Typography variant="subtitle2">
-              {t(`breadcrumbs.${path}`)}
+              {t(`breadcrumbs.${path}`, { defaultValue: path })}
             </Typography>
           </LinkRouter>
         ) : (
           <Typography variant="subtitle2" key={path}>
-            {t(`breadcrumbs.${path}`)}
+            {t(`breadcrumbs.${path}`, { defaultValue: path })}
           </Typography>
         )
       )}

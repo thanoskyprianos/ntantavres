@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardActions, Button, Typography, Divider, Avatar, CardHeader, Box, TextField } from '@mui/material';
+import React from 'react';
+import {
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface UserCardProps {
   name: string;
@@ -59,10 +68,12 @@ export const UserCard = ({
               bgcolor: 'primary.main',
               width: '170px',
               color: isDarkMode ? '#fff' : '#000',
-              background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)',
+              background: isDarkMode
+                ? 'linear-gradient(to right, #5361ff, #11508e)'
+                : 'linear-gradient(to right, #aeb5ff, #6496c8)',
             }}
             component={Link}
-            to='/intrested'
+            to="/interested"
           >
             ΕΝΔΙΑΦΕΡΟΜΑΙ
           </Button>

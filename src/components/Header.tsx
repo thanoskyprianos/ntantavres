@@ -94,16 +94,10 @@ const ThemeAndLanguage = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    if (mode) {
-      return;
+    if (mode === 'system') {
+      setMode(systemMode || null);
     }
-    
-    if (systemMode == 'light') {
-      setMode('light');
-    } else {
-      setMode('dark');
-    }
-  }, []);
+  }, [mode]);
 
   return (
     <Stack direction="row" spacing={1}>

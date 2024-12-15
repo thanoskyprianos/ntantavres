@@ -16,6 +16,7 @@ import { useColorScheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useAuth } from '../hooks/useAuth.hook.ts';
+import { useEffect } from 'react';
 
 interface PartOfHeaderProps {
   device: DeviceUsed;
@@ -89,8 +90,20 @@ const LeftPartOfHeader = ({ device, t }: PartOfHeaderProps) => {
 };
 
 const ThemeAndLanguage = () => {
-  const { mode, setMode } = useColorScheme();
+  const { mode, systemMode, setMode } = useColorScheme();
   const { i18n } = useTranslation();
+
+  useEffect(() => {
+    if (mode) {
+      return;
+    }
+    
+    if (systemMode == 'light') {
+      setMode('light');
+    } else {
+      setMode('dark');
+    }
+  }, []);
 
   return (
     <Stack direction="row" spacing={1}>

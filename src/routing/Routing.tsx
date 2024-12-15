@@ -8,9 +8,12 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { localeTextMap } from '../config/i18n.ts';
 import { Layout } from './Layout.tsx';
 import {
+  ActiveCollabs,
   AuthPage,
   BabysitterPage,
   BabysitterProfilePage,
+  CardDetailPage,
+  EditActiveCollab,
   HomePage,
   InfoParents,
   JobPosting,
@@ -18,6 +21,8 @@ import {
   ParentProfilePage,
   QuestionsPage,
   Ratings,
+  ScheduledMeetings,
+  TempRequests,
 } from './lazy.routes.ts';
 
 const router = createBrowserRouter([
@@ -30,26 +35,48 @@ const router = createBrowserRouter([
       },
       {
         path: '/parent',
-        lazy: ParentPage,
         children: [
+          {
+            index: true,
+            lazy: ParentPage,
+          },
           {
             path: 'profile',
             lazy: ParentProfilePage,
           },
           {
-            path: 'createORedit',
+            path: 'createOrEdit',
             lazy: JobPosting,
           },
           {
             path: 'editInfo',
             lazy: InfoParents,
           },
+          {
+            path: 'activeCollabs',
+            lazy: ActiveCollabs,
+          },
+          {
+            path: 'tempRequest',
+            lazy: TempRequests,
+          },
+          {
+            path: 'scheduledMeetings',
+            lazy: ScheduledMeetings,
+          },
+          {
+            path: 'editCollab',
+            lazy: EditActiveCollab,
+          },
         ],
       },
       {
         path: '/babysitter',
-        lazy: BabysitterPage,
         children: [
+          {
+            index: true,
+            lazy: BabysitterPage,
+          },
           {
             path: 'profile',
             lazy: BabysitterProfilePage,
@@ -67,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: '/ratings',
         lazy: Ratings,
+      },
+      {
+        path: '/interested',
+        lazy: CardDetailPage,
       },
     ],
   },

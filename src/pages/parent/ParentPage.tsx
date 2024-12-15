@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
+import { Button, useTheme, Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
 
 const locations = [
   { title: 'Αγία Παρασκευή Αττικής' },
@@ -85,7 +85,10 @@ const services = [
 ];
 
 export const ParentPage = () => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   return (
+    
     <Box sx={{ padding: 2, width: '300px', marginLeft: '10px', marginRight: 'auto' }}>
       <Typography variant="h4" gutterBottom>
         Εύρεση Νταντάς
@@ -131,6 +134,15 @@ export const ParentPage = () => {
             <TextField {...params} label="Άλλες Υπηρεσίες" placeholder="Επιλογή υπηρεσιών" />
           )}
         />
+        <Button
+            sx={{
+              bgcolor: 'primary.main',
+              color: isDarkMode ? '#fff' : '#000',
+              background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)'
+            }}
+        >
+          ΑΝΑΖΗΤΗΣΗ
+        </Button>
       </Stack>
     </Box>
   );

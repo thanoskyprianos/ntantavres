@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
+import { Divider, Button, useTheme, Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
 
 const locations = [
   { title: 'Αγία Παρασκευή Αττικής' },
@@ -85,53 +85,64 @@ const services = [
 ];
 
 export const BabysitterPage = () => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   return (
-    <Box sx={{ padding: 2, width: '300px', marginLeft: '10px', marginRight: 'auto' }}>
-      <Typography variant="h4" gutterBottom>
-        Εύρεση αγγελίας
-      </Typography>
-      <Stack spacing={2}>
-        <Autocomplete
-          multiple
-          id="size-small-outlined-multi"
-          size="small"
-          options={locations}
-          getOptionLabel={(option) => option.title}
-          defaultValue={[locations[0]]}
-          renderInput={(params) => (
-            <TextField {...params} label="Περιοχή" placeholder="Επιλογή περιοχής" />
-          )}
-        />
-        <Autocomplete
-          id="employment-type"
-          size="small"
-          options={employmentTypes}
-          getOptionLabel={(option) => option.title}
-          renderInput={(params) => (
-            <TextField {...params} label="Απασχόληση" placeholder="Επιλογή τύπου απασχόλησης" />
-          )}
-        />
-        <Autocomplete
-          multiple
-          id="ages"
-          size="small"
-          options={ages}
-          getOptionLabel={(option) => option.title}
-          renderInput={(params) => (
-            <TextField {...params} label="Ηλικίες" placeholder="Επιλογή ηλικιών" />
-          )}
-        />
-        <Autocomplete
-          multiple
-          id="services"
-          size="small"
-          options={services}
-          getOptionLabel={(option) => option.title}
-          renderInput={(params) => (
-            <TextField {...params} label="Άλλες Υπηρεσίες" placeholder="Επιλογή υπηρεσιών" />
-          )}
-        />
-      </Stack>
-    </Box>
+  <Box sx={{ padding: 2, width: '300px', marginLeft: '10px', marginRight: 'auto' }}>
+    <Typography variant="h4" gutterBottom>
+      Εύρεση αγγελίας
+    </Typography>
+    <Stack spacing={2}>
+      <Autocomplete
+        multiple
+        id="size-small-outlined-multi"
+        size="small"
+        options={locations}
+        getOptionLabel={(option) => option.title}
+        defaultValue={[locations[0]]}
+        renderInput={(params) => (
+          <TextField {...params} label="Περιοχή" placeholder="Επιλογή περιοχής" />
+        )}
+      />
+      <Autocomplete
+        id="employment-type"
+        size="small"
+        options={employmentTypes}
+        getOptionLabel={(option) => option.title}
+        renderInput={(params) => (
+          <TextField {...params} label="Απασχόληση" placeholder="Επιλογή τύπου απασχόλησης" />
+        )}
+      />
+      <Autocomplete
+        multiple
+        id="ages"
+        size="small"
+        options={ages}
+        getOptionLabel={(option) => option.title}
+        renderInput={(params) => (
+          <TextField {...params} label="Ηλικίες" placeholder="Επιλογή ηλικιών" />
+        )}
+      />
+      <Autocomplete
+        multiple
+        id="services"
+        size="small"
+        options={services}
+        getOptionLabel={(option) => option.title}
+        renderInput={(params) => (
+          <TextField {...params} label="Άλλες Υπηρεσίες" placeholder="Επιλογή υπηρεσιών" />
+        )}
+      />
+      <Button
+          sx={{
+            bgcolor: 'primary.main',
+            color: isDarkMode ? '#fff' : '#000',
+            background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)'
+          }}
+      >
+        ΑΝΑΖΗΤΗΣΗ
+      </Button>
+    </Stack>
+  </Box>
   );
 };

@@ -9,14 +9,22 @@ import {
   Divider,
   Stack,
   Typography,
-  Box
+  Box,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Delete } from '@mui/icons-material';
+import { AddCircleOutline, Delete } from '@mui/icons-material';
+import { UserCard } from '../../components/UserCard';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface profileParent {
   name: string;
@@ -35,6 +43,17 @@ export const ParentProfilePage: React.FC<profileParent> = ({
   email = "magicthanos@gmail.com",
   phoneNumber = "6946789226"
 }) => {
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div>
       <Stack direction="column" spacing={3}
@@ -156,67 +175,62 @@ export const ParentProfilePage: React.FC<profileParent> = ({
             </CardContent>
 
             <CardActions>
-              <Button color='error'
-                startIcon={<DeleteIcon/>}
-              >
-                Διαγραφή
-              </Button>
               <Button
+                component={Link}
+                to='/parent/editInfo'
                 className="edit-button"
                 startIcon={<EditIcon />}
+                sx={{color: 'secondary.contrastText'}}
               >
                 Επεξεργασία
               </Button>
               </CardActions>
             </Card>
 
+          <Box sx={{ padding: 0 }}>
+            <Card className='job-posting' variant='outlined' sx={{ width: 320 }}>
+              <CardHeader title="ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ" />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <UserCard
+                  name="Athanasios"
+                  description="Looking for a babysitter"
+                  photo="Young_Vito.webp"
+                >
+                  <Typography variant="body2">
+                    Τοποθεσία: Petroupoli <br />
+                    Διάρκεια: 5 mines <br />
+                    Παιδιά: 5 children
+                  </Typography>
+                </UserCard>
+              </Box>
+              <CardActions>
+                <Button 
+                  component={Link} to="/parent/createORedit"
+                  className="edit-button" startIcon={<EditIcon />} sx={{ color: 'secondary.contrastText' }}>
+                  Επεξεργασία
+                </Button>
+                <Button className="edit-button" color="success" startIcon={<AddCircleOutline />} onClick={handleClickOpen}>
+                  Δημιουργία Αγγελίας
+          </Button>
+        </CardActions>
+      </Card>
 
-          <Card className='job-posting' variant='outlined'
-            sx={{
-              width: 370
-            }}
-          >
-            <CardHeader
-              title="ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                Ηλικία: 6 μηνών
-              </Typography>
-              <Typography gutterBottom variant="h6" component="div">
-                Απασχόληση: Πλήρης
-              </Typography>
-              <Typography gutterBottom variant="h6" component="div">
-                Περιγραφή
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Ενδιαφέρομαι για νταντά πλήρους απασχόλησης, η οποία θα αναλάβει τη φροντίδα της 6 μηνών κόρης μου στο σπίτι μας στα Πατήσια. Οι ώρες απασχόλησης είναι Δευτέρα έως Σάββατο, από τις 9 το πρωί μέχρι τις 6 το απόγευμα.
-              </Typography>
-              <Typography gutterBottom variant="h6" component="div">   
-                Καθήκοντα και Προσδοκίες:
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Φροντίδα και επίβλεψη του μωρού.
-                Προετοιμασία και τάισμα γευμάτων.
-                Διατήρηση της καθαριότητας στους χώρους που σχετίζονται με το μωρό.
-                Απασχόληση της μικρής με δραστηριότητες κατάλληλες για την ηλικία της.
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button
-                color='error'
-                startIcon={<DeleteIcon/>}
-              >
-                Διαγραφή
-              </Button>
-              <Button
-                className="edit-button"
-                startIcon={<EditIcon />}
-              >
-                Επεξεργασία
-              </Button>
-            </CardActions>
-          </Card>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Δημιουργία Αγγελίας</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Προσοχή η προηγούμενη σας αγγελία θα διαγραφεί.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} 
+            component={Link} to="/parent/createORedit"
+            sx={{color:"secondary.contrastText"}}>
+              Εντάξει
+            </Button>
+          </DialogActions>
+        </Dialog>
+          </Box>
         </Stack>
       </Stack>
     </div>

@@ -17,6 +17,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { localeTextMap } from './config/i18n.ts';
 import { Ratings } from './pages/ratings/Ratings.tsx';
+import { JobPosting } from './pages/parent/JobPosting.tsx';
+import { InfoParents } from './pages/parent/InfoParents.tsx';
 
 export const Routing = () => {
   const { i18n } = useTranslation();
@@ -37,6 +39,8 @@ export const Routing = () => {
             <Route path="parent">
               <Route index element={<ParentPage />} />
               <Route path="profile" element={<ParentProfilePage/>} />
+              <Route path="createORedit" element={<JobPosting />} />
+              <Route path="editInfo" element={<InfoParents />} />
             </Route>
             <Route path="babysitter">
               <Route index element={<BabysitterPage />} />

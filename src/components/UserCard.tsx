@@ -28,6 +28,7 @@ export const UserCard = ({
 }: UserCardProps) => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
+  const hideButtonPaths = ['/parent/profile'];
   return (
     <>
       <Card
@@ -53,9 +54,10 @@ export const UserCard = ({
         <Divider />
         <CardContent>
           <Typography variant="body2" className="description">
-            Περιγραφή: {description}
+          <strong>Περιγραφή:</strong> {description}
           </Typography>
         </CardContent>
+        {!hideButtonPaths.includes(location.pathname) && (
         <CardActions sx={{ display: 'flex', placeContent: 'center' }}>
           <Button
             variant="contained"
@@ -64,12 +66,13 @@ export const UserCard = ({
               bgcolor: 'primary.main',
               width: '170px',
               color: isDarkMode ? '#fff' : '#000',
-              background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)'
+              background: isDarkMode ? 'linear-gradient(to right, #5361ff, #11508e)' : 'linear-gradient(to right, #aeb5ff, #6496c8)',
             }}
           >
             ΕΝΔΙΑΦΕΡΟΜΑΙ
           </Button>
         </CardActions>
+      )}
       </Card>
     </>
   );

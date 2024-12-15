@@ -242,7 +242,9 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
             </CardContent>
 
             <CardActions>
-              <Button className="edit-button" startIcon={<EditIcon />}>
+              <Button className="edit-button" startIcon={<EditIcon />}
+                sx={{color: 'secondary.contrastText'}}
+              >
                 Επεξεργασία
               </Button>
             </CardActions>

@@ -108,5 +108,3 @@ export const InfoParents = () => {
     </Box>
   );
 };
-
-export default InfoParents;

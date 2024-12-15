@@ -12,8 +12,12 @@ export const Layout = () => {
     <Stack sx={{ minHeight: '100vh', justifyContent: 'space-between' }}>
       <Box>
         <Header />
-        <Breadcrumbs sx={{ margin: '15px' }} />
-        {state === 'loading' ? <LoadingSpinner /> : <Outlet />}
+        {state !== 'loading' && <Breadcrumbs sx={{ margin: '15px' }} />}
+        {state === 'loading' ? (
+          <LoadingSpinner sx={{ margin: '15px' }} />
+        ) : (
+          <Outlet />
+        )}
       </Box>
       <Footer sx={{ marginTop: '15px' }} />
     </Stack>

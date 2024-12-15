@@ -1,8 +1,8 @@
 import { CircularProgress, Stack } from '@mui/material';
 
-export const LoadingSpinner = () => {
+export const LoadingSpinner = (props: any) => {
   return (
-    <Stack sx={{ placeItems: 'center' }}>
+    <Stack sx={{ ...props.sx, placeItems: 'center' }}>
       <CircularProgress />
     </Stack>
   );

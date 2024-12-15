@@ -99,7 +99,7 @@ export const BabysitterPage = () => {
         size="small"
         options={locations}
         getOptionLabel={(option) => option.title}
-        defaultValue={[locations[0]]}
+        defaultValue={[locations[0]]} // Na valoume tin perioxi tis ntanta default
         renderInput={(params) => (
           <TextField {...params} label="Περιοχή" placeholder="Επιλογή περιοχής" />
         )}

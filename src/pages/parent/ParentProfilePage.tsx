@@ -21,7 +21,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AddCircleOutline, Delete } from '@mui/icons-material';
+import { AddCircleOutline, Delete, History as HistoryIcon } from '@mui/icons-material';
 import { UserCard } from '../../components/UserCard';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -103,6 +103,8 @@ export const ParentProfilePage: React.FC<profileParent> = ({
             marginTop: 3
           }}>
             <Button
+              component={Link}
+              to='/parent/scheduledMeetings'
               variant="contained"
               className="interested-button"
               startIcon={<CalendarMonthIcon />}
@@ -114,6 +116,8 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ ΓΝΩΡΙΜΙΑΣ
             </Button>
             <Button
+              component={Link}
+              to='/parent/activeCollabs'
               variant="contained"
               className="interested-button"
               startIcon={<ChecklistIcon />}
@@ -125,6 +129,8 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ
             </Button>
             <Button
+              component={Link}
+              to='/parent/tempRequest'
               variant="contained"
               className="interested-button"
               startIcon={<ContactPageIcon/>}
@@ -134,6 +140,17 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               }}
             >
               ΠΡΟΣΩΡΙΝΕΣ ΑΙΤΗΣΕΙΣ ΠΡΟΣ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
+            </Button>
+            <Button
+              variant="contained"
+              className="interested-button"
+              startIcon={<HistoryIcon />}
+              sx={{
+                width: '330px',
+                height: '30px',
+              }}
+            >
+              ΙΣΤΟΡΙΚΟ
             </Button>
           </Box>
         </Stack>
@@ -174,16 +191,16 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               </Typography>
             </CardContent>
 
-            <CardActions>
-              <Button
-                component={Link}
-                to='/parent/editInfo'
-                className="edit-button"
-                startIcon={<EditIcon />}
-                sx={{color: 'secondary.contrastText'}}
-              >
-                Επεξεργασία
-              </Button>
+              <CardActions>
+                <Button
+                  component={Link}
+                  to='/parent/editInfo'
+                  className="edit-button"
+                  startIcon={<EditIcon />}
+                  sx={{color: 'secondary.contrastText'}}
+                >
+                  Επεξεργασία
+                </Button>
               </CardActions>
             </Card>
 
@@ -195,6 +212,7 @@ export const ParentProfilePage: React.FC<profileParent> = ({
                   name="Athanasios"
                   description="Looking for a babysitter"
                   photo="Young_Vito.webp"
+                  showButton={false}
                 >
                   <Typography variant="body2">
                     Τοποθεσία: Petroupoli <br />
@@ -211,7 +229,7 @@ export const ParentProfilePage: React.FC<profileParent> = ({
                 </Button>
                 <Button className="edit-button" color="success" startIcon={<AddCircleOutline />} onClick={handleClickOpen}>
                   Δημιουργία Αγγελίας
-          </Button>
+                </Button>
         </CardActions>
       </Card>
 

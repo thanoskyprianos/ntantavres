@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, TextField, Typography, Button, Stack, CircularProgress } from '@mui/material';
-import { green } from '@mui/material/colors';
+import { green, red } from '@mui/material/colors';
 import CheckIcon from '@mui/icons-material/Check';
-import UploadFile from '@mui/icons-material/UploadFile';
-import { Upgrade } from '@mui/icons-material';
+import Upgrade from '@mui/icons-material/Upgrade';
 
 export const InfoParents = () => {
   const [address, setAddress] = useState('Mylos Club');
@@ -12,6 +11,9 @@ export const InfoParents = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [addressError, setAddressError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const buttonSx = {
@@ -34,17 +36,67 @@ export const InfoParents = () => {
   };
 
   const handleSaveClick = () => {
-    setIsEditing(false);
+    let hasError = false;
+
+    if (!address) {
+      setAddressError(true);
+      hasError = true;
+    } else {
+      setAddressError(false);
+    }
+
+    if (!phone) {
+      setPhoneError(true);
+      hasError = true;
+    } else {
+      setPhoneError(false);
+    }
+
+    if (!email) {
+      setEmailError(true);
+      hasError = true;
+    } else {
+      setEmailError(false);
+    }
+
+    if (!hasError) {
+      setIsEditing(false);
+    }
   };
 
   const handleButtonClick = () => {
-    if (!loading) {
-      setSuccess(false);
-      setLoading(true);
-      timer.current = setTimeout(() => {
-        setSuccess(true);
-        setLoading(false);
-      }, 2000);
+    let hasError = false;
+
+    if (!address) {
+      setAddressError(true);
+      hasError = true;
+    } else {
+      setAddressError(false);
+    }
+
+    if (!phone) {
+      setPhoneError(true);
+      hasError = true;
+    } else {
+      setPhoneError(false);
+    }
+
+    if (!email) {
+      setEmailError(true);
+      hasError = true;
+    } else {
+      setEmailError(false);
+    }
+
+    if (!hasError) {
+      if (!loading) {
+        setSuccess(false);
+        setLoading(true);
+        timer.current = setTimeout(() => {
+          setSuccess(true);
+          setLoading(false);
+        }, 2000);
+      }
     }
   };
 
@@ -60,6 +112,8 @@ export const InfoParents = () => {
           onChange={(e) => setAddress(e.target.value)}
           disabled={!isEditing}
           fullWidth
+          error={addressError}
+          helperText={addressError ? 'Η διεύθυνση είναι υποχρεωτική' : ''}
         />
         <Typography variant="h6">Τηλέφωνο Επικοινωνίας:</Typography>
         <TextField
@@ -67,6 +121,8 @@ export const InfoParents = () => {
           onChange={(e) => setPhone(e.target.value)}
           disabled={!isEditing}
           fullWidth
+          error={phoneError}
+          helperText={phoneError ? 'Το τηλέφωνο είναι υποχρεωτικό' : ''}
         />
         <Typography variant="h6">Ηλεκτρονική Διεύθυνση:</Typography>
         <TextField
@@ -74,6 +130,8 @@ export const InfoParents = () => {
           onChange={(e) => setEmail(e.target.value)}
           disabled={!isEditing}
           fullWidth
+          error={emailError}
+          helperText={emailError ? 'Το email είναι υποχρεωτικό' : ''}
         />
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
           <Button

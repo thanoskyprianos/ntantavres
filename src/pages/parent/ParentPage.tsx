@@ -100,7 +100,7 @@ export const ParentPage = () => {
           size="small"
           options={locations}
           getOptionLabel={(option) => option.title}
-          defaultValue={[locations[0]]}
+          defaultValue={[locations[0]]}  // Na valoume tin perioxi toy gonioy default
           renderInput={(params) => (
             <TextField {...params} label="Περιοχή" placeholder="Επιλογή περιοχής" />
           )}

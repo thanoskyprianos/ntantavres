@@ -14,6 +14,9 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { isStrongPassword } from 'validator';
 import { DatePicker } from '@mui/x-date-pickers';
+import { useAuth } from '../../hooks/useAuth.hook.ts';
+import { useNavigate } from 'react-router-dom';
+import { LoadingSpinner } from '../LoadingSpinner.tsx';
 
 interface NamesProps {
   t: TFunction;
@@ -21,6 +24,7 @@ interface NamesProps {
   setFirstName: Dispatch<string>;
   lastName: string;
   setLastName: Dispatch<string>;
+  disabled?: boolean;
 }
 
 interface PasswordInputProps {
@@ -30,6 +34,7 @@ interface PasswordInputProps {
   showPassword: boolean;
   setShowPassword: Dispatch<SetStateAction<boolean>>;
   isValidPassword: boolean;
+  disabled?: boolean;
 }
 
 interface ConfirmPasswordInputProps {
@@ -38,6 +43,7 @@ interface ConfirmPasswordInputProps {
   confirmPassword: string;
   setConfirmPassword: Dispatch<string>;
   passwordsMatch: boolean;
+  disabled?: boolean;
 }
 
 const Names = ({
@@ -46,6 +52,7 @@ const Names = ({
   setFirstName,
   lastName,
   setLastName,
+  disabled = false,
 }: NamesProps) => {
   return (
     <>
@@ -54,12 +61,14 @@ const Names = ({
         label={t('textField.firstName')}
         value={firstName}
         onChange={e => setFirstName(e.target.value)}
+        disabled={disabled}
       />
       <TextFieldSmall
         required
         label={t('textField.lastName')}
         value={lastName}
         onChange={e => setLastName(e.target.value)}
+        disabled={disabled}
       />
     </>
   );
@@ -72,6 +81,7 @@ const PasswordInput = ({
   showPassword,
   setShowPassword,
   isValidPassword,
+  disabled = false,
 }: PasswordInputProps) => {
   return (
     <TextFieldSmall
@@ -95,6 +105,7 @@ const PasswordInput = ({
         },
       }}
       error={!isValidPassword && password.length > 0}
+      disabled={disabled}
     />
     // TODO: change how password is validated
   );
@@ -106,6 +117,7 @@ const ConfirmPasswordInput = ({
   confirmPassword,
   setConfirmPassword,
   passwordsMatch,
+  disabled = false,
 }: ConfirmPasswordInputProps) => {
   return (
     <TextFieldSmall
@@ -122,12 +134,15 @@ const ConfirmPasswordInput = ({
           ? t('auth.passwordsNotMatch')
           : ''
       }
+      disabled={disabled}
     />
   );
 };
 
 export const RegisterCard = () => {
   const { t } = useTranslation();
+  const { onRegister, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -140,8 +155,6 @@ export const RegisterCard = () => {
   const isValidPassword = isStrongPassword(password);
   const passwordsMatch = password === confirmPassword;
 
-  console.log(birthdate);
-
   const handleClear = () => {
     setFirstName('');
     setLastName('');
@@ -151,9 +164,31 @@ export const RegisterCard = () => {
     setConfirmPassword('');
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!isValidPassword || !passwordsMatch) {
       return;
+    }
+
+    if (
+      !firstName ||
+      !lastName ||
+      !birthdate ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
+      return;
+    }
+
+    try {
+      await onRegister({ email, password });
+      // TODO:
+      //  * upload user creds on firestore
+      //  * show success on snackbar
+      navigate('/parent/profile');
+    } catch (err) {
+      // TODO: show error on snackbar
+      console.log(err);
     }
   };
 
@@ -163,6 +198,8 @@ export const RegisterCard = () => {
         width: '300px',
         borderRadius: '15px',
       }}
+      component="form"
+      onSubmit={e => e.preventDefault()}
     >
       <Stack
         spacing={2}
@@ -179,6 +216,7 @@ export const RegisterCard = () => {
             setFirstName={setFirstName}
             lastName={lastName}
             setLastName={setLastName}
+            disabled={isLoading}
           />
         </Stack>
         <DatePicker
@@ -194,6 +232,7 @@ export const RegisterCard = () => {
               sx: { button: { color: 'secondary.contrastText' } },
             },
           }}
+          disabled={isLoading}
         />
         <TextFieldSmall
           type="email"
@@ -201,6 +240,7 @@ export const RegisterCard = () => {
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
+          disabled={isLoading}
         />
         <PasswordInput
           t={t}
@@ -209,6 +249,7 @@ export const RegisterCard = () => {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           isValidPassword={isValidPassword}
+          disabled={isLoading}
         />
         <ConfirmPasswordInput
           t={t}
@@ -216,20 +257,38 @@ export const RegisterCard = () => {
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
           passwordsMatch={passwordsMatch}
+          disabled={isLoading}
         />
       </Stack>
 
       <Stack
         direction="row"
         spacing={2}
-        sx={{ padding: '0 15px 15px 15px', justifyContent: 'end' }}
+        sx={{
+          padding: '0 15px 15px 15px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <Button variant="text" onClick={handleClear}>
-          {t('auth.clear')}
-        </Button>
-        <Button variant="contained" onClick={handleRegister}>
-          {t('auth.register')}
-        </Button>
+        {isLoading ? (
+          <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+        ) : (
+          // dummy div to make space-between work
+          <div></div>
+        )}
+        <Stack direction="row" spacing={2}>
+          <Button variant="text" onClick={handleClear} disabled={isLoading}>
+            {t('auth.clear')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleRegister}
+            type="submit"
+            disabled={isLoading}
+          >
+            {t('auth.register')}
+          </Button>
+        </Stack>
       </Stack>
     </Paper>
   );

@@ -41,8 +41,10 @@ export const LoginCard = () => {
         width: '300px',
         borderRadius: '15px',
       }}
+      component="form"
+      onSubmit={e => e.preventDefault()}
     >
-      <Stack spacing={2} sx={{ padding: '15px' }} component="form">
+      <Stack spacing={2} sx={{ padding: '15px' }}>
         <TextFieldSmall
           required
           label={t('textField.email')}

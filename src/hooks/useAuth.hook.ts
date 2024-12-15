@@ -68,6 +68,7 @@ export const useAuth = () => {
     } catch {
       // TODO: check with regex maybe
       throw new Error(t('error.emailExists', { email: email }));
+      // TODO: check for password and email errors (format validation)
     } finally {
       setIsLoading(false);
     }

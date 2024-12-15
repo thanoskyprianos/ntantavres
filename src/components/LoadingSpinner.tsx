@@ -1,9 +1,14 @@
-import { CircularProgress, Stack } from '@mui/material';
+import { CircularProgress, Stack, SxProps, Theme } from '@mui/material';
 
-export const LoadingSpinner = (props: any) => {
+interface LoadingSpinnerProps {
+  sx?: SxProps<Theme>;
+  size?: string;
+}
+
+export const LoadingSpinner = ({ sx, size }: LoadingSpinnerProps) => {
   return (
-    <Stack sx={{ ...props.sx, placeItems: 'center' }}>
-      <CircularProgress />
+    <Stack sx={{ ...sx, placeItems: 'center' }}>
+      <CircularProgress size={size} />
     </Stack>
   );
 };

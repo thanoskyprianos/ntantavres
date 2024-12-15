@@ -8,7 +8,7 @@ import { LoadingSpinner } from '../LoadingSpinner.tsx';
 
 export const LoginCard = () => {
   const { t } = useTranslation();
-  const { user, onLogIn, onLogOut, onRegister, isLoading } = useAuth();
+  const { onLogIn, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -31,6 +31,7 @@ export const LoginCard = () => {
     } catch (err) {
       // TODO: show error message on snackbar
       console.log(err);
+      handleClear();
     }
   };
 
@@ -41,7 +42,7 @@ export const LoginCard = () => {
         borderRadius: '15px',
       }}
     >
-      <Stack spacing={2} sx={{ padding: '15px' }}>
+      <Stack spacing={2} sx={{ padding: '15px' }} component="form">
         <TextFieldSmall
           required
           label={t('textField.email')}
@@ -77,6 +78,7 @@ export const LoginCard = () => {
               variant="contained"
               onClick={handleLogin}
               disabled={isLoading}
+              type="submit"
             >
               {t('auth.login')}
             </Button>

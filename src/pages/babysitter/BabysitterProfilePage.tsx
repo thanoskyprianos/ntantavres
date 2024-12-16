@@ -24,6 +24,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MonthCalendar } from '@mui/x-date-pickers/MonthCalendar';
 import Rating from '@mui/material/Rating';
 import { Link } from 'react-router-dom';
+import { BabysitterCalendar } from './BabysitterCalendar';
 
 interface profileBabysitter {
   name: string;
@@ -123,7 +124,7 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
                 height: '30px',
               }}
             >
-              ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ ΓΝΩΡΙΜΙΑΣ
+              ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ ΓΝΩΡΙΜΙΑΣ (ΙΔΙΟ ΜΕ ΓΟΝΙΩΝ)
             </Button>
             <Button
               variant="contained"
@@ -134,7 +135,7 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
                 height: '30px',
               }}
             >
-              ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ
+              ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ (ΙΔΙΟ ΜΕ ΓΟΝΙΩΝ/RM ANANEWSI BUTTON)
             </Button>
             <Button
               variant="contained"
@@ -167,7 +168,7 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
                 height: '30px',
               }}
             >
-              ΙΣΤΟΡΙΚΟ
+              ΙΣΤΟΡΙΚΟ (ΙΔΙΟ ΜΕ ΓΟΝΙΩΝ)
             </Button>
             <Button
               variant="contained"
@@ -252,14 +253,7 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
             </CardActions>
           </Card>
 
-          <Card variant="outlined">
-            <CardHeader title="ΗΜΕΡΟΛΟΓΙΟ ΔΙΑΘΕΣΙΜΟΤΗΤΑΣ" />
-              <DemoContainer components={['YearCalendar', 'MonthCalendar']}>
-                <DemoItem>
-                  <MonthCalendar value={selectedDate} onChange={handleDateChange} />
-                </DemoItem>
-              </DemoContainer>
-          </Card>
+          <BabysitterCalendar></BabysitterCalendar>
 
         </Stack>
       </Stack>

@@ -23,6 +23,7 @@ import {
   Ratings,
   ScheduledMeetings,
   TempRequests,
+  TempRequestCompletion
 } from './lazy.routes.ts';
 import { ErrorPage } from '../pages/ErrorPage.tsx';
 
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
           {
             path: 'editCollab',
             lazy: EditActiveCollab,
+          },
+          {
+            path: 'tempRequestCompletion',
+            lazy: TempRequestCompletion,
           },
         ],
       },

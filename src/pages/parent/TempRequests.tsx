@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, Stack, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { green, red, yellow } from '@mui/material/colors';
+import { Link } from 'react-router-dom';
 import EventBusy from '@mui/icons-material/EventBusy';
-import { AccountBox, Clear, PowerOffOutlined } from '@mui/icons-material';
+import { AccountBox, Check, Clear, PowerOffOutlined } from '@mui/icons-material';
 
 const pendingRequests = [
   { name: 'Maria Papadopoulou', duration: '3 μήνες', typeOfDuty: 'Πλήρης' },
@@ -22,7 +23,7 @@ export const TempRequests = () => {
   };
   return (
     <Box sx={{ padding: 2, display: 'flex', justifyContent: 'center' }}>
-      <Stack spacing={2} sx={{ width: '100%', maxWidth: 440 }}>
+      <Stack spacing={2} sx={{ width: '100%', maxWidth: 500 }}>
         <Typography variant="h4" gutterBottom textAlign="center">
           Εκκρεμείς Αιτήσεις
         </Typography>
@@ -40,11 +41,13 @@ export const TempRequests = () => {
                   Τύπος Απασχόλησης: {request.typeOfDuty}
                 </Typography>
                 <Stack direction={'row'} spacing={2} sx={{marginTop: '10px'}}>
-                    <Button startIcon={<AccountBox />} variant="contained" color="primary" sx={{ mt: 2 }}>
-                      ΠΡΟΦΙΛ ΕΠΑΓΓΕΛΜΑΤΙΑ
+                    <Button startIcon={<AccountBox />} variant="contained" color="primary">  
                     </Button>
                     <Button startIcon={<Clear />} variant="outlined" color="error" sx={{ mt: 2 }} onClick={handleClickOpen}>
                       ΑΚΥΡΩΣΗ ΑΙΤΗΣΗΣ
+                    </Button>
+                    <Button component={Link} to='/parent/tempRequestCompletion' startIcon={<Check />} variant="outlined" color="success">
+                      ΟΛΟΚΛΗΡΩΣΗ ΑΙΤΗΣΗΣ
                     </Button>
                 </Stack>
               </Box>

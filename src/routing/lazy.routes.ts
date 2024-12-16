@@ -43,6 +43,10 @@ export const TempRequests = lazyRoute(
   '../pages/parent/TempRequests.tsx',
   'TempRequests'
 );
+export const TempRequestCompletion = lazyRoute(
+  '../pages/parent/TempRequestCompletion.tsx',
+  'TempRequestCompletion'
+);
 export const CardDetailPage = lazyRoute(
   '../CardDetailPage.tsx',
   'CardDetailPage'

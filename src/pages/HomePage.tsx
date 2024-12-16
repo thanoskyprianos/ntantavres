@@ -6,6 +6,8 @@ import {
   Rating,
   Stack,
   Typography,
+  TextField,
+  Autocomplete,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { UserCard } from '../components/UserCard.tsx';
@@ -17,16 +19,19 @@ import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
 import HelpIcon from '@mui/icons-material/Help';
+import { SearchBar } from './SearchBar';
 
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { EventAvailable, ManageSearch, Task } from '@mui/icons-material';
+import { EventAvailable, Height, ManageSearch, Search, Task } from '@mui/icons-material';
+
 
 export const HomePage = () => {
   const theme = useTheme();
   const { device } = useDeviceDetect();
+  const isDarkMode = theme.palette.mode === 'dark';
   const { ref, inView } = useInView({
     triggerOnce: true, // Trigger the animation only once
-    threshold: 0.1, // Trigger when 10% of the element is in view
+    threshold: 0.3, // Trigger when 10% of the element is in view
   });
   const [activeBox, setActiveBox] = useState('box1');
   useEffect(() => {
@@ -38,6 +43,42 @@ export const HomePage = () => {
         : 'var(--background-gradient-light)'
     );
   }, [theme.palette.mode]);
+
+  const [showButtons, setShowButtons] = useState(true);
+  const [showQuickSearch, setShowQuickSearch] = useState(false);
+  const [activeButton, setActiveButton] = useState<'buttons' | 'search' | null>('buttons');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty(
+      '--background-gradient',
+      theme.palette.mode === 'dark'
+        ? 'var(--background-gradient-dark)'
+        : 'var(--background-gradient-light)'
+    );
+  }, [theme.palette.mode]);
+
+  const toggleButtons = () => {
+    setShowButtons(true);
+    setShowQuickSearch(false);
+    setActiveButton('buttons');
+  };
+
+  const toggleQuickSearch = () => {
+    setShowQuickSearch(true);
+    setShowButtons(false);
+    setActiveButton('search');
+  };
+
+  const handleButton1Click = () => {
+    console.log('Button 1 clicked');
+  };
+
+  const handleButton2Click = () => {
+    console.log('Button 2 clicked');
+  };
+
+
   return (
     <div className="animated-background">
       <div className="shape"></div>
@@ -50,44 +91,141 @@ export const HomePage = () => {
           padding: '25px',
         }}
       >
-        <Stack spacing={1}>
-          <Typography variant="h5" gutterBottom>
-            Είμαι..
-          </Typography>
-          <Button
-            component={Link}
-            to="/parent"
-            variant="contained"
-            className="button"
-            sx={{
-              width: '350px',
+      <Stack spacing={4}>
+      <Stack direction="row" spacing={1} justifyContent="center">
+      <Button 
+            onClick={toggleButtons} 
+            variant="contained" 
+            color="primary"
+            sx={{ 
+              height: '30px', 
+              width: '206px', 
               fontSize: '20px',
-              border: '2px solid',
+              color: isDarkMode ? '#fff' : '#000',
+              background: activeButton === 'buttons' 
+                ? (isDarkMode
+                  ? 'linear-gradient(to right, #5361ff, #11508e)'
+                  : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+                : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
+              '&:hover': {
+                background: activeButton === 'buttons'
+                  ? (isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+                  : undefined
+              }
             }}
           >
-            Γονεας/Κηδεμονας
+            Ειμαι
           </Button>
-          <Button
-            component={Link}
-            variant="contained"
-            to="/babysitter"
-            className="button"
-            sx={{
-              width: '350px',
+          <Button 
+            onClick={toggleQuickSearch} 
+            variant="contained" 
+            color="secondary"
+            sx={{ 
+              height: '30px', 
+              width: '206px', 
               fontSize: '20px',
-              border: '2px solid',
+              color: isDarkMode ? '#fff' : '#000',
+              background: activeButton === 'search'
+                ? (isDarkMode
+                  ? 'linear-gradient(to right, #5361ff, #11508e)'
+                  : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+                : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
+              '&:hover': {
+                background: activeButton === 'search'
+                  ? (isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+                  : undefined
+              }
             }}
           >
-            Επαγγελματιας/Νταντα
+            ΓΡΗΓΟΡΗ ΑΝΑΖΗΤΗΣΗ
           </Button>
-          <Button component={Link} to="/parent/profile">
-            GONIOS PROF
-          </Button>
-          <Button component={Link} to="/babysitter/profile">
-            NTANTA PROF
-          </Button>
-        </Stack>
+      </Stack>
 
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      {showButtons && (
+            <Stack spacing={1} alignItems="center">
+            <Button
+              component={Link}
+              to="/parent"
+              variant="outlined"
+              className="button"
+              sx={{
+                color: isDarkMode ? '#fff' : '#000',
+                width: '350px',
+                fontSize: '20px',
+                '&:hover': {
+                  background: isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
+                }
+              }}
+            >
+              Γονεας/Κηδεμονας
+            </Button>
+            <Button
+              component={Link}
+              variant="outlined"
+              to="/babysitter"
+              className="button"
+              sx={{
+                color: isDarkMode ? '#fff' : '#000',
+                width: '350px',
+                fontSize: '20px',
+                '&:hover': {
+                  background: isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
+                }
+              }}
+            >
+              Επαγγελματιας/Νταντα
+            </Button>
+            <Button
+              component={Link}
+              to="/parent/profile"
+              sx={{
+                width: '350px',
+                fontSize: '20px',
+                border: '2px solid',
+                '&:hover': {
+                  background: isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
+                }
+              }}
+            >
+              GONIOS PROF
+            </Button>
+            <Button
+              component={Link}
+              to="/babysitter/profile"
+              sx={{
+                width: '350px',
+                fontSize: '20px',
+                border: '2px solid',
+                '&:hover': {
+                  background: isDarkMode
+                    ? 'linear-gradient(to right, #5361ff, #11508e)'
+                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
+                }
+              }}
+            >
+              NTANTA PROF
+            </Button>
+          </Stack>
+      )}
+
+      {showQuickSearch && (
+        <Box sx={{ width: '350px' }}>
+          {showQuickSearch && <SearchBar showTypeOfUser />}
+        </Box>
+      )}
+    </Box>
+    </Stack>
         <Stack spacing={3}>
           <Stack direction="row" spacing={2}>
             <UserCard
@@ -209,15 +347,17 @@ export const HomePage = () => {
         <Button
           variant="contained"
           onClick={() => setActiveBox('box1')}
-          sx={{
-            fontSize: '16px',
-            marginRight: 2,
-            backgroundColor: activeBox === 'box1' ? '#aeb5ff' : '#3a3a3a',
-            color: activeBox === 'box1' ? 'white' : 'default',
-            border:
-              activeBox === 'box1'
-                ? '2px solid #5361ff'
-                : '2px solid transparent',
+          sx={{ 
+            height: '30px', 
+            width: '185px',  
+            fontSize: '20px',
+            marginRight: '5px',
+            color: isDarkMode ? '#fff' : '#000',
+            background: activeBox === 'box1'
+              ? (isDarkMode
+                ? 'linear-gradient(to right, #5361ff, #11508e)'
+                : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+              : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
           }}
         >
           ΓΟΝΕΙΣ
@@ -225,15 +365,23 @@ export const HomePage = () => {
         <Button
           variant="contained"
           onClick={() => setActiveBox('box2')}
-          sx={{
-            fontSize: '16px',
-            marginRight: 2,
-            backgroundColor: activeBox === 'box2' ? '#aeb5ff' : '#3a3a3a',
-            color: activeBox === 'box2' ? 'white' : 'default',
-            border:
-              activeBox === 'box2'
-                ? '2px solid #5361ff'
-                : '2px solid transparent',
+          sx={{ 
+            height: '30px', 
+            width: '185px', 
+            fontSize: '20px',
+            color: isDarkMode ? '#fff' : '#000',
+            background: activeBox === 'box2'
+              ? (isDarkMode
+                ? 'linear-gradient(to right, #5361ff, #11508e)'
+                : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+              : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
+            '&:hover': {
+              background: activeBox === 'box2'
+                ? (isDarkMode
+                  ? 'linear-gradient(to right, #5361ff, #11508e)'
+                  : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+                : undefined
+            }
           }}
         >
           ΕΠΑΓΓΕΛΜΑΤΙΕΣ
@@ -249,7 +397,7 @@ export const HomePage = () => {
           }}
         >
           <Stack direction="column" spacing={3} alignItems="center">
-            <Typography variant="h5" fontWeight="bold">
+            <Typography variant="h5" fontWeight="bold" align="center">
               ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΓΟΝΙΟΣ
             </Typography>
             <Card
@@ -257,13 +405,13 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
                 avatar={<AutoAwesomeIcon />}
                 title={
-                  <Typography variant="h6">
+                  <Typography variant="h6" align="center">
                     1. Βρίσκω τον επαγγελματία που μου ταιριάζει
                   </Typography>
                 }
@@ -274,13 +422,13 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
                 avatar={<EventAvailable />}
                 title={
-                  <Typography variant="h6">
+                  <Typography variant="h6" align="center">
                     2. Προγραμματίζω ραντεβού γνωριμίας με τον επαγγελματία
                   </Typography>
                 }
@@ -291,13 +439,13 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
                 avatar={<Task />}
                 title={
-                  <Typography variant="h6">
+                  <Typography variant="h6" align="center">
                     3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
                   </Typography>
                 }
@@ -316,7 +464,7 @@ export const HomePage = () => {
           }}
         >
           <Stack direction="column" spacing={3} alignItems="center">
-            <Typography variant="h5" fontWeight="bold">
+            <Typography variant="h5" fontWeight="bold" align="center">
               ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΕΠΑΓΓΕΛΜΑΤΙΑΣ
             </Typography>
             <Card
@@ -324,13 +472,13 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
                 avatar={<ManageSearch />}
                 title={
-                  <Typography variant="h6">
+                  <Typography variant="h6" align="center">
                     1. Βρίσκω την αγγελία που μου ταιριάζει
                   </Typography>
                 }
@@ -341,13 +489,13 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
                 avatar={<EventAvailable />}
                 title={
-                  <Typography variant="h6">
+                  <Typography variant="h6" align="center">
                     2. Προγραμματίζω ραντεβού γνωριμίας με τον γονέα/κηδεμονα
                   </Typography>
                 }
@@ -358,7 +506,7 @@ export const HomePage = () => {
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 1,
-                width: '270px',
+                width: '570px',
               }}
             >
               <CardHeader
@@ -371,6 +519,7 @@ export const HomePage = () => {
               />
             </Card>
           </Stack>
+
         </Box>
       )}
     </div>

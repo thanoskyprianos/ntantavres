@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../LoadingSpinner.tsx';
 import InfoIcon from '@mui/icons-material/Info';
 import {
+  ageValidation,
   emailValidation,
   passwordValidation,
 } from '../../util/authValidation.util.ts';
@@ -272,6 +273,10 @@ export const RegisterCard = () => {
       return;
     }
 
+    if (!ageValidation(birthdate)) {
+      return;
+    }
+
     try {
       await onRegister({ email, password });
       // TODO:
@@ -318,7 +323,15 @@ export const RegisterCard = () => {
           onChange={e => setBirthdate(e)}
           sx={{ width: '100%' }}
           slotProps={{
-            textField: { size: 'small', required: true },
+            textField: {
+              size: 'small',
+              required: true,
+              error: birthdate != null && !ageValidation(birthdate),
+              helperText:
+                birthdate != null && !ageValidation(birthdate)
+                  ? t('auth.birthdate')
+                  : '',
+            },
             actionBar: {
               actions: ['clear', 'accept'],
               sx: { button: { color: 'secondary.contrastText' } },

@@ -39,7 +39,8 @@
     "register": "REGISTER",
     "clear": "CLEAR",
     "passwordsNotMatch": "Passwords do not match",
-    "invalidEmail": "Email is invalid"
+    "invalidEmail": "Email is invalid",
+    "birthdate": "You should be at least 18"
   },
   "general": {
     "or": "or"

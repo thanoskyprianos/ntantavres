@@ -39,7 +39,8 @@
     "register": "ΕΓΓΡΑΦΗ",
     "clear": "ΚΑΘΑΡΙΣΜΑ",
     "passwordsNotMatch": "Οι κωδικοί δεν ταιριάζουν",
-    "invalidEmail": "Το email δεν είναι έγκυρο"
+    "invalidEmail": "Το email δεν είναι έγκυρο",
+    "birthdate": "Πρέπει να είστε τουλάχιστον 18"
   },
   "general": {
     "or": "ή"

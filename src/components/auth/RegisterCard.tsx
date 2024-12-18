@@ -1,10 +1,14 @@
 import {
-  Avatar,
   Button,
+  ClickAwayListener,
   IconButton,
   InputAdornment,
+  List,
+  ListItem,
   Paper,
   Stack,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
 import { TFunction } from 'i18next';
@@ -12,8 +16,18 @@ import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { isStrongPassword } from 'validator';
 import { DatePicker } from '@mui/x-date-pickers';
+import { useAuth } from '../../hooks/useAuth.hook.ts';
+import { useNavigate } from 'react-router-dom';
+import { LoadingSpinner } from '../LoadingSpinner.tsx';
+import InfoIcon from '@mui/icons-material/Info';
+import {
+  ageValidation,
+  emailValidation,
+  passwordValidation,
+} from '../../util/authValidation.util.ts';
+import { registerUser } from '../../services/user-details.service.ts';
+import { AvatarInput } from '../AvatarInput.tsx';
 
 interface NamesProps {
   t: TFunction;
@@ -21,6 +35,12 @@ interface NamesProps {
   setFirstName: Dispatch<string>;
   lastName: string;
   setLastName: Dispatch<string>;
+  disabled?: boolean;
+}
+
+interface PasswordTooltipListProps {
+  t: TFunction;
+  passwordValidation: Map<string, boolean>;
 }
 
 interface PasswordInputProps {
@@ -29,7 +49,8 @@ interface PasswordInputProps {
   setPassword: Dispatch<string>;
   showPassword: boolean;
   setShowPassword: Dispatch<SetStateAction<boolean>>;
-  isValidPassword: boolean;
+  disabled?: boolean;
+  passwordValidation: Map<string, boolean>;
 }
 
 interface ConfirmPasswordInputProps {
@@ -38,6 +59,7 @@ interface ConfirmPasswordInputProps {
   confirmPassword: string;
   setConfirmPassword: Dispatch<string>;
   passwordsMatch: boolean;
+  disabled?: boolean;
 }
 
 const Names = ({
@@ -46,6 +68,7 @@ const Names = ({
   setFirstName,
   lastName,
   setLastName,
+  disabled = false,
 }: NamesProps) => {
   return (
     <>
@@ -54,14 +77,42 @@ const Names = ({
         label={t('textField.firstName')}
         value={firstName}
         onChange={e => setFirstName(e.target.value)}
+        disabled={disabled}
       />
       <TextFieldSmall
         required
         label={t('textField.lastName')}
         value={lastName}
         onChange={e => setLastName(e.target.value)}
+        disabled={disabled}
       />
     </>
+  );
+};
+
+const PasswordTooltipList = ({
+  t,
+  passwordValidation,
+}: PasswordTooltipListProps) => {
+  return (
+    <List>
+      {Object.entries(t('tooltip.password', { returnObjects: true })).map(
+        ([name, value]) => (
+          <ListItem key={name} style={{ color: 'error.main' }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                textDecoration: passwordValidation.get(name)
+                  ? 'line-through'
+                  : 'none',
+              }}
+            >
+              {value}
+            </Typography>
+          </ListItem>
+        )
+      )}
+    </List>
   );
 };
 
@@ -71,32 +122,80 @@ const PasswordInput = ({
   setPassword,
   showPassword,
   setShowPassword,
-  isValidPassword,
+  disabled = false,
+  passwordValidation,
 }: PasswordInputProps) => {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
   return (
-    <TextFieldSmall
-      type={showPassword ? 'text' : 'password'}
-      label={t('textField.password')}
-      required
-      value={password}
-      onChange={e => setPassword(e.target.value)}
-      slotProps={{
-        input: {
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(prev => !prev)}
-                edge="end"
-              >
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        },
-      }}
-      error={!isValidPassword && password.length > 0}
-    />
-    // TODO: change how password is validated
+    <Stack direction="row" sx={{ placeItems: 'center', width: '100%' }}>
+      <TextFieldSmall
+        type={showPassword ? 'text' : 'password'}
+        label={t('textField.password')}
+        required
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(prev => !prev)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
+        error={
+          Array.from(passwordValidation.values()).includes(false) &&
+          password.length > 0
+        }
+        disabled={disabled}
+      />
+      <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
+        <Tooltip
+          title={
+            <PasswordTooltipList
+              t={t}
+              passwordValidation={passwordValidation}
+            />
+          }
+          open={tooltipOpen}
+          arrow
+          placement="left"
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -15],
+                  },
+                },
+              ],
+            },
+          }}
+        >
+          <IconButton
+            onClick={() => setTooltipOpen(tooltip => !tooltip)}
+            edge="end"
+          >
+            <InfoIcon
+              sx={{
+                color:
+                  Array.from(passwordValidation.values()).includes(false) &&
+                  password.length > 0
+                    ? 'error.main'
+                    : '',
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </ClickAwayListener>
+    </Stack>
   );
 };
 
@@ -106,6 +205,7 @@ const ConfirmPasswordInput = ({
   confirmPassword,
   setConfirmPassword,
   passwordsMatch,
+  disabled = false,
 }: ConfirmPasswordInputProps) => {
   return (
     <TextFieldSmall
@@ -122,12 +222,15 @@ const ConfirmPasswordInput = ({
           ? t('auth.passwordsNotMatch')
           : ''
       }
+      disabled={disabled}
     />
   );
 };
 
 export const RegisterCard = () => {
   const { t } = useTranslation();
+  const { user, onRegister, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -137,10 +240,12 @@ export const RegisterCard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const isValidPassword = isStrongPassword(password);
-  const passwordsMatch = password === confirmPassword;
+  const [avatar, setAvatar] = useState('');
 
-  console.log(birthdate);
+  const isValidEmail = emailValidation(email);
+
+  const passwordsMatch = password === confirmPassword;
+  const passwordValidationList = passwordValidation(password);
 
   const handleClear = () => {
     setFirstName('');
@@ -151,9 +256,59 @@ export const RegisterCard = () => {
     setConfirmPassword('');
   };
 
-  const handleRegister = () => {
-    if (!isValidPassword || !passwordsMatch) {
+  const handleRegister = async () => {
+    if (
+      !passwordsMatch ||
+      Array.from(passwordValidationList.values()).includes(false)
+    ) {
       return;
+    }
+
+    if (
+      !firstName ||
+      !lastName ||
+      !birthdate ||
+      !email ||
+      !password ||
+      !confirmPassword
+    ) {
+      return;
+    }
+
+    if (!ageValidation(birthdate)) {
+      return;
+    }
+
+    try {
+      await onRegister({ email, password });
+
+      if (!user) {
+        throw new Error(t('auth.registerError'));
+      }
+
+      try {
+        await registerUser(
+          user,
+          {
+            firstName,
+            lastName,
+            email,
+            role: 'PARENT',
+            birthdate,
+          },
+          avatar
+        );
+      } catch (err) {
+        console.log(err);
+      }
+
+      // TODO: show success on snackbar
+
+      // TODO: display user details on profile
+      navigate('/parent/profile');
+    } catch (err) {
+      // TODO: show error on snackbar
+      console.log(err);
     }
   };
 
@@ -163,6 +318,8 @@ export const RegisterCard = () => {
         width: '300px',
         borderRadius: '15px',
       }}
+      component="form"
+      onSubmit={e => e.preventDefault()}
     >
       <Stack
         spacing={2}
@@ -171,7 +328,15 @@ export const RegisterCard = () => {
           placeItems: 'center',
         }}
       >
-        <Avatar src="maria1.jpg" sx={{ height: '100px', width: '100px' }} />
+        <AvatarInput t={t} setAvatarExt={setAvatar}>
+          {firstName && lastName && (
+            <Typography variant="h3">
+              {firstName.charAt(0).toUpperCase() +
+                lastName.charAt(0).toUpperCase()}
+            </Typography>
+          )}
+        </AvatarInput>
+
         <Stack direction="row" spacing={1}>
           <Names
             t={t}
@@ -179,6 +344,7 @@ export const RegisterCard = () => {
             setFirstName={setFirstName}
             lastName={lastName}
             setLastName={setLastName}
+            disabled={isLoading}
           />
         </Stack>
         <DatePicker
@@ -188,12 +354,21 @@ export const RegisterCard = () => {
           onChange={e => setBirthdate(e)}
           sx={{ width: '100%' }}
           slotProps={{
-            textField: { size: 'small', required: true },
+            textField: {
+              size: 'small',
+              required: true,
+              error: birthdate != null && !ageValidation(birthdate),
+              helperText:
+                birthdate != null && !ageValidation(birthdate)
+                  ? t('auth.birthdate')
+                  : '',
+            },
             actionBar: {
               actions: ['clear', 'accept'],
               sx: { button: { color: 'secondary.contrastText' } },
             },
           }}
+          disabled={isLoading}
         />
         <TextFieldSmall
           type="email"
@@ -201,6 +376,11 @@ export const RegisterCard = () => {
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
+          disabled={isLoading}
+          error={email.length > 0 && !isValidEmail}
+          helperText={
+            email.length > 0 && !isValidEmail ? t('auth.invalidEmail') : ''
+          }
         />
         <PasswordInput
           t={t}
@@ -208,7 +388,8 @@ export const RegisterCard = () => {
           setPassword={setPassword}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
-          isValidPassword={isValidPassword}
+          disabled={isLoading}
+          passwordValidation={passwordValidationList}
         />
         <ConfirmPasswordInput
           t={t}
@@ -216,20 +397,38 @@ export const RegisterCard = () => {
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
           passwordsMatch={passwordsMatch}
+          disabled={isLoading}
         />
       </Stack>
 
       <Stack
         direction="row"
         spacing={2}
-        sx={{ padding: '0 15px 15px 15px', justifyContent: 'end' }}
+        sx={{
+          padding: '0 15px 15px 15px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <Button variant="text" onClick={handleClear}>
-          {t('auth.clear')}
-        </Button>
-        <Button variant="contained" onClick={handleRegister}>
-          {t('auth.register')}
-        </Button>
+        {isLoading ? (
+          <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+        ) : (
+          // dummy div to make space-between work
+          <div></div>
+        )}
+        <Stack direction="row" spacing={2}>
+          <Button variant="text" onClick={handleClear} disabled={isLoading}>
+            {t('auth.clear')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleRegister}
+            type="submit"
+            disabled={isLoading}
+          >
+            {t('auth.register')}
+          </Button>
+        </Stack>
       </Stack>
     </Paper>
   );

@@ -37,9 +37,24 @@
   "auth": {
     "login": "LOGIN",
     "register": "REGISTER",
-    "clear": "CLEAR"
+    "clear": "CLEAR",
+    "passwordsNotMatch": "Passwords do not match",
+    "invalidEmail": "Email is invalid",
+    "birthdate": "You should be at least 18",
+    "registerError": "Error while registering",
+    "avatarError": "Error while uploading avatar",
+    "avatarSize": "Must be < 1MB"
   },
   "general": {
     "or": "or"
+  },
+  "tooltip": {
+    "password": {
+      "length": "8-24 characters",
+      "uppercase": "1+ uppercase character(s)",
+      "lowercase": "1+ lowercase character(s)",
+      "number": "1+ digit(s)",
+      "symbol": "1+ symbol(s)"
+    }
   }
 }

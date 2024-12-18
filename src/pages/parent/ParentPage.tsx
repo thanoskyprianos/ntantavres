@@ -11,7 +11,7 @@ export const ParentPage = () => {
       <Typography variant="h4" gutterBottom>
         Εύρεση Νταντάς
       </Typography>
-      <SearchBar></SearchBar>
+      <SearchBar isParentPage />
 
     </Box>
   );

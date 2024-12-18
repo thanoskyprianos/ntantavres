@@ -37,9 +37,20 @@
   "auth": {
     "login": "ΣΥΝΔΕΣΗ",
     "register": "ΕΓΓΡΑΦΗ",
-    "clear": "ΚΑΘΑΡΙΣΜΑ"
+    "clear": "ΚΑΘΑΡΙΣΜΑ",
+    "passwordsNotMatch": "Οι κωδικοί δεν ταιριάζουν",
+    "invalidEmail": "Το email δεν είναι έγκυρο"
   },
   "general": {
     "or": "ή"
+  },
+  "tooltip": {
+    "password": {
+      "length": "8-24 χαρακτήρες",
+      "uppercase": "1+ κεφαλαίος/οι χαρακτήρας/ες",
+      "lowercase": "1+ μικρός/οί χαρακτήρας/ες",
+      "number": "1+ αριθμός/οι",
+      "symbol": "1+ σύμβολο/α"
+    }
   }
 }

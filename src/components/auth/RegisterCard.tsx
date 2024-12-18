@@ -27,6 +27,7 @@ import {
   emailValidation,
   passwordValidation,
 } from '../../util/authValidation.util.ts';
+import { registerUser } from '../../services/user-details.service.ts';
 
 interface NamesProps {
   t: TFunction;
@@ -229,7 +230,7 @@ const ConfirmPasswordInput = ({
 
 export const RegisterCard = () => {
   const { t } = useTranslation();
-  const { onRegister, isLoading } = useAuth();
+  const { user, onRegister, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState('');
@@ -239,6 +240,8 @@ export const RegisterCard = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const [avatar, setAvatar] = useState<File | null>(null);
 
   const isValidEmail = emailValidation(email);
 
@@ -279,9 +282,24 @@ export const RegisterCard = () => {
 
     try {
       await onRegister({ email, password });
-      // TODO:
-      //  * upload user details on firestore
-      //  * show success on snackbar
+
+      if (!user) {
+        throw new Error(t('auth.registerError'));
+      }
+
+      try {
+        await registerUser(
+          user,
+          { firstName, lastName, email, role: 'PARENT', birthdate },
+          avatar || undefined
+        );
+      } catch (err) {
+        console.log(err);
+      }
+
+      // TODO: show success on snackbar
+
+      // TODO: display user details on profile
       navigate('/parent/profile');
     } catch (err) {
       // TODO: show error on snackbar
@@ -298,6 +316,10 @@ export const RegisterCard = () => {
       component="form"
       onSubmit={e => e.preventDefault()}
     >
+      <input
+        type="file"
+        onChange={e => setAvatar(e.target.files ? e.target.files[0] : null)}
+      />
       <Stack
         spacing={2}
         sx={{

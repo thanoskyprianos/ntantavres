@@ -40,7 +40,9 @@
     "clear": "CLEAR",
     "passwordsNotMatch": "Passwords do not match",
     "invalidEmail": "Email is invalid",
-    "birthdate": "You should be at least 18"
+    "birthdate": "You should be at least 18",
+    "registerError": "Error while registering",
+    "avatarError": "Error while uploading avatar"
   },
   "general": {
     "or": "or"

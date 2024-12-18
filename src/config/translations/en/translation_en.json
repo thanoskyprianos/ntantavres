@@ -37,9 +37,20 @@
   "auth": {
     "login": "LOGIN",
     "register": "REGISTER",
-    "clear": "CLEAR"
+    "clear": "CLEAR",
+    "passwordsNotMatch": "Passwords do not match",
+    "invalidEmail": "Email is invalid"
   },
   "general": {
     "or": "or"
+  },
+  "tooltip": {
+    "password": {
+      "length": "8-24 characters",
+      "uppercase": "1+ uppercase character(s)",
+      "lowercase": "1+ lowercase character(s)",
+      "number": "1+ digit(s)",
+      "symbol": "1+ symbol(s)"
+    }
   }
 }

@@ -1,10 +1,15 @@
 import {
   Avatar,
   Button,
+  ClickAwayListener,
   IconButton,
   InputAdornment,
+  List,
+  ListItem,
   Paper,
   Stack,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
 import { TFunction } from 'i18next';
@@ -12,11 +17,15 @@ import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { isStrongPassword } from 'validator';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useAuth } from '../../hooks/useAuth.hook.ts';
 import { useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../LoadingSpinner.tsx';
+import InfoIcon from '@mui/icons-material/Info';
+import {
+  emailValidation,
+  passwordValidation,
+} from '../../util/authValidation.util.ts';
 
 interface NamesProps {
   t: TFunction;
@@ -27,14 +36,19 @@ interface NamesProps {
   disabled?: boolean;
 }
 
+interface PasswordTooltipListProps {
+  t: TFunction;
+  passwordValidation: Map<string, boolean>;
+}
+
 interface PasswordInputProps {
   t: TFunction;
   password: string;
   setPassword: Dispatch<string>;
   showPassword: boolean;
   setShowPassword: Dispatch<SetStateAction<boolean>>;
-  isValidPassword: boolean;
   disabled?: boolean;
+  passwordValidation: Map<string, boolean>;
 }
 
 interface ConfirmPasswordInputProps {
@@ -74,39 +88,112 @@ const Names = ({
   );
 };
 
+const PasswordTooltipList = ({
+  t,
+  passwordValidation,
+}: PasswordTooltipListProps) => {
+  return (
+    <List>
+      {Object.entries(t('tooltip.password', { returnObjects: true })).map(
+        ([name, value]) => (
+          <ListItem key={name} style={{ color: 'error.main' }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                textDecoration: passwordValidation.get(name)
+                  ? 'line-through'
+                  : 'none',
+              }}
+            >
+              {value}
+            </Typography>
+          </ListItem>
+        )
+      )}
+    </List>
+  );
+};
+
 const PasswordInput = ({
   t,
   password,
   setPassword,
   showPassword,
   setShowPassword,
-  isValidPassword,
   disabled = false,
+  passwordValidation,
 }: PasswordInputProps) => {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
   return (
-    <TextFieldSmall
-      type={showPassword ? 'text' : 'password'}
-      label={t('textField.password')}
-      required
-      value={password}
-      onChange={e => setPassword(e.target.value)}
-      slotProps={{
-        input: {
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(prev => !prev)}
-                edge="end"
-              >
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        },
-      }}
-      error={!isValidPassword && password.length > 0}
-      disabled={disabled}
-    />
+    <Stack direction="row" sx={{ placeItems: 'center', width: '100%' }}>
+      <TextFieldSmall
+        type={showPassword ? 'text' : 'password'}
+        label={t('textField.password')}
+        required
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(prev => !prev)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
+        error={
+          Array.from(passwordValidation.values()).includes(false) &&
+          password.length > 0
+        }
+        disabled={disabled}
+      />
+      <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
+        <Tooltip
+          title={
+            <PasswordTooltipList
+              t={t}
+              passwordValidation={passwordValidation}
+            />
+          }
+          open={tooltipOpen}
+          arrow
+          placement="left"
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -15],
+                  },
+                },
+              ],
+            },
+          }}
+        >
+          <IconButton
+            onClick={() => setTooltipOpen(tooltip => !tooltip)}
+            edge="end"
+          >
+            <InfoIcon
+              sx={{
+                color:
+                  Array.from(passwordValidation.values()).includes(false) &&
+                  password.length > 0
+                    ? 'error.main'
+                    : '',
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </ClickAwayListener>
+    </Stack>
     // TODO: change how password is validated
   );
 };
@@ -152,8 +239,10 @@ export const RegisterCard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const isValidPassword = isStrongPassword(password);
+  const isValidEmail = emailValidation(email);
+
   const passwordsMatch = password === confirmPassword;
+  const passwordValidationList = passwordValidation(password);
 
   const handleClear = () => {
     setFirstName('');
@@ -165,7 +254,10 @@ export const RegisterCard = () => {
   };
 
   const handleRegister = async () => {
-    if (!isValidPassword || !passwordsMatch) {
+    if (
+      !passwordsMatch ||
+      Array.from(passwordValidationList.values()).includes(false)
+    ) {
       return;
     }
 
@@ -183,7 +275,7 @@ export const RegisterCard = () => {
     try {
       await onRegister({ email, password });
       // TODO:
-      //  * upload user creds on firestore
+      //  * upload user details on firestore
       //  * show success on snackbar
       navigate('/parent/profile');
     } catch (err) {
@@ -241,6 +333,10 @@ export const RegisterCard = () => {
           value={email}
           onChange={e => setEmail(e.target.value)}
           disabled={isLoading}
+          error={email.length > 0 && !isValidEmail}
+          helperText={
+            email.length > 0 && !isValidEmail ? t('auth.invalidEmail') : ''
+          }
         />
         <PasswordInput
           t={t}
@@ -248,8 +344,8 @@ export const RegisterCard = () => {
           setPassword={setPassword}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
-          isValidPassword={isValidPassword}
           disabled={isLoading}
+          passwordValidation={passwordValidationList}
         />
         <ConfirmPasswordInput
           t={t}

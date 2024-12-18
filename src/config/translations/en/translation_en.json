@@ -42,7 +42,8 @@
     "invalidEmail": "Email is invalid",
     "birthdate": "You should be at least 18",
     "registerError": "Error while registering",
-    "avatarError": "Error while uploading avatar"
+    "avatarError": "Error while uploading avatar",
+    "avatarSize": "Must be < 1MB"
   },
   "general": {
     "or": "or"

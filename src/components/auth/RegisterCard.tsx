@@ -1,5 +1,7 @@
 import {
   Avatar,
+  Badge,
+  Box,
   Button,
   ClickAwayListener,
   IconButton,
@@ -14,7 +16,13 @@ import {
 import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Dispatch, SetStateAction, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useRef,
+  useState,
+} from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -28,6 +36,13 @@ import {
   passwordValidation,
 } from '../../util/authValidation.util.ts';
 import { registerUser } from '../../services/user-details.service.ts';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  base64Size,
+  ONE_MB,
+  toBase64,
+} from '../../util/imageManipulation.util.ts';
 
 interface NamesProps {
   t: TFunction;
@@ -228,6 +243,18 @@ const ConfirmPasswordInput = ({
   );
 };
 
+const badgeStyle = {
+  bgcolor: 'primary.light',
+  padding: '5px',
+  borderRadius: '50%',
+  display: 'flex',
+  placeItems: 'center',
+  cursor: 'pointer',
+  '&:hover': {
+    bgcolor: 'primary.main',
+  },
+};
+
 export const RegisterCard = () => {
   const { t } = useTranslation();
   const { user, onRegister, isLoading } = useAuth();
@@ -241,7 +268,9 @@ export const RegisterCard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const [avatar, setAvatar] = useState<File | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const [avatar, setAvatar] = useState('');
 
   const isValidEmail = emailValidation(email);
 
@@ -255,6 +284,20 @@ export const RegisterCard = () => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+  };
+
+  const handleImageChange = async (image?: File) => {
+    if (!image) {
+      return;
+    }
+
+    const b64 = await toBase64(image);
+    if (base64Size(b64) >= ONE_MB) {
+      // TODO: snackbar error
+      return;
+    }
+
+    setAvatar(b64);
   };
 
   const handleRegister = async () => {
@@ -290,8 +333,14 @@ export const RegisterCard = () => {
       try {
         await registerUser(
           user,
-          { firstName, lastName, email, role: 'PARENT', birthdate },
-          avatar || undefined
+          {
+            firstName,
+            lastName,
+            email,
+            role: 'PARENT',
+            birthdate,
+          },
+          avatar
         );
       } catch (err) {
         console.log(err);
@@ -318,7 +367,12 @@ export const RegisterCard = () => {
     >
       <input
         type="file"
-        onChange={e => setAvatar(e.target.files ? e.target.files[0] : null)}
+        accept="image/*"
+        onChange={e =>
+          e.target.files ? handleImageChange(e.target.files[0]) : {}
+        }
+        ref={imageInputRef}
+        style={{ display: 'none' }}
       />
       <Stack
         spacing={2}
@@ -327,7 +381,63 @@ export const RegisterCard = () => {
           placeItems: 'center',
         }}
       >
-        <Avatar src="maria1.jpg" sx={{ height: '100px', width: '100px' }} />
+        <Stack sx={{ alignItems: 'center' }} spacing={0.5}>
+          <Box>
+            <Badge
+              badgeContent={
+                <Box
+                  sx={badgeStyle}
+                  onClick={() =>
+                    imageInputRef.current && imageInputRef.current.click()
+                  }
+                >
+                  <EditIcon sx={{ color: 'primary.contrastText' }} />
+                </Box>
+              }
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              overlap="circular"
+            >
+              <Badge
+                badgeContent={
+                  avatar && (
+                    <Box sx={badgeStyle}>
+                      <DeleteIcon sx={{ color: 'primary.contrastText' }} />
+                    </Box>
+                  )
+                }
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                overlap="circular"
+                onClick={() => setAvatar('')}
+              >
+                <Avatar
+                  src={avatar}
+                  sx={{
+                    height: '100px',
+                    width: '100px',
+                    border: '3px solid',
+                    borderColor: 'primary.light',
+                  }}
+                  onLoad={(e: SyntheticEvent<HTMLImageElement, Event>) =>
+                    URL.revokeObjectURL((e.target as HTMLImageElement).src)
+                  }
+                >
+                  {firstName && lastName && (
+                    <Typography variant="h3">
+                      {firstName.charAt(0).toUpperCase() +
+                        lastName.charAt(0).toUpperCase()}
+                    </Typography>
+                  )}
+                </Avatar>
+              </Badge>
+            </Badge>
+          </Box>
+          {!avatar && (
+            <Typography variant="caption" sx={{ color: 'primary.light' }}>
+              {t('auth.avatarSize')}
+            </Typography>
+          )}
+        </Stack>
+
         <Stack direction="row" spacing={1}>
           <Names
             t={t}

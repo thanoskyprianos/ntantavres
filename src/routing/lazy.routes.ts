@@ -59,3 +59,7 @@ export const EditActiveCollab = lazyRoute(
   '../pages/parent/EditActiveCollab.tsx',
   'EditActiveCollab'
 );
+export const PaymentPage = lazyRoute(
+  '../pages/parent/PaymentPage.tsx',
+  'PaymentPage'
+);

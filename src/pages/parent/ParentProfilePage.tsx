@@ -21,7 +21,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AddCircleOutline, Delete, History as HistoryIcon } from '@mui/icons-material';
+import { AddCircleOutline, Delete, History as HistoryIcon, Payment } from '@mui/icons-material';
 import { UserCard } from '../../components/UserCard';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -151,6 +151,19 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               }}
             >
               ΙΣΤΟΡΙΚΟ
+            </Button>
+            <Button
+              component={Link}
+              to='/parent/paymentPage'
+              variant="contained"
+              className="interested-button"
+              startIcon={<Payment />}
+              sx={{
+                width: '330px',
+                height: '30px',
+              }}
+            >
+              ΠΛΗΡΩΜΗ
             </Button>
           </Box>
         </Stack>

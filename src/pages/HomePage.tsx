@@ -83,6 +83,9 @@ export const HomePage = () => {
     <div className="animated-background">
       <div className="shape"></div>
       <div className="shape-reversed"></div>
+      <Typography variant='h1' align='center'>Ntantavres</Typography>
+      <Typography variant='h4' align='center'>Φροντίδα παιδιών έως και 2 ετών</Typography>
+      
       <Stack
         direction="row"
         sx={{
@@ -91,6 +94,7 @@ export const HomePage = () => {
           padding: '25px',
         }}
       >
+
       <Stack spacing={4}>
       <Stack direction="row" spacing={1} justifyContent="center">
       <Button 
@@ -99,7 +103,7 @@ export const HomePage = () => {
             color="primary"
             sx={{ 
               height: '30px', 
-              width: '206px', 
+              width: '249px', 
               fontSize: '20px',
               color: isDarkMode ? '#fff' : '#000',
               background: activeButton === 'buttons' 
@@ -124,7 +128,7 @@ export const HomePage = () => {
             color="secondary"
             sx={{ 
               height: '30px', 
-              width: '206px', 
+              width: '249px', 
               fontSize: '20px',
               color: isDarkMode ? '#fff' : '#000',
               background: activeButton === 'search'
@@ -225,6 +229,7 @@ export const HomePage = () => {
         </Box>
       )}
     </Box>
+
     </Stack>
         <Stack spacing={3}>
           <Stack direction="row" spacing={2}>
@@ -301,6 +306,7 @@ export const HomePage = () => {
           </Button>
         </Stack>
       </Stack>
+
 
       <Box
         ref={ref}

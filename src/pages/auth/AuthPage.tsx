@@ -1,7 +1,7 @@
 import { Divider, Stack, Typography } from '@mui/material';
-import { RegisterCard } from '../../components/auth/RegisterCard.tsx';
-import { useDeviceDetect } from '../../hooks/useDeviceDetect.hook.ts';
-import { LoginCard } from '../../components/auth/LoginCard.tsx';
+import { RegisterCard } from '@components/auth/RegisterCard.tsx';
+import { useDeviceDetect } from '@hooks/useDeviceDetect.hook';
+import { LoginCard } from '@components/auth/LoginCard';
 import { useTranslation } from 'react-i18next';
 
 export const AuthPage = () => {

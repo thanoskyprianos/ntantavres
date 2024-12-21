@@ -9,6 +9,7 @@ import {
   ONE_MB,
   toBase64,
 } from '../util/imageManipulation.util.ts';
+import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 
 const badgeStyle = {
   bgcolor: 'primary.light',
@@ -33,6 +34,8 @@ export const AvatarInput = ({
   setAvatarExt,
   children,
 }: AvatarInputProps) => {
+  const dispatch = useSnackbarContext();
+
   const [avatar, setAvatar] = useState('');
 
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +47,17 @@ export const AvatarInput = ({
 
     const b64 = await toBase64(image);
     if (base64Size(b64) >= ONE_MB) {
-      // TODO: snackbar error
+      dispatch!({
+        type: 'warning',
+        payload: { message: t('auth.avatarSizeExt') },
+      });
+
+      // clear file input
+      if (imageInputRef.current) {
+        imageInputRef.current.type = 'text';
+        imageInputRef.current.type = 'file';
+      }
+
       return;
     }
 

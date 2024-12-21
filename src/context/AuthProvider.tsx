@@ -1,4 +1,10 @@
-import { useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -6,16 +12,26 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
-import { auth } from '../config/firebase.ts';
-import { Credentials } from '../types/Credentials.ts';
+import { Credentials } from '@/types/Credentials.ts';
+import { auth } from '@config/firebase.ts';
 import { useTranslation } from 'react-i18next';
 
-export const useAuth = () => {
+export interface AuthProps {
+  user: User | null;
+  onLogIn: ({ email, password }: Credentials) => Promise<void>;
+  onLogOut: () => void;
+  onRegister: ({ email, password }: Credentials) => Promise<void>;
+  isLoading: boolean;
+}
+
+const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    setIsLoading(true);
+
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user !== null) {
         setUser(user);
@@ -74,5 +90,14 @@ export const useAuth = () => {
     }
   };
 
-  return { user, onLogIn, onLogOut, onRegister, isLoading };
+  return { user, onLogIn, onLogOut, onRegister, isLoading } as AuthProps;
+};
+
+const AuthContext = createContext({} as AuthProps);
+export const useAuthContext = () => useContext(AuthContext);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const auth = useAuth();
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };

@@ -1,49 +1,46 @@
 import {
-  useTheme,
-  Avatar,
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
-  Divider,
-  Stack,
-  Typography,
-  Box,
   Dialog,
   DialogActions,
-  DialogTitle,
   DialogContent,
-  DialogContentText
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { AddCircleOutline, Delete, History as HistoryIcon, Payment } from '@mui/icons-material';
-import { UserCard } from '../../components/UserCard';
+import {
+  AddCircleOutline,
+  History as HistoryIcon,
+  Payment,
+} from '@mui/icons-material';
+import { UserCard } from '@components/UserCard.tsx';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserDetails } from '@/types/UserDetails.ts';
 
-interface profileParent {
-  name: string;
-  location: string;
-  photo: string;
-  add: string;
-  email: string;
-  phoneNumber: string;
-}
+// interface profileParent {
+//   name: string;
+//   location: string;
+//   photo: string;
+//   add: string;
+//   email: string;
+//   phoneNumber: string;
+// }
 
-export const ParentProfilePage: React.FC<profileParent> = ({
-  name = "Athanasios Kyprianos",
-  location = "Petroupoli",
-  photo = "Young_Vito.webp",
-  add = "Mylos Club",
-  email = "magicthanos@gmail.com",
-  phoneNumber = "6946789226"
-}) => {
-
+export const ParentProfilePage = ({
+  firstName,
+  lastName,
+  email,
+}: UserDetails) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -56,16 +53,20 @@ export const ParentProfilePage: React.FC<profileParent> = ({
 
   return (
     <div>
-      <Stack direction="column" spacing={3}
+      <Stack
+        direction="column"
+        spacing={3}
         sx={{
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <Stack direction="row" spacing={2}
+        <Stack
+          direction="row"
+          spacing={2}
           sx={{
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Box
@@ -74,69 +75,70 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               flexDirection: 'row',
               alignItems: 'center',
               gap: 0.5,
-              marginTop: 3
-            }}>
-            <Avatar
-              src={photo}
-              sx={{
-                width: 100,
-                height: 100,
-                border: '2px solid',
-                borderColor: 'primary.main'
-              }}
-            />
+              marginTop: 3,
+            }}
+          >
+            {/*<Avatar*/}
+            {/*  src={photo}*/}
+            {/*  sx={{*/}
+            {/*    width: 100,*/}
+            {/*    height: 100,*/}
+            {/*    border: '2px solid',*/}
+            {/*    borderColor: 'primary.main',*/}
+            {/*  }}*/}
+            {/*/>*/}
             <div style={{ marginLeft: '20px' }}>
-              <Typography variant='h5'>
-                {name}
+              <Typography variant="h5">
+                {firstName} {lastName}
               </Typography>
-              <Typography sx={{ fontSize: '20px' }}>
-                {location}
-              </Typography>
+              {/*<Typography sx={{ fontSize: '20px' }}>{location}</Typography>*/}
             </div>
           </Box>
 
-          <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 0.5,
-            marginTop: 3
-          }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 0.5,
+              marginTop: 3,
+            }}
+          >
             <Button
               component={Link}
-              to='/parent/scheduledMeetings'
+              to="/parent/scheduledMeetings"
               variant="contained"
               className="interested-button"
               startIcon={<CalendarMonthIcon />}
               sx={{
                 width: '330px',
-                height: '30px'
+                height: '30px',
               }}
             >
               ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ ΓΝΩΡΙΜΙΑΣ
             </Button>
             <Button
               component={Link}
-              to='/parent/activeCollabs'
+              to="/parent/activeCollabs"
               variant="contained"
               className="interested-button"
               startIcon={<ChecklistIcon />}
               sx={{
                 width: '330px',
-                height: '30px'
+                height: '30px',
               }}
             >
               ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ
             </Button>
             <Button
               component={Link}
-              to='/parent/tempRequest'
+              to="/parent/tempRequest"
               variant="contained"
               className="interested-button"
-              startIcon={<ContactPageIcon/>}
+              startIcon={<ContactPageIcon />}
               sx={{
                 width: '330px',
-                height: '30px'
+                height: '30px',
               }}
             >
               ΠΡΟΣΩΡΙΝΕΣ ΑΙΤΗΣΕΙΣ ΠΡΟΣ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
@@ -154,7 +156,7 @@ export const ParentProfilePage: React.FC<profileParent> = ({
             </Button>
             <Button
               component={Link}
-              to='/parent/paymentPage'
+              to="/parent/paymentPage"
               variant="contained"
               className="interested-button"
               startIcon={<Payment />}
@@ -168,34 +170,36 @@ export const ParentProfilePage: React.FC<profileParent> = ({
           </Box>
         </Stack>
 
-        <Stack direction="row" spacing={2}
+        <Stack
+          direction="row"
+          spacing={2}
           sx={{
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          <Card className="info-container" variant='outlined'
+          <Card
+            className="info-container"
+            variant="outlined"
             sx={{
               width: '370px',
-              maxHeight: '380px'
+              maxHeight: '380px',
             }}
           >
-            <CardHeader
-              title="ΠΛΗΡΟΦΟΡΙΕΣ"
-            />
+            <CardHeader title="ΠΛΗΡΟΦΟΡΙΕΣ" />
             <CardContent>
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Διεύθυνση κατοικίας:
               </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {add}
-              </Typography>
+              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
+              {/*  {add}*/}
+              {/*</Typography>*/}
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Τηλέφωνο Επικοινωνίας:
               </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {phoneNumber}
-              </Typography>
+              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
+              {/*  {phoneNumber}*/}
+              {/*</Typography>*/}
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Ηλεκτρονική Διεύθυνση:
               </Typography>
@@ -204,23 +208,33 @@ export const ParentProfilePage: React.FC<profileParent> = ({
               </Typography>
             </CardContent>
 
-              <CardActions>
-                <Button
-                  component={Link}
-                  to='/parent/editInfo'
-                  className="edit-button"
-                  startIcon={<EditIcon />}
-                  sx={{color: 'secondary.contrastText'}}
-                >
-                  Επεξεργασία
-                </Button>
-              </CardActions>
-            </Card>
+            <CardActions>
+              <Button
+                component={Link}
+                to="/parent/editInfo"
+                className="edit-button"
+                startIcon={<EditIcon />}
+                sx={{ color: 'secondary.contrastText' }}
+              >
+                Επεξεργασία
+              </Button>
+            </CardActions>
+          </Card>
 
           <Box sx={{ padding: 0 }}>
-            <Card className='job-posting' variant='outlined' sx={{ width: 320 }}>
+            <Card
+              className="job-posting"
+              variant="outlined"
+              sx={{ width: 320 }}
+            >
               <CardHeader title="ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ" />
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 <UserCard
                   name="Athanasios"
                   description="Looking for a babysitter"
@@ -235,32 +249,44 @@ export const ParentProfilePage: React.FC<profileParent> = ({
                 </UserCard>
               </Box>
               <CardActions>
-                <Button 
-                  component={Link} to="/parent/createORedit"
-                  className="edit-button" startIcon={<EditIcon />} sx={{ color: 'secondary.contrastText' }}>
+                <Button
+                  component={Link}
+                  to="/parent/createORedit"
+                  className="edit-button"
+                  startIcon={<EditIcon />}
+                  sx={{ color: 'secondary.contrastText' }}
+                >
                   Επεξεργασία
                 </Button>
-                <Button className="edit-button" color="success" startIcon={<AddCircleOutline />} onClick={handleClickOpen}>
+                <Button
+                  className="edit-button"
+                  color="success"
+                  startIcon={<AddCircleOutline />}
+                  onClick={handleClickOpen}
+                >
                   Δημιουργία Αγγελίας
                 </Button>
-        </CardActions>
-      </Card>
+              </CardActions>
+            </Card>
 
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Δημιουργία Αγγελίας</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Προσοχή η προηγούμενη σας αγγελία θα διαγραφεί.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} 
-            component={Link} to="/parent/createORedit"
-            sx={{color:"secondary.contrastText"}}>
-              Εντάξει
-            </Button>
-          </DialogActions>
-        </Dialog>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Δημιουργία Αγγελίας</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Προσοχή η προηγούμενη σας αγγελία θα διαγραφεί.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleClose}
+                  component={Link}
+                  to="/parent/createORedit"
+                  sx={{ color: 'secondary.contrastText' }}
+                >
+                  Εντάξει
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
         </Stack>
       </Stack>

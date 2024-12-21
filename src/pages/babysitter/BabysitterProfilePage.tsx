@@ -1,7 +1,4 @@
-import React from 'react';
 import {
-  useTheme,
-  Avatar,
   Box,
   Button,
   Card,
@@ -10,7 +7,6 @@ import {
   CardHeader,
   Stack,
   Typography,
-  TextField
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -19,38 +15,32 @@ import HistoryIcon from '@mui/icons-material/History';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import EuroIcon from '@mui/icons-material/Euro';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { MonthCalendar } from '@mui/x-date-pickers/MonthCalendar';
 import Rating from '@mui/material/Rating';
 import { Link } from 'react-router-dom';
 import { BabysitterCalendar } from './BabysitterCalendar';
+import { UserDetails } from '@/types/UserDetails.ts';
 
-interface profileBabysitter {
-  name: string;
-  location: string;
-  photo: string;
-  add: string;
-  email: string;
-  phoneNumber: string;
-  age: string;
-  reviews: string;
-}
+// interface profileBabysitter {
+//   name: string;
+//   location: string;
+//   photo: string;
+//   add: string;
+//   email: string;
+//   phoneNumber: string;
+//   age: string;
+//   reviews: string;
+// }
 
-export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
-  name = 'Katerina Zerva',
-  location = 'Galatsi',
-  photo = 'maria1.jpg',
-  add = 'Αρχιμήδους 2',
-  email = 'katerinazerva@gmail.com',
-  phoneNumber = '6912345678',
-  reviews = '25',
-}) => {
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
+export const BabysitterProfilePage = ({
+  firstName,
+  lastName,
+  email,
+}: UserDetails) => {
+  // const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
+  // const handleDateChange = (date: Date | null) => {
+  //   setSelectedDate(date);
+  // };
 
   return (
     <div>
@@ -79,18 +69,20 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
               marginTop: 3,
             }}
           >
-            <Avatar
-              src={photo}
-              sx={{
-                width: 100,
-                height: 100,
-                border: '2px solid',
-                borderColor: 'primary.main',
-              }}
-            />
+            {/*<Avatar*/}
+            {/*  src={photo}*/}
+            {/*  sx={{*/}
+            {/*    width: 100,*/}
+            {/*    height: 100,*/}
+            {/*    border: '2px solid',*/}
+            {/*    borderColor: 'primary.main',*/}
+            {/*  }}*/}
+            {/*/>*/}
             <div style={{ marginLeft: '20px' }}>
-              <Typography variant="h5">{name}</Typography>
-              <Typography sx={{ fontSize: '20px' }}>{location}</Typography>
+              <Typography variant="h5">
+                {firstName} {lastName}
+              </Typography>
+              {/*<Typography sx={{ fontSize: '20px' }}>{location}</Typography>*/}
               <Stack
                 direction="column"
                 spacing={0}
@@ -98,9 +90,9 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
                   alignItems: 'center',
                 }}
               >
-                <Button component={Link} to='/ratings'>
-                <Rating value={4} readOnly size="small" />
-                ({reviews})
+                <Button component={Link} to="/ratings">
+                  <Rating value={4} readOnly size="small" />
+                  {/*({reviews})*/}
                 </Button>
               </Stack>
             </div>
@@ -205,15 +197,15 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Διεύθυνση κατοικίας:
               </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {add}
-              </Typography>
+              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
+              {/*  {add}*/}
+              {/*</Typography>*/}
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Τηλέφωνο Επικοινωνίας:
               </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {phoneNumber}
-              </Typography>
+              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
+              {/*  {phoneNumber}*/}
+              {/*</Typography>*/}
               <Typography variant="h6" sx={{ color: 'text.main' }}>
                 Ηλεκτρονική Διεύθυνση:
               </Typography>
@@ -245,8 +237,10 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
             </CardContent>
 
             <CardActions>
-              <Button className="edit-button" startIcon={<EditIcon />}
-                sx={{color: 'secondary.contrastText'}}
+              <Button
+                className="edit-button"
+                startIcon={<EditIcon />}
+                sx={{ color: 'secondary.contrastText' }}
               >
                 Επεξεργασία
               </Button>
@@ -254,7 +248,6 @@ export const BabysitterProfilePage: React.FC<profileBabysitter> = ({
           </Card>
 
           <BabysitterCalendar></BabysitterCalendar>
-
         </Stack>
       </Stack>
     </div>

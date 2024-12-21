@@ -16,6 +16,7 @@ export const LoginCard = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLogginIn] = useState(false);
 
   const handleClear = () => {
     setEmail('');
@@ -28,13 +29,14 @@ export const LoginCard = () => {
     }
 
     try {
-      await onLogIn({ email, password });
+      setIsLogginIn(true);
+      const user = await onLogIn({ email, password });
 
       dispatch!({
         type: 'success',
         payload: { message: t('auth.successfulLogin') },
       });
-      navigate(location?.state?.from || '/parent/profile');
+      navigate(location?.state?.from || `/profile/${user.uid}`);
     } catch (err) {
       if (!(err instanceof Error)) {
         throw err;
@@ -42,6 +44,8 @@ export const LoginCard = () => {
 
       dispatch!({ type: 'error', payload: { message: err.message } });
       handleClear();
+    } finally {
+      setIsLogginIn(false);
     }
   };
 
@@ -61,7 +65,7 @@ export const LoginCard = () => {
           value={email}
           onChange={e => setEmail(e.target.value)}
           type="email"
-          disabled={isLoading}
+          disabled={isLoading || isLoggingIn}
         />
         <TextFieldSmall
           required
@@ -69,27 +73,31 @@ export const LoginCard = () => {
           value={password}
           onChange={e => setPassword(e.target.value)}
           type="password"
-          disabled={isLoading}
+          disabled={isLoading || isLoggingIn}
         />
         <Stack
           direction="row"
           spacing={2}
           sx={{ justifyContent: 'space-between', alignItems: 'center' }}
         >
-          {isLoading ? (
+          {isLoggingIn ? (
             <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
           ) : (
             // dummy div to make space-between work
             <div></div>
           )}
           <Stack direction="row" spacing={2}>
-            <Button variant="text" onClick={handleClear} disabled={isLoading}>
+            <Button
+              variant="text"
+              onClick={handleClear}
+              disabled={isLoading || isLoggingIn}
+            >
               {t('auth.clear')}
             </Button>
             <Button
               variant="contained"
               onClick={handleLogin}
-              disabled={isLoading}
+              disabled={isLoading || isLoggingIn}
               type="submit"
             >
               {t('auth.login')}

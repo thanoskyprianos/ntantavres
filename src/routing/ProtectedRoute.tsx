@@ -3,6 +3,7 @@ import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 export const ProtectedRoute = () => {
   const { user, isLoading } = useAuthContext();
@@ -10,14 +11,17 @@ export const ProtectedRoute = () => {
   const dispatch = useSnackbarContext();
   const { t } = useTranslation();
 
-  if (!user) {
-    if (isLoading) {
-      return <LoadingSpinner />;
-    } else {
+  useEffect(() => {
+    if (!user && !isLoading) {
       dispatch!({ type: 'info', payload: { message: t('auth.loginFirst') } });
-      return <Navigate to={'auth'} state={{ from: location }} />;
     }
-  } else {
-    return <Outlet />;
+  }, [isLoading, user, dispatch, t]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  } else if (!user) {
+    return <Navigate to={'auth'} state={{ from: location }} />;
   }
+
+  return <Outlet />;
 };

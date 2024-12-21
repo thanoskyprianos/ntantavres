@@ -15,6 +15,8 @@ import {
 import { Credentials } from '@/types/Credentials.ts';
 import { auth } from '@config/firebase.ts';
 import { useTranslation } from 'react-i18next';
+import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export interface AuthProps {
   user: User | null;
@@ -27,15 +29,30 @@ export interface AuthProps {
 const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const dispatch = useSnackbarContext();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
 
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (user !== null) {
-        setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, localUser => {
+      if (localUser !== null) {
+        setUser(localUser);
       } else {
+        if (user !== null) {
+          dispatch!({
+            type: 'warning',
+            payload: { message: t('auth.expiredOut') },
+          });
+
+          setUser(null);
+          setIsLoading(false);
+
+          navigate('/', { state: { from: location } });
+        }
+
         setUser(null);
       }
 

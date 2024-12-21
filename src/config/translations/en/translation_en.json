@@ -48,6 +48,8 @@
     "loginFirst": "You need to login to access this page",
     "successfulLogin": "Successful login!",
     "successfulRegister": "Successful register!",
+    "loggedOut": "You have been logged out",
+    "expiredOut": "Your session has expired. Please login again",
     "isBabysitter": "I want to babysit",
     "babysitterDialog": {
       "title": "Submit babysitter documents",

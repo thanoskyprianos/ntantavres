@@ -1,6 +1,9 @@
 import {
   Button,
   ClickAwayListener,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   IconButton,
   InputAdornment,
   List,
@@ -16,18 +19,19 @@ import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { DatePicker } from '@mui/x-date-pickers';
-import { useAuth } from '../../hooks/useAuth.hook.ts';
-import { useNavigate } from 'react-router-dom';
+import { ClearIcon, DatePicker } from '@mui/x-date-pickers';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../LoadingSpinner.tsx';
 import InfoIcon from '@mui/icons-material/Info';
 import {
   ageValidation,
   emailValidation,
   passwordValidation,
-} from '../../util/authValidation.util.ts';
-import { registerUser } from '../../services/user-details.service.ts';
+} from '@util/authValidation.util.ts';
 import { AvatarInput } from '../AvatarInput.tsx';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
+import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
+import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
 
 interface NamesProps {
   t: TFunction;
@@ -60,6 +64,12 @@ interface ConfirmPasswordInputProps {
   setConfirmPassword: Dispatch<string>;
   passwordsMatch: boolean;
   disabled?: boolean;
+}
+
+interface BabysitterDocumentsProps {
+  t: TFunction;
+  isDialogOpen: boolean;
+  setIsDialogOpen: Dispatch<boolean>;
 }
 
 const Names = ({
@@ -227,10 +237,52 @@ const ConfirmPasswordInput = ({
   );
 };
 
+const BabysitterDocuments = ({
+  t,
+  isDialogOpen,
+  setIsDialogOpen,
+}: BabysitterDocumentsProps) => {
+  const handleOnSubmit = () => {
+    setIsDialogOpen(false);
+  };
+
+  return (
+    <Dialog
+      open={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
+      maxWidth="xs"
+      fullWidth={true}
+    >
+      <DialogTitle>
+        <Stack
+          direction="row"
+          sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          {t('auth.babysitterDialog.title')}
+          <IconButton edge="end" onClick={() => setIsDialogOpen(false)}>
+            <ClearIcon />
+          </IconButton>
+        </Stack>
+      </DialogTitle>
+      <DialogActions>
+        <Button variant="text" sx={{ color: 'primary.light' }}>
+          {t('auth.clear')}
+        </Button>
+        <Button variant="contained" onClick={handleOnSubmit}>
+          {t('auth.babysitterDialog.submit')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 export const RegisterCard = () => {
   const { t } = useTranslation();
-  const { user, onRegister, isLoading } = useAuth();
+  const { onRegister, isLoading } = useAuthContext();
+  const dispatch = useSnackbarContext();
+  const hook = useUserDetails();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -239,8 +291,10 @@ export const RegisterCard = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
   const [avatar, setAvatar] = useState('');
+  // const [optBabysitter, setOptBabysitter] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const isValidEmail = emailValidation(email);
 
@@ -255,6 +309,10 @@ export const RegisterCard = () => {
     setPassword('');
     setConfirmPassword('');
   };
+
+  // const handleActiveCheckbox = () => {
+  //   setDialogOpen(true);
+  // };
 
   const handleRegister = async () => {
     if (
@@ -280,16 +338,18 @@ export const RegisterCard = () => {
     }
 
     try {
-      await onRegister({ email, password });
+      setIsRegistering(true);
+      const user = await onRegister({ email, password });
 
       if (!user) {
         throw new Error(t('auth.registerError'));
       }
 
       try {
-        await registerUser(
+        await hook!.registerUser(
           user,
           {
+            uid: user.uid,
             firstName,
             lastName,
             email,
@@ -299,16 +359,30 @@ export const RegisterCard = () => {
           avatar
         );
       } catch (err) {
-        console.log(err);
+        // TODO: snackbar
+        console.error(err);
+      } finally {
+        setIsRegistering(false);
       }
 
-      // TODO: show success on snackbar
+      dispatch!({
+        type: 'success',
+        payload: { message: t('auth.successfulRegister') },
+      });
 
       // TODO: display user details on profile
-      navigate('/parent/profile');
+      navigate(location?.state?.from || '/parent/profile');
     } catch (err) {
-      // TODO: show error on snackbar
-      console.log(err);
+      if (!(err instanceof Error)) {
+        throw err;
+      }
+
+      dispatch!({
+        type: 'error',
+        payload: { message: err.message },
+      });
+
+      setEmail('');
     }
   };
 
@@ -344,7 +418,7 @@ export const RegisterCard = () => {
             setFirstName={setFirstName}
             lastName={lastName}
             setLastName={setLastName}
-            disabled={isLoading}
+            disabled={isLoading || isRegistering}
           />
         </Stack>
         <DatePicker
@@ -368,7 +442,7 @@ export const RegisterCard = () => {
               sx: { button: { color: 'secondary.contrastText' } },
             },
           }}
-          disabled={isLoading}
+          disabled={isLoading || isRegistering}
         />
         <TextFieldSmall
           type="email"
@@ -376,7 +450,7 @@ export const RegisterCard = () => {
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
-          disabled={isLoading}
+          disabled={isLoading || isRegistering}
           error={email.length > 0 && !isValidEmail}
           helperText={
             email.length > 0 && !isValidEmail ? t('auth.invalidEmail') : ''
@@ -388,7 +462,7 @@ export const RegisterCard = () => {
           setPassword={setPassword}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
-          disabled={isLoading}
+          disabled={isLoading || isRegistering}
           passwordValidation={passwordValidationList}
         />
         <ConfirmPasswordInput
@@ -397,8 +471,21 @@ export const RegisterCard = () => {
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
           passwordsMatch={passwordsMatch}
-          disabled={isLoading}
+          disabled={isLoading || isRegistering}
         />
+        {/*<FormControlLabel*/}
+        {/*  control={*/}
+        {/*    <Checkbox*/}
+        {/*      edge={'start'}*/}
+        {/*      onClick={handleActiveCheckbox}*/}
+        {/*      checked={optBabysitter}*/}
+        {/*      color="success"*/}
+        {/*      size="small"*/}
+        {/*    />*/}
+        {/*  }*/}
+        {/*  label={t('auth.isBabysitter')}*/}
+        {/*  sx={{ alignSelf: 'start' }}*/}
+        {/*/>*/}
       </Stack>
 
       <Stack
@@ -410,26 +497,35 @@ export const RegisterCard = () => {
           alignItems: 'center',
         }}
       >
-        {isLoading ? (
+        {isRegistering ? (
           <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
         ) : (
           // dummy div to make space-between work
           <div></div>
         )}
         <Stack direction="row" spacing={2}>
-          <Button variant="text" onClick={handleClear} disabled={isLoading}>
+          <Button
+            variant="text"
+            onClick={handleClear}
+            disabled={isLoading || isRegistering}
+          >
             {t('auth.clear')}
           </Button>
           <Button
             variant="contained"
             onClick={handleRegister}
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isRegistering}
           >
             {t('auth.register')}
           </Button>
         </Stack>
       </Stack>
+      <BabysitterDocuments
+        t={t}
+        isDialogOpen={dialogOpen}
+        setIsDialogOpen={setDialogOpen}
+      />
     </Paper>
   );
 };

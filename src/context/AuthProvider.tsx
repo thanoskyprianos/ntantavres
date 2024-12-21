@@ -18,9 +18,9 @@ import { useTranslation } from 'react-i18next';
 
 export interface AuthProps {
   user: User | null;
-  onLogIn: ({ email, password }: Credentials) => Promise<void>;
+  onLogIn: ({ email, password }: Credentials) => Promise<User>;
   onLogOut: () => void;
-  onRegister: ({ email, password }: Credentials) => Promise<void>;
+  onRegister: ({ email, password }: Credentials) => Promise<User>;
   isLoading: boolean;
 }
 
@@ -46,7 +46,7 @@ const useAuth = () => {
       unsubscribe();
       setIsLoading(false);
     };
-  }, []);
+  }, [user]);
 
   const onLogIn = async ({ email, password }: Credentials) => {
     setIsLoading(true);
@@ -57,6 +57,7 @@ const useAuth = () => {
         password
       );
       setUser(credentials.user);
+      return credentials.user;
     } catch {
       throw new Error(t('error.invalidCredentials'));
     } finally {
@@ -81,6 +82,7 @@ const useAuth = () => {
         password
       );
       setUser(credentials.user);
+      return credentials.user;
     } catch {
       // TODO: check with regex maybe
       throw new Error(t('error.emailExists', { email: email }));

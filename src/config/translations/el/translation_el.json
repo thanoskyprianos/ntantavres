@@ -48,6 +48,8 @@
     "loginFirst": "Η πρόσβαση απαιτεί σύνδεση",
     "successfulLogin": "Επιτυχής σύνδεση!",
     "successfulRegister": "Επιτυχής εγγραφή!",
+    "loggedOut": "Έχετε αποσυνδεθεί",
+    "expiredOut": "Η σύνδεση σας έχει λήξει. Παρακαλώ επανασυνδεθείτε",
     "isBabysitter": "Θέλω να γίνω νταντά",
     "babysitterDialog": {
       "title": "Υποβολή εγγράφων νταντάς",

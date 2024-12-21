@@ -2,13 +2,11 @@ import { db } from '@config/firebase.ts';
 import { User } from 'firebase/auth';
 import { UserDetails } from '../types/UserDetails.ts';
 import { doc, getDoc, runTransaction, setDoc } from 'firebase/firestore';
-import { Base64String } from '../types/Avatar.ts';
-import { chunk } from '@util/imageManipulation.util.ts';
+import { chunk, CHUNK_LIMIT } from '@util/imageManipulation.util.ts';
 import { useState } from 'react';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useTranslation } from 'react-i18next';
-
-const MAX_CHUNK_LENGTH = 8;
+import { Base64String } from '@/types/Avatar.ts';
 
 const _setUserAvatar = async (user: User, avatar?: Base64String) => {
   if (!avatar) {
@@ -17,7 +15,7 @@ const _setUserAvatar = async (user: User, avatar?: Base64String) => {
 
   const chunks = chunk(avatar);
 
-  if (!chunks || chunks.length > MAX_CHUNK_LENGTH) {
+  if (!chunks || chunks.length > CHUNK_LIMIT) {
     return Promise.reject();
   }
 

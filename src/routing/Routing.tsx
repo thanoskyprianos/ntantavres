@@ -1,11 +1,4 @@
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { theme } from '../config/theme.config.ts';
-import { useTranslation } from 'react-i18next';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { localeTextMap } from '../config/i18n.ts';
 import { Layout } from './Layout.tsx';
 import {
   ActiveCollabs,
@@ -19,14 +12,15 @@ import {
   JobPosting,
   ParentPage,
   ParentProfilePage,
+  PaymentPage,
+  ProfilePage,
   QuestionsPage,
   Ratings,
   ScheduledMeetings,
-  TempRequests,
   TempRequestCompletion,
-  PaymentPage
+  TempRequests,
 } from './lazy.routes.ts';
-import { ErrorPage } from '../pages/ErrorPage.tsx';
+import { ErrorPage } from '@pages/ErrorPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -115,22 +109,14 @@ const router = createBrowserRouter([
         path: '/interested',
         lazy: CardDetailPage,
       },
+      {
+        path: '/profile/:uid',
+        lazy: ProfilePage,
+      },
     ],
   },
 ]);
 
 export const Routing = () => {
-  const { i18n } = useTranslation();
-
-  return (
-    <LocalizationProvider
-      dateAdapter={AdapterDateFns}
-      adapterLocale={localeTextMap.get(i18n.resolvedLanguage || 'en-US')}
-    >
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </LocalizationProvider>
-  );
+  return <RouterProvider router={router} />;
 };

@@ -3,20 +3,20 @@ import PersonIcon from '@mui/icons-material/Person2';
 import WorkIcon from '@mui/icons-material/Work';
 import { AppBar, Divider, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { UserHeart } from '../assets/UserHeart';
+import { UserHeart } from '@/assets/UserHeart.tsx';
 import { IconLabelButton } from './IconLabelButton';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import { DeviceUsed, useDeviceDetect } from '../hooks/useDeviceDetect.hook.ts';
 import { IconLabelSelect } from './IconLabelSelect.tsx';
 import LanguageIcon from '@mui/icons-material/Language';
-import { langs, langsMap } from '../config/i18n.ts';
+import { langs, langsMap } from '@config/i18n.ts';
 import { TFunction } from 'i18next';
 import { useColorScheme } from '@mui/material/styles';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useAuth } from '../hooks/useAuth.hook.ts';
 import { useEffect } from 'react';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
 
 interface PartOfHeaderProps {
   device: DeviceUsed;
@@ -129,7 +129,7 @@ const ThemeAndLanguage = () => {
 };
 
 const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   return (
     <Stack direction="row">

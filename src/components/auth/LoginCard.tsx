@@ -1,18 +1,22 @@
 import { Button, Paper, Stack } from '@mui/material';
-import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
+import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth.hook.ts';
-import { useNavigate } from 'react-router-dom';
-import { LoadingSpinner } from '../LoadingSpinner.tsx';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LoadingSpinner } from '@components/LoadingSpinner';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
+import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 
 export const LoginCard = () => {
   const { t } = useTranslation();
-  const { onLogIn, isLoading } = useAuth();
+  const { onLogIn, isLoading } = useAuthContext();
+  const dispatch = useSnackbarContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLogginIn] = useState(false);
 
   const handleClear = () => {
     setEmail('');
@@ -25,13 +29,23 @@ export const LoginCard = () => {
     }
 
     try {
-      await onLogIn({ email, password });
-      // TODO: show success message on snackbar
-      navigate('/parent/profile');
+      setIsLogginIn(true);
+      const user = await onLogIn({ email, password });
+
+      dispatch!({
+        type: 'success',
+        payload: { message: t('auth.successfulLogin') },
+      });
+      navigate(location?.state?.from || `/profile/${user.uid}`);
     } catch (err) {
-      // TODO: show error message on snackbar
-      console.log(err);
+      if (!(err instanceof Error)) {
+        throw err;
+      }
+
+      dispatch!({ type: 'error', payload: { message: err.message } });
       handleClear();
+    } finally {
+      setIsLogginIn(false);
     }
   };
 
@@ -51,7 +65,7 @@ export const LoginCard = () => {
           value={email}
           onChange={e => setEmail(e.target.value)}
           type="email"
-          disabled={isLoading}
+          disabled={isLoading || isLoggingIn}
         />
         <TextFieldSmall
           required
@@ -59,27 +73,31 @@ export const LoginCard = () => {
           value={password}
           onChange={e => setPassword(e.target.value)}
           type="password"
-          disabled={isLoading}
+          disabled={isLoading || isLoggingIn}
         />
         <Stack
           direction="row"
           spacing={2}
           sx={{ justifyContent: 'space-between', alignItems: 'center' }}
         >
-          {isLoading ? (
+          {isLoggingIn ? (
             <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
           ) : (
             // dummy div to make space-between work
             <div></div>
           )}
           <Stack direction="row" spacing={2}>
-            <Button variant="text" onClick={handleClear} disabled={isLoading}>
+            <Button
+              variant="text"
+              onClick={handleClear}
+              disabled={isLoading || isLoggingIn}
+            >
               {t('auth.clear')}
             </Button>
             <Button
               variant="contained"
               onClick={handleLogin}
-              disabled={isLoading}
+              disabled={isLoading || isLoggingIn}
               type="submit"
             >
               {t('auth.login')}

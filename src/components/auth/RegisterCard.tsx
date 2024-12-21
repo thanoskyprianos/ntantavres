@@ -370,7 +370,7 @@ export const RegisterCard = () => {
       });
 
       // TODO: display user details on profile
-      navigate(location?.state?.from || '/parent/profile');
+      navigate(location?.state?.from || `/profile/${user.uid}`);
     } catch (err) {
       if (!(err instanceof Error)) {
         throw err;

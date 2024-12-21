@@ -43,7 +43,7 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Ubuntu',
+    fontFamily: 'Ubuntu Mono',
   },
   components: {
     MuiButton: {

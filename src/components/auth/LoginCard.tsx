@@ -1,15 +1,18 @@
 import { Button, Paper, Stack } from '@mui/material';
-import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
+import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth.hook.ts';
-import { useNavigate } from 'react-router-dom';
-import { LoadingSpinner } from '../LoadingSpinner.tsx';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LoadingSpinner } from '@components/LoadingSpinner';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
+import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 
 export const LoginCard = () => {
   const { t } = useTranslation();
-  const { onLogIn, isLoading } = useAuth();
+  const { onLogIn, isLoading } = useAuthContext();
+  const dispatch = useSnackbarContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,11 +29,18 @@ export const LoginCard = () => {
 
     try {
       await onLogIn({ email, password });
-      // TODO: show success message on snackbar
-      navigate('/parent/profile');
+
+      dispatch!({
+        type: 'success',
+        payload: { message: t('auth.successfulLogin') },
+      });
+      navigate(location?.state?.from || '/parent/profile');
     } catch (err) {
-      // TODO: show error message on snackbar
-      console.log(err);
+      if (!(err instanceof Error)) {
+        throw err;
+      }
+
+      dispatch!({ type: 'error', payload: { message: err.message } });
       handleClear();
     }
   };

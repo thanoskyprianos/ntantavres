@@ -43,7 +43,16 @@
     "birthdate": "You should be at least 18",
     "registerError": "Error while registering",
     "avatarError": "Error while uploading avatar",
-    "avatarSize": "Must be < 1MB"
+    "avatarSize": "Must be < 1MB",
+    "avatarSizeExt": "Avatar exceeds maximum size of 1MB",
+    "loginFirst": "You need to login to access this page",
+    "successfulLogin": "Successful login!",
+    "successfulRegister": "Successful register!",
+    "isBabysitter": "I want to babysit",
+    "babysitterDialog": {
+      "title": "Submit babysitter documents",
+      "submit": "SUBMIT"
+    }
   },
   "general": {
     "or": "or"

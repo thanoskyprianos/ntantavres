@@ -32,6 +32,7 @@ import { AvatarInput } from '../AvatarInput.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
+import { UserDetails } from '@/types/UserDetails.ts';
 
 interface NamesProps {
   t: TFunction;
@@ -280,7 +281,7 @@ export const RegisterCard = () => {
   const { t } = useTranslation();
   const { onRegister, isLoading } = useAuthContext();
   const dispatch = useSnackbarContext();
-  const hook = useUserDetails();
+  const { registerUser } = useUserDetails();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -346,18 +347,16 @@ export const RegisterCard = () => {
       }
 
       try {
-        await hook!.registerUser(
-          user,
-          {
-            uid: user.uid,
-            firstName,
-            lastName,
-            email,
-            role: 'PARENT',
-            birthdate,
-          },
-          avatar
-        );
+        const details: UserDetails = {
+          uid: user.uid,
+          firstName,
+          lastName,
+          email,
+          role: 'PARENT',
+          birthdate,
+        };
+
+        await registerUser(user, details, avatar);
       } catch (err) {
         // TODO: snackbar
         console.error(err);

@@ -3,13 +3,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Dispatch, ReactNode, SyntheticEvent, useRef, useState } from 'react';
 import { TFunction } from 'i18next';
-import { Base64String } from '../types/Avatar.ts';
-import {
-  base64Size,
-  ONE_MB,
-  toBase64,
-} from '../util/imageManipulation.util.ts';
+import { ONE_MB, toBase64 } from '@util/imageManipulation.util.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
+import { Base64String } from '@/types/Avatar.ts';
 
 const badgeStyle = {
   bgcolor: 'primary.light',
@@ -45,8 +41,7 @@ export const AvatarInput = ({
       return;
     }
 
-    const b64 = await toBase64(image);
-    if (base64Size(b64) >= ONE_MB) {
+    if (image.size >= 7 * ONE_MB) {
       dispatch!({
         type: 'warning',
         payload: { message: t('auth.avatarSizeExt') },
@@ -61,6 +56,7 @@ export const AvatarInput = ({
       return;
     }
 
+    const b64 = await toBase64(image);
     setAvatar(b64);
     setAvatarExt(b64);
   };
@@ -101,7 +97,10 @@ export const AvatarInput = ({
             }
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             overlap="circular"
-            onClick={() => setAvatar('')}
+            onClick={() => {
+              setAvatar('');
+              setAvatarExt('');
+            }}
           >
             <Avatar
               src={avatar}

@@ -60,6 +60,8 @@ export const EditActiveCollab = lazyRoute(
   'EditActiveCollab'
 );
 export const PaymentPage = lazyRoute(
-  '../pages/parent/PaymentPage.tsx',
+  '@pages/parent/PaymentPage.tsx',
   'PaymentPage'
 );
+
+export const ProfilePage = lazyRoute('@pages/ProfilePage.tsx', 'ProfilePage');

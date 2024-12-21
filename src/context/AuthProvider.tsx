@@ -16,7 +16,7 @@ import { Credentials } from '@/types/Credentials.ts';
 import { auth } from '@config/firebase.ts';
 import { useTranslation } from 'react-i18next';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export interface AuthProps {
   user: User | null;
@@ -32,7 +32,6 @@ const useAuth = () => {
   const dispatch = useSnackbarContext();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -50,7 +49,7 @@ const useAuth = () => {
           setUser(null);
           setIsLoading(false);
 
-          navigate('/', { state: { from: location } });
+          navigate('/auth', { state: { from: location.pathname } });
         }
 
         setUser(null);

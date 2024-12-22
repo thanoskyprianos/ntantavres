@@ -9,11 +9,12 @@ import {
   TextField,
   Autocomplete,
 } from '@mui/material';
+import { SxProps } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { UserCard } from '../components/UserCard.tsx';
 import { useDeviceDetect } from '../hooks/useDeviceDetect.hook.ts';
 import { useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, keyframes } from '@mui/material/styles';
 import './HomePage.css';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import { useInView } from 'react-intersection-observer';
@@ -24,6 +25,14 @@ import { SearchBar } from './SearchBar';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { EventAvailable, Height, ManageSearch, Search, Task } from '@mui/icons-material';
 
+const gradientShift = keyframes`
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+`;
 
 export const HomePage = () => {
   const theme = useTheme();
@@ -70,93 +79,158 @@ export const HomePage = () => {
     setActiveButton('search');
   };
 
-  const handleButton1Click = () => {
-    console.log('Button 1 clicked');
-  };
-
-  const handleButton2Click = () => {
-    console.log('Button 2 clicked');
-  };
-
-
   return (
-    <div className="animated-background">
-      <div className="shape"></div>
-      <div className="shape-reversed"></div>
-      <Typography variant='h1' align='center'>Ntantavres</Typography>
-      <Typography variant='h4' align='center'>Φροντίδα παιδιών έως και 2 ετών</Typography>
-      
-      <Stack
-        direction="row"
+    <>
+    <div className="shape"></div>
+    <div className="shape2"></div>
+    <div className="shape-reversed"></div>
+    <div className="shape-reversed2"></div>
+      <Typography
+        variant="h1"
+        align="center"
+        fontWeight="bold"
         sx={{
-          justifyContent: device === 'mobile' ? 'center' : 'space-between',
-          flexWrap: 'wrap',
-          padding: '25px',
+          backgroundImage: 'linear-gradient(135deg, #5361ff, #aeb5ff, #1976d2, #0b2d50)',
+          backgroundSize: '200% 200%',
+          backgroundBlendMode: 'overlay',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textShadow: '0 0 4px rgba(0,0,0,0.3)',
+          filter: 'blur(0.3px)',
+          animation: `${gradientShift} 20s linear infinite`
         }}
       >
+        Ntantavres
+      </Typography>
+      <Typography variant="h4" align="center" fontWeight="bold"
+        sx={{
+          backgroundImage: [
+            'linear-gradient(135deg, #5361ff, #aeb5ff, #1976d2, #0b2d50)'
+          ].join(', '),
+          backgroundRepeat: 'repeat, no-repeat',
+          backgroundPosition: 'center, 0% 50%',
+          backgroundBlendMode: 'overlay', 
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textShadow: '0 0 4px rgba(0,0,0,0.3)',
+          filter: 'blur(0.3px)',
+        }}
+      >
+        Φροντίδα παιδιών έως και 2 ετών
+      </Typography>
 
-      <Stack spacing={4}>
+      <Stack spacing={5}>
+        <Stack
+          direction="column"
+          spacing={40}
+          alignItems="center"
+          sx={{ padding: '25px' }}
+        >
+          <TopButtonsSection
+            isDarkMode={isDarkMode}
+            activeButton={activeButton}
+            toggleButtons={toggleButtons}
+            toggleQuickSearch={toggleQuickSearch}
+            showButtons={showButtons}
+            showQuickSearch={showQuickSearch}
+          />
+
+          <UserCardsSection isDarkMode={isDarkMode} />
+        </Stack>
+      
+        <StatsSection refProp={ref} inView={inView} />
+
+
+      <StepsSection
+        isDarkMode={isDarkMode}
+        activeBox={activeBox}
+        setActiveBox={setActiveBox}
+      />
+
+      </Stack>
+
+        
+  </>
+  );
+};
+
+function TopButtonsSection({
+  isDarkMode,
+  activeButton,
+  toggleButtons,
+  toggleQuickSearch,
+  showButtons,
+  showQuickSearch
+}: {
+  isDarkMode: boolean;
+  activeButton: 'buttons' | 'search' | null;
+  toggleButtons: () => void;
+  toggleQuickSearch: () => void;
+  showButtons: boolean;
+  showQuickSearch: boolean;
+}) {
+  return (
+    <Stack spacing={4}>
       <Stack direction="row" spacing={1} justifyContent="center">
-      <Button 
-            onClick={toggleButtons} 
-            variant="contained" 
-            color="primary"
-            sx={{ 
-              height: '30px', 
-              width: '249px', 
-              fontSize: '20px',
-              color: isDarkMode ? '#fff' : '#000',
-              background: activeButton === 'buttons' 
+        <Button
+          onClick={toggleButtons}
+          variant="contained"
+          color="primary"
+          sx={{ 
+            height: '30px', 
+            width: '249px', 
+            fontSize: '20px',
+            color: isDarkMode ? '#fff' : '#000',
+            background: activeButton === 'buttons' 
+              ? (isDarkMode
+                ? 'linear-gradient(to right, #5361ff, #11508e)'
+                : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+              : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
+            '&:hover': {
+              background: activeButton === 'buttons'
                 ? (isDarkMode
                   ? 'linear-gradient(to right, #5361ff, #11508e)'
                   : 'linear-gradient(to right, #aeb5ff, #6496c8)')
-                : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
-              '&:hover': {
-                background: activeButton === 'buttons'
-                  ? (isDarkMode
-                    ? 'linear-gradient(to right, #5361ff, #11508e)'
-                    : 'linear-gradient(to right, #aeb5ff, #6496c8)')
-                  : undefined
-              }
-            }}
-          >
-            Ειμαι
-          </Button>
-          <Button 
-            onClick={toggleQuickSearch} 
-            variant="contained" 
-            color="secondary"
-            sx={{ 
-              height: '30px', 
-              width: '249px', 
-              fontSize: '20px',
-              color: isDarkMode ? '#fff' : '#000',
+                : undefined
+            }
+          }}
+        >
+          Ειμαι
+        </Button>
+        <Button 
+          onClick={toggleQuickSearch} 
+          variant="contained" 
+          color="secondary"
+          sx={{ 
+            height: '30px', 
+            width: '249px', 
+            fontSize: '20px',
+            color: isDarkMode ? '#fff' : '#000',
+            background: activeButton === 'search'
+              ? (isDarkMode
+                ? 'linear-gradient(to right, #5361ff, #11508e)'
+                : 'linear-gradient(to right, #aeb5ff, #6496c8)')
+              : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
+            '&:hover': {
               background: activeButton === 'search'
                 ? (isDarkMode
                   ? 'linear-gradient(to right, #5361ff, #11508e)'
                   : 'linear-gradient(to right, #aeb5ff, #6496c8)')
-                : (isDarkMode ? '#3a3a3a' : '#e0e0e0'),
-              '&:hover': {
-                background: activeButton === 'search'
-                  ? (isDarkMode
-                    ? 'linear-gradient(to right, #5361ff, #11508e)'
-                    : 'linear-gradient(to right, #aeb5ff, #6496c8)')
-                  : undefined
-              }
-            }}
-          >
-            ΓΡΗΓΟΡΗ ΑΝΑΖΗΤΗΣΗ
-          </Button>
+                : undefined
+            }
+          }}
+        >
+          ΓΡΗΓΟΡΗ ΑΝΑΖΗΤΗΣΗ
+        </Button>
       </Stack>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-      {showButtons && (
-            <Stack spacing={1} alignItems="center">
+      <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '300px' }}>
+        {showButtons && (
+          <Stack spacing={1} alignItems="center">
             <Button
               component={Link}
               to="/parent"
               variant="outlined"
-              className="button"
               sx={{
                 color: isDarkMode ? '#fff' : '#000',
                 width: '350px',
@@ -174,7 +248,6 @@ export const HomePage = () => {
               component={Link}
               variant="outlined"
               to="/babysitter"
-              className="button"
               sx={{
                 color: isDarkMode ? '#fff' : '#000',
                 width: '350px',
@@ -188,166 +261,64 @@ export const HomePage = () => {
             >
               Επαγγελματιας/Νταντα
             </Button>
-            <Button
-              component={Link}
-              to="/parent/profile"
-              sx={{
-                width: '350px',
-                fontSize: '20px',
-                border: '2px solid',
-                '&:hover': {
-                  background: isDarkMode
-                    ? 'linear-gradient(to right, #5361ff, #11508e)'
-                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
-                }
-              }}
-            >
-              GONIOS PROF
-            </Button>
-            <Button
-              component={Link}
-              to="/babysitter/profile"
-              sx={{
-                width: '350px',
-                fontSize: '20px',
-                border: '2px solid',
-                '&:hover': {
-                  background: isDarkMode
-                    ? 'linear-gradient(to right, #5361ff, #11508e)'
-                    : 'linear-gradient(to right, #aeb5ff, #6496c8)',
-                }
-              }}
-            >
-              NTANTA PROF
-            </Button>
-          </Stack>
-      )}
-
-      {showQuickSearch && (
-        <Box sx={{ width: '350px' }}>
-          {showQuickSearch && <SearchBar showTypeOfUser />}
-        </Box>
-      )}
-    </Box>
-
-    </Stack>
-        <Stack spacing={3}>
-          <Stack direction="row" spacing={2}>
-            <UserCard
-              name="Athanasios"
-              description="Looking for a babysitter"
-              photo="Young_Vito.webp"
-            >
-              <Typography variant="body2">
-                Τοποθεσία: Petroupoli <br />
-                Διάρκεια: 5 mines <br />
-                Παιδιά: 5 children
-              </Typography>
-            </UserCard>
-            <UserCard
-              name="Anastasios"
-              description="Psaxnw Ntanta stin perioxi mou"
-              photo="1-draco-malfoy (1).jpg"
-            >
-              <Typography variant="body2">
-                Τοποθεσία: Irakleio <br />
-                Διάρκεια: 1 etos <br />
-                Παιδιά: 1 children
-              </Typography>
-            </UserCard>
-          </Stack>
-          <Button
-            startIcon={<DoubleArrowIcon />}
-            component={Link}
-            to="/parent"
-            sx={{
-              color: 'secondary.contrastText',
-              height: '12px',
-            }}
-          >
-            ΠΕΡΙΣΣΟΤΕΡΕΣ ΑΓΓΕΛΙΕΣ ΓΟΝΕΩΝ
-          </Button>
-          <Stack direction="row" spacing={2}>
-            <UserCard
-              name="Maria"
-              description="Experienced babysitter"
-              photo="maria1.jpg"
-              rating={<Rating value={3} readOnly size="small" />}
-            >
-              <Typography variant="body2">
-                Τοποθεσία: Athens <br />
-                Υπηρεσίες: Alot <br />
-                Εμπειρία: Experienced babysitter
-              </Typography>
-            </UserCard>
-            <UserCard
-              name="Ioanna"
-              description="Excited for my new chapter"
-              photo="2.jpg"
-              rating={<Rating value={5} readOnly size="small" />}
-            >
-              <Typography variant="body2">
-                Τοποθεσία: Kupseli <br />
-                Υπηρεσίες: Polles <br />
-                Εμπειρία: Xronia stin douleia
-              </Typography>
-            </UserCard>
-          </Stack>
-          <Button
-            startIcon={<DoubleArrowIcon />}
-            component={Link}
-            to="/babysitter"
-            sx={{
-              color: 'secondary.contrastText',
-              height: '12px',
-            }}
-          >
-            ΠΕΡΙΣΣΟΤΕΡΟΙ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
-          </Button>
-        </Stack>
-      </Stack>
-
-
-      <Box
-        ref={ref}
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        {inView && (
-          <Stack direction="column" spacing={2} alignItems="center">
-            <Typography variant="h3" fontWeight="bold">
-              <CountUp start={0} end={1000} duration={5} />+ Επαγγελματίες
-            </Typography>
-            <Typography variant="h3" fontWeight="bold">
-              <CountUp start={0} end={17500} duration={5} />+ Γονείς
-            </Typography>
-            <Typography variant="h3" fontWeight="bold">
-              <CountUp start={0} end={36000} duration={5} />+ Χορηγημένα Voucher
-            </Typography>
-            <Button
-              component={Link}
-              to="/questions"
-              startIcon={<HelpIcon />}
-              sx={{
-                color: 'secondary.contrastText',
-              }}
-            >
-              ΣΥΧΝΕΣ ΕΡΩΤΗΣΕΙΣ
-            </Button>
           </Stack>
         )}
+        {showQuickSearch && (
+          <Box sx={{ width: '350px', height: '300px' }}>
+            <SearchBar showTypeOfUser />
+          </Box>
+        )}
       </Box>
+    </Stack>
+  );
+}
 
+function StatsSection({ refProp, inView }: any) {
+  return (
+    <Box
+      ref={refProp}
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+      }}
+    >
+      {inView && (
+        <Stack direction="column" spacing={2} alignItems="center">
+          <Typography variant="h3" fontWeight="bold">
+            <CountUp start={0} end={1000} duration={5} />+ Επαγγελματίες
+          </Typography>
+          <Typography variant="h3" fontWeight="bold">
+            <CountUp start={0} end={17500} duration={5} />+ Γονείς
+          </Typography>
+          <Typography variant="h3" fontWeight="bold">
+            <CountUp start={0} end={36000} duration={5} />+ Χορηγημένα Voucher
+          </Typography>
+          <Button
+            component={Link}
+            to="/questions"
+            startIcon={<HelpIcon />}
+            sx={{
+              color: 'secondary.contrastText',
+            }}
+          >
+            ΣΥΧΝΕΣ ΕΡΩΤΗΣΕΙΣ
+          </Button>
+        </Stack>
+      )}
+    </Box>
+  );
+}
+
+function StepsSection({ isDarkMode, activeBox, setActiveBox }: any) {
+  return (
+    <>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          mt: 4,
         }}
       >
         <Button
@@ -393,6 +364,7 @@ export const HomePage = () => {
           ΕΠΑΓΓΕΛΜΑΤΙΕΣ
         </Button>
       </Box>
+
       {activeBox === 'box1' && (
         <Box
           sx={{
@@ -525,9 +497,100 @@ export const HomePage = () => {
               />
             </Card>
           </Stack>
-
         </Box>
       )}
-    </div>
+    </>
   );
-};
+}
+
+function UserCardsSection({ isDarkMode }: { isDarkMode: boolean }) {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        mt: 4
+      }}
+    >
+      
+    <Stack spacing={3}>
+      <Typography variant="h4" align="center" fontWeight="bold">
+        Αγγελίες & Επαγγελματίες
+      </Typography>
+      <Stack direction="row" spacing={2}>
+        <UserCard
+          name="Athanasios"
+          description="Looking for a babysitter"
+          photo="Young_Vito.webp"
+        >
+          <Typography variant="body2">
+            Τοποθεσία: Petroupoli <br />
+            Διάρκεια: 5 mines <br />
+            Παιδιά: 5 children
+          </Typography>
+        </UserCard>
+        <UserCard
+          name="Anastasios"
+          description="Psaxnw Ntanta stin perioxi mou"
+          photo="1-draco-malfoy (1).jpg"
+        >
+          <Typography variant="body2">
+            Τοποθεσία: Irakleio <br />
+            Διάρκεια: 1 etos <br />
+            Παιδιά: 1 children
+          </Typography>
+        </UserCard>
+      </Stack>
+      <Button
+        startIcon={<DoubleArrowIcon />}
+        component={Link}
+        to="/parent"
+        sx={{
+          color: 'secondary.contrastText',
+          height: '12px',
+        }}
+      >
+        ΠΕΡΙΣΣΟΤΕΡΕΣ ΑΓΓΕΛΙΕΣ ΓΟΝΕΩΝ
+      </Button>
+      <Stack direction="row" spacing={2}>
+        <UserCard
+          name="Maria"
+          description="Experienced babysitter"
+          photo="maria1.jpg"
+          rating={<Rating value={3} readOnly size="small" />}
+        >
+          <Typography variant="body2">
+            Τοποθεσία: Athens <br />
+            Υπηρεσίες: Alot <br />
+            Εμπειρία: Experienced babysitter
+          </Typography>
+        </UserCard>
+        <UserCard
+          name="Ioanna"
+          description="Excited for my new chapter"
+          photo="2.jpg"
+          rating={<Rating value={5} readOnly size="small" />}
+        >
+          <Typography variant="body2">
+            Τοποθεσία: Kupseli <br />
+            Υπηρεσίες: Polles <br />
+            Εμπειρία: Xronia stin douleia
+          </Typography>
+        </UserCard>
+      </Stack>
+      <Button
+        startIcon={<DoubleArrowIcon />}
+        component={Link}
+        to="/babysitter"
+        sx={{
+          color: 'secondary.contrastText',
+          height: '12px',
+        }}
+      >
+        ΠΕΡΙΣΣΟΤΕΡΟΙ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
+      </Button>
+    </Stack>
+    </Box>
+  );
+}

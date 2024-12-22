@@ -1,41 +1,80 @@
 :root {
-    --background-gradient-light: linear-gradient(135deg, #1976d2 0%, #aeb5ff 50%, #ffffff 100%);
-    --background-gradient-dark: linear-gradient(135deg, #3a3a3a 5%, #5361ff 50%, #11508e 100%);
-    --back-light: #ffffff;
+  --background-gradient-light: linear-gradient(
+    135deg,
+    #1976d2 0%,
+    #aeb5ff 50%,
+    #ffffff 100%
+  );
+  --background-gradient-dark: linear-gradient(
+    135deg,
+    #3a3a3a 5%,
+    #5361ff 50%,
+    #11508e 87%,
+    #0b2d50 77%,
+    #041322 67%,
+    #5361ff 87%
+  );
+  --back-light: #ffffff;
+}
+
+@keyframes gradientGrain {
+  0% {
+    background-position: 0% 50%, 0px 0px;
+  }
+  50% {
+    background-position: 100% 50%, 100px 100px;
+  }
+  100% {
+    background-position: 0% 50%, 200px 200px;
+  }
 }
 
 .animated-background {
   position: relative;
+  min-height: 100vh; 
   background: var(--back);
   overflow: hidden;
-  overflow: auto;
+}
+
+.shape,
+.shape-reversed,
+.shape2,
+.shape-reversed2 {
+  position: absolute;
+  width: 1000px;
+  height: 1000px;
+  background: var(--background-gradient);
+  background-image: var(--background-gradient), url("grain.png");
+  background-repeat: no-repeat, repeat;
+  background-size: 200% 200%, 200px 200px;
+  animation: gradientGrain 15s linear infinite;
+  border-radius: 50%;
+  opacity: 0.7;
+  z-index: -1;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  filter: blur(2px);
 }
 
 .shape {
-    position: absolute;
-    width: 1000px;
-    height: 1000px;
-    background: var(--background-gradient);
-    border-radius: 50%;
-    top: 50%;
-    left: 48%;
-    transform: translate(-50%, -50%);
-    opacity: 0.7;
-    z-index: -1;
-    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
 }
 
 .shape-reversed {
-    position: absolute;
-    width: 1000px;
-    height: 1000px;
-    background: var(--background-gradient);
-    border-radius: 50%;
-    top: 90%;
-    left: 48%;
-    transform: translate(-50%, -50%) rotate(180deg);
-    opacity: 0.7;
-    z-index: -1;
-    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  top: 90%;
+  left: 100%;
+  transform: translate(-50%, -50%) rotate(180deg);
 }
-  
+
+.shape2 {
+  top: 200%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+}
+
+.shape-reversed2 {
+  top: 250%;
+  left: 100%;
+  transform: translate(-50%, -50%) rotate(180deg);
+}

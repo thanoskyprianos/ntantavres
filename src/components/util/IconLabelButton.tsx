@@ -1,6 +1,7 @@
 import { Button, ButtonProps, Stack, Typography } from '@mui/material';
 import { ReactElement } from 'react';
 import { To } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 
 interface IconLabelButtonProps extends ButtonProps {
   showLabel?: boolean;
@@ -18,11 +19,10 @@ export const IconLabelButton = ({
   ...rest
 }: IconLabelButtonProps) => {
   return (
-    <Button variant="contained" {...rest} sx={{ ...rest.sx, height: '50px' }}>
+    <Button variant="contained" {...rest} sx={{ ...rest.sx }}>
       <Stack
         direction={direction}
         sx={{
-          justifyContent: 'center',
           alignItems: 'center',
         }}
       >
@@ -39,3 +39,8 @@ export const IconLabelButton = ({
     </Button>
   );
 };
+
+export const ActionButton = styled(IconLabelButton)({
+  height: '30px',
+  justifyContent: 'start',
+});

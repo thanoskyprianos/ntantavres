@@ -1,14 +1,14 @@
 import HelpIcon from '@mui/icons-material/Help';
 import PersonIcon from '@mui/icons-material/Person2';
 import WorkIcon from '@mui/icons-material/Work';
-import { AppBar, Divider, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AppBar, Divider, SelectChangeEvent, Stack } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserHeart } from '@/assets/UserHeart.tsx';
-import { IconLabelButton } from './IconLabelButton';
+import { IconLabelButton } from './util/IconLabelButton.tsx';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import { DeviceUsed, useDeviceDetect } from '../hooks/useDeviceDetect.hook.ts';
-import { IconLabelSelect } from './IconLabelSelect.tsx';
+import { IconLabelSelect } from './util/IconLabelSelect.tsx';
 import LanguageIcon from '@mui/icons-material/Language';
 import { langs, langsMap } from '@config/i18n.ts';
 import { TFunction } from 'i18next';
@@ -130,6 +130,21 @@ const ThemeAndLanguage = () => {
 
 const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { onLogOut } = useAuthContext();
+
+  const handleProfileOptions = (e: SelectChangeEvent) => {
+    switch (e.target.value) {
+      case t('header.profile'):
+        navigate(`/profile/${user?.uid}`);
+        break;
+      case t('header.logout'):
+        onLogOut();
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <Stack direction="row">
@@ -141,14 +156,49 @@ const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
         component={Link}
         to="/questions"
       />
-      <IconLabelButton
-        icon={<PersonIcon />}
-        label={user ? t('header.profile') : t('header.login')}
-        sx={commonTheme}
-        showLabel={device === 'desktop'}
-        component={Link}
-        to={!user ? '/auth' : `/profile/${user.uid}`}
-      />
+      {!user ? (
+        <IconLabelButton
+          icon={<PersonIcon />}
+          label={t('header.login')}
+          sx={commonTheme}
+          showLabel={device === 'desktop'}
+          component={Link}
+          to={'/auth'}
+        />
+      ) : (
+        <IconLabelSelect
+          icon={<PersonIcon />}
+          options={[t('header.profile'), t('header.logout')]}
+          label={t('header.user')}
+          sx={{
+            height: '50px',
+            color: 'primary.contrastText', // for some reason not set by theme
+            '.MuiSvgIcon-root': {
+              color: 'inherit',
+            },
+            ...commonTheme,
+          }}
+          showLabel={true}
+          handleChange={handleProfileOptions}
+        />
+        // <IconLabelDropdownMenu
+        //   options={[
+        //     { node: 'profile', action: () => console.log() },
+        //     { node: 'logout', action: () => console.log() },
+        //   ]}
+        //   icon={<PersonIcon />}
+        //   label={t('header.user')}
+        //   sxBtn={{
+        //     height: '50px',
+        //     color: 'primary.contrastText', // for some reason not set by theme
+        //     '.MuiSvgIcon-root': {
+        //       color: 'inherit',
+        //     },
+        //     ...commonTheme,
+        //   }}
+        //   showLabel={device !== 'mobile'}
+        // />
+      )}
     </Stack>
   );
 };

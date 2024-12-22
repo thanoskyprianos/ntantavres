@@ -1,80 +1,85 @@
 :root {
-  --background-gradient-light: linear-gradient(
-    135deg,
-    #1976d2 0%,
-    #aeb5ff 50%,
-    #ffffff 100%
-  );
-  --background-gradient-dark: linear-gradient(
-    135deg,
-    #3a3a3a 5%,
-    #5361ff 50%,
-    #11508e 87%,
-    #0b2d50 77%,
-    #041322 67%,
-    #5361ff 87%
-  );
-  --back-light: #ffffff;
+    --background-gradient-light: linear-gradient(
+            135deg,
+            #1976d2 0%,
+            #aeb5ff 50%,
+            #ffffff 100%
+    );
+    --background-gradient-dark: linear-gradient(
+            135deg,
+            #3a3a3a 5%,
+            #5361ff 50%,
+            #11508e 87%,
+            #0b2d50 77%,
+            #041322 67%,
+            #5361ff 87%
+    );
+    --back-light: #ffffff;
 }
 
 @keyframes gradientGrain {
-  0% {
-    background-position: 0% 50%, 0px 0px;
-  }
-  50% {
-    background-position: 100% 50%, 100px 100px;
-  }
-  100% {
-    background-position: 0% 50%, 200px 200px;
-  }
+    0% {
+        background-position: 0% 50%, 0px 0px;
+    }
+    50% {
+        background-position: 100% 50%, 100px 100px;
+    }
+    100% {
+        background-position: 0% 50%, 200px 200px;
+    }
+}
+
+@keyframes scrollDownAnim {
+    0% {
+        bottom: 15px;
+    }
+    50% {
+        bottom: 5px;
+    }
+    100% {
+        bottom: 15px;
+    }
 }
 
 .animated-background {
-  position: relative;
-  min-height: 100vh; 
-  background: var(--back);
-  overflow: hidden;
-}
-
-.shape,
-.shape-reversed,
-.shape2,
-.shape-reversed2 {
-  position: absolute;
-  width: 1000px;
-  height: 1000px;
-  background: var(--background-gradient);
-  background-image: var(--background-gradient), url("grain.png");
-  background-repeat: no-repeat, repeat;
-  background-size: 200% 200%, 200px 200px;
-  animation: gradientGrain 15s linear infinite;
-  border-radius: 50%;
-  opacity: 0.7;
-  z-index: -1;
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  filter: blur(2px);
+    position: relative;
+    min-height: 100vh;
+    background: var(--back);
+    overflow: hidden;
 }
 
 .shape {
-  top: 50%;
-  left: 0%;
-  transform: translate(-50%, -50%);
+    position: absolute;
+    width: max(50vw, 450px);
+    height: max(50vw, 450px);
+    background: var(--background-gradient);
+    background-image: var(--background-gradient);
+    background-repeat: no-repeat, repeat;
+    background-size: 200% 200%, 200px 200px;
+    animation: gradientGrain 15s linear infinite;
+    opacity: 0.6;
+    z-index: -1;
+    overflow: hidden;
 }
 
-.shape-reversed {
-  top: 90%;
-  left: 100%;
-  transform: translate(-50%, -50%) rotate(180deg);
+.s1 {
+    clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+    transform: translate(-50%, -50%);
 }
 
-.shape2 {
-  top: 200%;
-  left: 0%;
-  transform: translate(-50%, -50%);
+.s2 {
+    top: 95%;
+    right: 0;
+    clip-path: polygon(100% 0%, 100% 100%, 82% 100%, 56% 78%, 50% 43%, 67% 12%);
+    transform: translate(0%, -50%);
 }
 
-.shape-reversed2 {
-  top: 250%;
-  left: 100%;
-  transform: translate(-50%, -50%) rotate(180deg);
+.s3 {
+    top: 175%;
+    clip-path: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%);
+    transform: translate(-50%, -50%);
+}
+
+::-webkit-scrollbar:horizontal {
+    display: none;
 }

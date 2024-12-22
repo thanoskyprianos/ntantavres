@@ -7,6 +7,7 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  SxProps,
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -19,6 +20,7 @@ interface UserCardProps {
   photo: string;
   rating?: React.ReactNode;
   showButton?: boolean;
+  sx?: SxProps;
 }
 
 export const UserCard = ({
@@ -28,25 +30,26 @@ export const UserCard = ({
   description,
   rating,
   showButton = true,
+  sx,
 }: UserCardProps) => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <Card
-    sx={{
-      maxWidth: 210,
-      transition: 'border 0.8s, box-shadow 0.6s',
-      border: '4px solid transparent',
-      '&:hover': {
-        borderImage: isDarkMode
-          ? 'linear-gradient(to right, #727eff, #1a81e9) 1'
-          : 'linear-gradient(to right, #c3c8ff, #86c3ff) 1',
-        boxShadow: isDarkMode
-          ? '0 8px 16px rgba(255, 255, 255, 0.2)'
-          : '0 8px 16px rgba(0, 0, 0, 0.2)',
-      },
-    }}
+      sx={{
+        ...sx,
+        transition: 'border 0.8s, box-shadow 0.6s',
+        border: '4px solid transparent',
+        '&:hover': {
+          borderImage: isDarkMode
+            ? 'linear-gradient(to right, #727eff, #1a81e9) 1'
+            : 'linear-gradient(to right, #c3c8ff, #86c3ff) 1',
+          boxShadow: isDarkMode
+            ? '0 8px 16px rgba(255, 255, 255, 0.2)'
+            : '0 8px 16px rgba(0, 0, 0, 0.2)',
+        },
+      }}
     >
       <CardHeader
         disableTypography

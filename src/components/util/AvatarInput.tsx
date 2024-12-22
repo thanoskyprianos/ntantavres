@@ -1,11 +1,12 @@
-import { Avatar, Badge, Box, Stack, Typography } from '@mui/material';
+import { Badge, Box, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Dispatch, ReactNode, SyntheticEvent, useRef, useState } from 'react';
+import { Dispatch, ReactNode, useRef, useState } from 'react';
 import { TFunction } from 'i18next';
 import { ONE_MB, toBase64 } from '@util/imageManipulation.util.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { Base64String } from '@/types/Avatar.ts';
+import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
 
 const badgeStyle = {
   bgcolor: 'primary.light',
@@ -102,20 +103,17 @@ export const AvatarInput = ({
               setAvatarExt('');
             }}
           >
-            <Avatar
-              src={avatar}
+            <AvatarDisplay
+              avatar={avatar}
               sx={{
                 height: '100px',
                 width: '100px',
                 border: '3px solid',
                 borderColor: 'primary.light',
               }}
-              onLoad={(e: SyntheticEvent<HTMLImageElement, Event>) =>
-                URL.revokeObjectURL((e.target as HTMLImageElement).src)
-              }
             >
               {children}
-            </Avatar>
+            </AvatarDisplay>
           </Badge>
         </Badge>
       </Box>

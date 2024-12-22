@@ -5,7 +5,9 @@
     "babysitter": "ΝΤΑΝΤΑ",
     "questions": "ΕΡΩΤΗΣΕΙΣ",
     "login": "ΣΥΝΔΕΣΗ",
-    "profile": "ΠΡΟΦΙΛ"
+    "profile": "Προφίλ",
+    "logout": "Αποσύνδεση",
+    "user": "ΧΡΗΣΤΗΣ"
   },
   "breadcrumbs": {
     "home": "Αρχική",
@@ -66,6 +68,30 @@
       "lowercase": "1+ μικρός/οί χαρακτήρας/ες",
       "number": "1+ αριθμός/οι",
       "symbol": "1+ σύμβολο/α"
+    }
+  },
+  "parent": {
+    "actions": {
+      "plannedMeetings": "ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ",
+      "activeCollaborations": "ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ",
+      "temporaryApplications": "ΠΡΟΣΩΡΙΝΕΣ ΑΙΤΗΣΕΙΣ",
+      "history": "ΙΣΤΟΡΙΚΟ",
+      "payment": "ΠΛΗΡΩΜΗ"
+    },
+    "info": {
+      "title": "ΠΛΗΡΟΦΟΡΙΕΣ",
+      "address": "Διεύθυνση κατοικίας",
+      "phoneNumber": "Τηλέφωνο επικοινωνίας",
+      "email": "Email"
+    },
+    "babysitterAd": {
+      "title": "ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ",
+      "create": "Δημιουργία",
+      "createTitle": "Δημιουργία αγγελίας",
+      "edit": "Επεξεργασία",
+      "prompt": "Προσοχή, η προηγούμενη σας αγγελία θα διαγραφεί",
+      "ok": "ΟΚ",
+      "cancel": "ΑΚΥΡΟ"
     }
   }
 }

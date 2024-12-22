@@ -55,6 +55,9 @@ export const IconLabelSelect = ({
             {optionFormat ? optionFormat(option) : option}
           </MenuItem>
         ))}
+
+        {/* dummy option for creating dropdown menu */}
+        <MenuItem value={label} sx={{ display: 'none' }} />
       </Select>
     </FormControl>
   );

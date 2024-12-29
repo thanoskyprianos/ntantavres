@@ -28,7 +28,7 @@ import {
   emailValidation,
   passwordValidation,
 } from '@util/authValidation.util.ts';
-import { AvatarInput } from '../AvatarInput.tsx';
+import { AvatarInput } from '@components/util/AvatarInput.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';

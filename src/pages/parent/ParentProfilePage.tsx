@@ -26,6 +26,10 @@ import { UserCard } from '@components/UserCard.tsx';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { UserDetails } from '@/types/UserDetails.ts';
+import { useTranslation } from 'react-i18next';
+import { ActionButton } from '@components/util/IconLabelButton.tsx';
+import { Base64String } from '@/types/Avatar.ts';
+import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
 
 // interface profileParent {
 //   name: string;
@@ -36,11 +40,19 @@ import { UserDetails } from '@/types/UserDetails.ts';
 //   phoneNumber: string;
 // }
 
+interface ParentProfilePageProps extends UserDetails {
+  avatar?: Base64String;
+}
+
 export const ParentProfilePage = ({
   firstName,
   lastName,
   email,
-}: UserDetails) => {
+  address,
+  phoneNumber,
+  avatar,
+}: ParentProfilePageProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -78,15 +90,23 @@ export const ParentProfilePage = ({
               marginTop: 3,
             }}
           >
-            {/*<Avatar*/}
-            {/*  src={photo}*/}
-            {/*  sx={{*/}
-            {/*    width: 100,*/}
-            {/*    height: 100,*/}
-            {/*    border: '2px solid',*/}
-            {/*    borderColor: 'primary.main',*/}
-            {/*  }}*/}
-            {/*/>*/}
+            <AvatarDisplay
+              avatar={avatar}
+              sx={{
+                width: 100,
+                height: 100,
+                border: '2px solid',
+                borderColor: 'primary.main',
+              }}
+            >
+              <Typography variant="h3">
+                {firstName &&
+                  lastName &&
+                  firstName.charAt(0).toUpperCase() +
+                    lastName.charAt(0).toUpperCase()}
+              </Typography>
+            </AvatarDisplay>
+
             <div style={{ marginLeft: '20px' }}>
               <Typography variant="h5">
                 {firstName} {lastName}
@@ -95,113 +115,56 @@ export const ParentProfilePage = ({
             </div>
           </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 0.5,
-              marginTop: 3,
-            }}
-          >
-            <Button
-              component={Link}
-              to="/parent/scheduledMeetings"
-              variant="contained"
-              className="interested-button"
-              startIcon={<CalendarMonthIcon />}
-              sx={{
-                width: '330px',
-                height: '30px',
-              }}
-            >
-              ΠΡΟΓΡΑΜΜΑΤΙΣΜΕΝΑ ΡΑΝΤΕΒΟΥ ΓΝΩΡΙΜΙΑΣ
-            </Button>
-            <Button
-              component={Link}
-              to="/parent/activeCollabs"
-              variant="contained"
-              className="interested-button"
-              startIcon={<ChecklistIcon />}
-              sx={{
-                width: '330px',
-                height: '30px',
-              }}
-            >
-              ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ
-            </Button>
-            <Button
-              component={Link}
-              to="/parent/tempRequest"
-              variant="contained"
-              className="interested-button"
-              startIcon={<ContactPageIcon />}
-              sx={{
-                width: '330px',
-                height: '30px',
-              }}
-            >
-              ΠΡΟΣΩΡΙΝΕΣ ΑΙΤΗΣΕΙΣ ΠΡΟΣ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
-            </Button>
-            <Button
-              variant="contained"
-              className="interested-button"
-              startIcon={<HistoryIcon />}
-              sx={{
-                width: '330px',
-                height: '30px',
-              }}
-            >
-              ΙΣΤΟΡΙΚΟ
-            </Button>
-            <Button
-              component={Link}
-              to="/parent/paymentPage"
-              variant="contained"
-              className="interested-button"
-              startIcon={<Payment />}
-              sx={{
-                width: '330px',
-                height: '30px',
-              }}
-            >
-              ΠΛΗΡΩΜΗ
-            </Button>
-          </Box>
+          <Stack spacing={0.5}>
+            <ActionButton
+              label={t('parent.actions.plannedMeetings')}
+              icon={<CalendarMonthIcon />}
+            />
+            <ActionButton
+              label={t('parent.actions.activeCollaborations')}
+              icon={<ChecklistIcon />}
+            />
+            <ActionButton
+              label={t('parent.actions.temporaryApplications')}
+              icon={<ContactPageIcon />}
+            />
+            <ActionButton
+              label={t('parent.actions.history')}
+              icon={<HistoryIcon />}
+            />
+            <ActionButton
+              label={t('parent.actions.payment')}
+              icon={<Payment />}
+            />
+          </Stack>
         </Stack>
 
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <Stack direction="row" spacing={2}>
           <Card
-            className="info-container"
             variant="outlined"
-            sx={{
-              width: '370px',
-              maxHeight: '380px',
-            }}
+            sx={
+              {
+                // width: '370px',
+                // maxHeight: '380px',
+              }
+            }
           >
-            <CardHeader title="ΠΛΗΡΟΦΟΡΙΕΣ" />
+            <CardHeader title={t('parent.info.title')} />
             <CardContent>
               <Typography variant="h6" sx={{ color: 'text.main' }}>
-                Διεύθυνση κατοικίας:
+                {t('parent.info.address')}
               </Typography>
-              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
-              {/*  {add}*/}
-              {/*</Typography>*/}
-              <Typography variant="h6" sx={{ color: 'text.main' }}>
-                Τηλέφωνο Επικοινωνίας:
+              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                {address}
               </Typography>
-              {/*<Typography variant="body1" sx={{ color: 'text.secondary' }}>*/}
-              {/*  {phoneNumber}*/}
-              {/*</Typography>*/}
               <Typography variant="h6" sx={{ color: 'text.main' }}>
-                Ηλεκτρονική Διεύθυνση:
+                {t('parent.info.phoneNumber')}
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                {phoneNumber}
+              </Typography>
+              <Typography variant="h6" sx={{ color: 'text.main' }}>
+                {t('parent.info.email')}
               </Typography>
               <Typography variant="body1" sx={{ color: 'text.secondary' }}>
                 {email}
@@ -216,78 +179,72 @@ export const ParentProfilePage = ({
                 startIcon={<EditIcon />}
                 sx={{ color: 'secondary.contrastText' }}
               >
-                Επεξεργασία
+                {t('parent.babysitterAd.edit')}
               </Button>
             </CardActions>
           </Card>
 
-          <Box sx={{ padding: 0 }}>
-            <Card
-              className="job-posting"
-              variant="outlined"
-              sx={{ width: 320 }}
+          <Card variant="outlined">
+            <CardHeader title={t('parent.babysitterAd.title')} />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
             >
-              <CardHeader title="ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ" />
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+              <UserCard
+                name="Athanasios"
+                description="Looking for a babysitter"
+                photo="Young_Vito.webp"
+                showButton={false}
               >
-                <UserCard
-                  name="Athanasios"
-                  description="Looking for a babysitter"
-                  photo="Young_Vito.webp"
-                  showButton={false}
-                >
-                  <Typography variant="body2">
-                    Τοποθεσία: Petroupoli <br />
-                    Διάρκεια: 5 mines <br />
-                    Παιδιά: 5 children
-                  </Typography>
-                </UserCard>
-              </Box>
-              <CardActions>
-                <Button
-                  component={Link}
-                  to="/parent/createORedit"
-                  className="edit-button"
-                  startIcon={<EditIcon />}
-                  sx={{ color: 'secondary.contrastText' }}
-                >
-                  Επεξεργασία
-                </Button>
-                <Button
-                  className="edit-button"
-                  color="success"
-                  startIcon={<AddCircleOutline />}
-                  onClick={handleClickOpen}
-                >
-                  Δημιουργία Αγγελίας
-                </Button>
-              </CardActions>
-            </Card>
+                <Typography variant="body2">
+                  Τοποθεσία: Petroupoli <br />
+                  Διάρκεια: 5 mines <br />
+                  Παιδιά: 5 children
+                </Typography>
+              </UserCard>
+            </Box>
+            <CardActions>
+              <Button
+                component={Link}
+                to="/parent/createORedit"
+                className="edit-button"
+                startIcon={<EditIcon />}
+                sx={{ color: 'secondary.contrastText' }}
+              >
+                {t('parent.babysitterAd.edit')}
+              </Button>
+              <Button
+                className="edit-button"
+                color="success"
+                startIcon={<AddCircleOutline />}
+                onClick={handleClickOpen}
+              >
+                {t('parent.babysitterAd.create')}
+              </Button>
+            </CardActions>
+          </Card>
 
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Δημιουργία Αγγελίας</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Προσοχή η προηγούμενη σας αγγελία θα διαγραφεί.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleClose}
-                  component={Link}
-                  to="/parent/createORedit"
-                  sx={{ color: 'secondary.contrastText' }}
-                >
-                  Εντάξει
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Box>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>{t('parent.babysitterAd.createTitle')}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {t('parent.babysitterAd.prompt')}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleClose}
+                component={Link}
+                to="/parent/createORedit"
+                sx={{ color: 'secondary.contrastText' }}
+              >
+                {t('parent.babysitterAd.ok')}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Stack>
       </Stack>
     </div>

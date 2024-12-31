@@ -14,7 +14,8 @@
     "parent": "Parent",
     "babysitter": "Babysitter",
     "questions": "Questions",
-    "auth": "Auth"
+    "auth": "Auth",
+    "profile": "Profile"
   },
   "title": {
     "parent": "Parent",
@@ -76,13 +77,15 @@
       "activeCollaborations": "ACTIVE COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
-      "payment": "PAYMENT"
+      "payment": "PAYMENT",
+      "settings": "SETTINGS"
     },
     "info": {
       "title": "INFO",
       "address": "Address",
       "phoneNumber": "Phone number",
-      "email": "Email"
+      "email": "Email",
+      "notSet": "(Not set)"
     },
     "babysitterAd": {
       "title": "WANTED BABYSITTER AD",

@@ -41,13 +41,6 @@
     }
 }
 
-.animated-background {
-    position: relative;
-    min-height: 100vh;
-    background: var(--back);
-    overflow: hidden;
-}
-
 .shape {
     position: absolute;
     width: max(50vw, 450px);

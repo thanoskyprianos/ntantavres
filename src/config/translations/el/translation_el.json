@@ -14,7 +14,8 @@
     "parent": "Γονέας",
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις",
-    "auth": "Είσοδος"
+    "auth": "Είσοδος",
+    "profile": "Προφίλ"
   },
   "title": {
     "parent": "Γονέας",
@@ -76,13 +77,15 @@
       "activeCollaborations": "ΕΝΕΡΓΕΣ ΣΥΝΕΡΓΑΣΙΕΣ",
       "temporaryApplications": "ΠΡΟΣΩΡΙΝΕΣ ΑΙΤΗΣΕΙΣ",
       "history": "ΙΣΤΟΡΙΚΟ",
-      "payment": "ΠΛΗΡΩΜΗ"
+      "payment": "ΠΛΗΡΩΜΗ",
+      "settings": "ΡΥΘΜΙΣΕΙΣ"
     },
     "info": {
       "title": "ΠΛΗΡΟΦΟΡΙΕΣ",
       "address": "Διεύθυνση κατοικίας",
       "phoneNumber": "Τηλέφωνο επικοινωνίας",
-      "email": "Email"
+      "email": "Email",
+      "notSet": "(Δεν έχει ορισθεί)"
     },
     "babysitterAd": {
       "title": "ΑΓΓΕΛΙΑ ΕΥΡΕΣΗΣ ΝΤΑΝΤΑΣ",

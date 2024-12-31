@@ -1,44 +1,22 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Stack,
-  Typography,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import {
-  AddCircleOutline,
-  History as HistoryIcon,
-  Payment,
-} from '@mui/icons-material';
-import { UserCard } from '@components/UserCard.tsx';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { UserDetails } from '@/types/UserDetails.ts';
 import { useTranslation } from 'react-i18next';
-import { ActionButton } from '@components/util/IconLabelButton.tsx';
 import { Base64String } from '@/types/Avatar.ts';
+import { Box, Stack, Typography } from '@mui/material';
 import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
-
-// interface profileParent {
-//   name: string;
-//   location: string;
-//   photo: string;
-//   add: string;
-//   email: string;
-//   phoneNumber: string;
-// }
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { NavTab } from '@components/tabs/TabNav.tsx';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import HistoryIcon from '@mui/icons-material/History';
+import { Payment } from '@mui/icons-material';
+import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
+import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { ProfileNav } from '@components/tabs/ProfileNav.tsx';
+import { ParentInfo } from '@components/tabs/parent/ParentInfo.tsx';
+import { ParentSettings } from '@components/tabs/parent/ParentSettings.tsx';
 
 interface ParentProfilePageProps extends UserDetails {
   avatar?: Base64String;
@@ -53,6 +31,119 @@ export const ParentProfilePage = ({
   avatar,
 }: ParentProfilePageProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { device } = useDeviceDetect();
+
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [searchParams] = useSearchParams();
+  const currentTab = searchParams.get('tab');
+
+  const Tabs: NavTab[] = [
+    {
+      title: t('parent.info.title'),
+      icon: <InfoIcon />,
+      paramRoute: 'info',
+      content: (
+        // <Box
+        //   sx={{ width: '1000px', height: '250px', backgroundColor: 'red' }}
+        // />
+        <ParentInfo
+          t={t}
+          address={address}
+          phoneNumber={phoneNumber}
+          email={email}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.plannedMeetings'),
+      icon: <CalendarMonthIcon />,
+      paramRoute: 'meetings',
+      content: (
+        <Box
+          style={{ width: '250px', height: '250px', backgroundColor: 'green' }}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.activeCollaborations'),
+      icon: <ChecklistIcon />,
+      paramRoute: 'collaborations',
+      content: (
+        <Box
+          style={{ width: '250px', height: '250px', backgroundColor: 'yellow' }}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.temporaryApplications'),
+      icon: <ContactsIcon />,
+      paramRoute: 'applications',
+      content: (
+        <Box
+          style={{ width: '250px', height: '250px', backgroundColor: 'blue' }}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.history'),
+      icon: <HistoryIcon />,
+      paramRoute: 'history',
+      content: (
+        <Box
+          style={{ width: '250px', height: '250px', backgroundColor: 'pink' }}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.payment'),
+      icon: <Payment />,
+      paramRoute: 'payment',
+      content: (
+        <Box
+          style={{ width: '250px', height: '250px', backgroundColor: 'orange' }}
+        />
+      ),
+    },
+    {
+      title: t('parent.actions.settings'),
+      icon: <SettingsIcon />,
+      paramRoute: 'settings',
+      content: <ParentSettings t={t} />,
+    },
+  ];
+
+  useEffect(() => {
+    let start = Tabs.findIndex(res => res.paramRoute === currentTab);
+    if (start === -1) {
+      start = 0;
+    }
+
+    setSelectedTab(start);
+
+    const other = Array.from(searchParams.entries())
+      .filter(([key]) => key !== 'tab')
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+    navigate(
+      `${location.pathname}?tab=${Tabs[start].paramRoute}${other ? '&' + other : ''}`
+    );
+  }, []);
+
+  const handleSelectedTab = (e: React.SyntheticEvent, newValue: number) => {
+    e.preventDefault();
+
+    setSelectedTab(newValue);
+
+    const other = Array.from(searchParams.entries())
+      .filter(([key]) => key !== 'tab')
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
+    navigate(
+      `${location.pathname}?tab=${Tabs[newValue].paramRoute}${other ? '&' + other : ''}`
+    );
+  };
+
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -63,190 +154,90 @@ export const ParentProfilePage = ({
     setOpen(false);
   };
 
+  const mobileOverflowFix = device !== 'desktop' ? { width: '100%' } : {};
+
+  // return (
+  //   <div>
+  //     <Stack
+  //       direction="column"
+  //       spacing={3}
+  //       sx={{
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //       }}
+  //     >
+  //       <Stack direction="row" spacing={2}>
+
+  //
+
+  //
+  //         <Dialog open={open} onClose={handleClose}>
+  //           <DialogTitle>{t('parent.babysitterAd.createTitle')}</DialogTitle>
+  //           <DialogContent>
+  //             <DialogContentText>
+  //               {t('parent.babysitterAd.prompt')}
+  //             </DialogContentText>
+  //           </DialogContent>
+  //           <DialogActions>
+  //             <Button
+  //               onClick={handleClose}
+  //               component={Link}
+  //               to="/parent/createORedit"
+  //               sx={{ color: 'secondary.contrastText' }}
+  //             >
+  //               {t('parent.babysitterAd.ok')}
+  //             </Button>
+  //           </DialogActions>
+  //         </Dialog>
+  //       </Stack>
+  //     </Stack>
+  //   </div>
+  // );
+
   return (
-    <div>
-      <Stack
-        direction="column"
-        spacing={3}
-        sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={2}
+    <Stack sx={{ placeItems: 'center' }} spacing={2}>
+      <Stack direction="row" spacing={1}>
+        <AvatarDisplay
+          avatar={avatar}
           sx={{
-            justifyContent: 'center',
-            alignItems: 'center',
+            width: 100,
+            height: 100,
+            border: '2px solid',
+            borderColor: 'primary.main',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 0.5,
-              marginTop: 3,
-            }}
-          >
-            <AvatarDisplay
-              avatar={avatar}
-              sx={{
-                width: 100,
-                height: 100,
-                border: '2px solid',
-                borderColor: 'primary.main',
-              }}
-            >
-              <Typography variant="h3">
-                {firstName &&
-                  lastName &&
-                  firstName.charAt(0).toUpperCase() +
-                    lastName.charAt(0).toUpperCase()}
-              </Typography>
-            </AvatarDisplay>
+          <Typography variant="h3">
+            {firstName &&
+              lastName &&
+              firstName.charAt(0).toUpperCase() +
+                lastName.charAt(0).toUpperCase()}
+          </Typography>
+        </AvatarDisplay>
 
-            <div style={{ marginLeft: '20px' }}>
-              <Typography variant="h5">
-                {firstName} {lastName}
-              </Typography>
-              {/*<Typography sx={{ fontSize: '20px' }}>{location}</Typography>*/}
-            </div>
-          </Box>
-
-          <Stack spacing={0.5}>
-            <ActionButton
-              label={t('parent.actions.plannedMeetings')}
-              icon={<CalendarMonthIcon />}
-            />
-            <ActionButton
-              label={t('parent.actions.activeCollaborations')}
-              icon={<ChecklistIcon />}
-            />
-            <ActionButton
-              label={t('parent.actions.temporaryApplications')}
-              icon={<ContactPageIcon />}
-            />
-            <ActionButton
-              label={t('parent.actions.history')}
-              icon={<HistoryIcon />}
-            />
-            <ActionButton
-              label={t('parent.actions.payment')}
-              icon={<Payment />}
-            />
-          </Stack>
-        </Stack>
-
-        <Stack direction="row" spacing={2}>
-          <Card
-            variant="outlined"
-            sx={
-              {
-                // width: '370px',
-                // maxHeight: '380px',
-              }
-            }
-          >
-            <CardHeader title={t('parent.info.title')} />
-            <CardContent>
-              <Typography variant="h6" sx={{ color: 'text.main' }}>
-                {t('parent.info.address')}
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {address}
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'text.main' }}>
-                {t('parent.info.phoneNumber')}
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {phoneNumber}
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'text.main' }}>
-                {t('parent.info.email')}
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {email}
-              </Typography>
-            </CardContent>
-
-            <CardActions>
-              <Button
-                component={Link}
-                to="/parent/editInfo"
-                className="edit-button"
-                startIcon={<EditIcon />}
-                sx={{ color: 'secondary.contrastText' }}
-              >
-                {t('parent.babysitterAd.edit')}
-              </Button>
-            </CardActions>
-          </Card>
-
-          <Card variant="outlined">
-            <CardHeader title={t('parent.babysitterAd.title')} />
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <UserCard
-                name="Athanasios"
-                description="Looking for a babysitter"
-                photo="Young_Vito.webp"
-                showButton={false}
-              >
-                <Typography variant="body2">
-                  Τοποθεσία: Petroupoli <br />
-                  Διάρκεια: 5 mines <br />
-                  Παιδιά: 5 children
-                </Typography>
-              </UserCard>
-            </Box>
-            <CardActions>
-              <Button
-                component={Link}
-                to="/parent/createORedit"
-                className="edit-button"
-                startIcon={<EditIcon />}
-                sx={{ color: 'secondary.contrastText' }}
-              >
-                {t('parent.babysitterAd.edit')}
-              </Button>
-              <Button
-                className="edit-button"
-                color="success"
-                startIcon={<AddCircleOutline />}
-                onClick={handleClickOpen}
-              >
-                {t('parent.babysitterAd.create')}
-              </Button>
-            </CardActions>
-          </Card>
-
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>{t('parent.babysitterAd.createTitle')}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {t('parent.babysitterAd.prompt')}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={handleClose}
-                component={Link}
-                to="/parent/createORedit"
-                sx={{ color: 'secondary.contrastText' }}
-              >
-                {t('parent.babysitterAd.ok')}
-              </Button>
-            </DialogActions>
-          </Dialog>
+        <Stack>
+          <Typography variant="h3">
+            {firstName} {lastName}
+          </Typography>
+          <Typography variant="h6">to be changed</Typography>
         </Stack>
       </Stack>
-    </div>
+      <Stack
+        direction={device === 'desktop' ? 'row' : 'column'}
+        spacing={1}
+        sx={{
+          width: '75%',
+          padding: '0 15px',
+          [device === 'desktop' ? 'alignItems' : 'placeContent']: 'start',
+          ...mobileOverflowFix,
+        }}
+      >
+        <ProfileNav
+          selectedTab={selectedTab}
+          handleSelectedTab={handleSelectedTab}
+          tabs={Tabs}
+        />
+        <Box sx={{ width: '100%' }}>{Tabs[selectedTab].content}</Box>
+      </Stack>
+    </Stack>
   );
 };

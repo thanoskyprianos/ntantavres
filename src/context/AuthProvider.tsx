@@ -49,6 +49,7 @@ const useAuth = () => {
           setUser(null);
           setIsLoading(false);
 
+          // TODO: FIX THIS
           navigate('/auth', { state: { from: location.pathname } });
         }
 

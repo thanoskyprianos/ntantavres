@@ -7,8 +7,11 @@ export interface UserDetails {
   email: string;
   birthdate: Date;
   role: Role;
-  // TODO: refactor this (fetch from actual data if we have time???)
+
+  number?: number;
   address?: string;
+  city?: string;
+  
   phoneNumber?: string;
 
   // TODO: also add the job offer ad

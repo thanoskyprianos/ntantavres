@@ -40,13 +40,13 @@ export const ProfilePage = () => {
       setDetails(details);
       setAvatar(avatar);
     });
-  }, [user]);
+  }, [user, uid]);
 
   return isRequesting || !details ? (
     <LoadingSpinner />
   ) : details.role === 'PARENT' ? (
-    <ParentProfilePage {...details} avatar={avatar} />
+    <ParentProfilePage {...details} avatar={avatar} key={details.uid} />
   ) : (
-    <BabysitterProfilePage {...details} />
+    <BabysitterProfilePage {...details} key={details.uid} />
   );
 };

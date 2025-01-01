@@ -10,18 +10,15 @@ import {
   Typography,
 } from '@mui/material';
 import { UserCard } from '@components/UserCard.tsx';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import { AddCircleOutline } from '@mui/icons-material';
 import { TFunction } from 'i18next';
+import { UserDetails } from '@/types/UserDetails.ts';
+import { TabSetter } from '@components/tabs/TabNav.tsx';
 
-interface ParentInfoProps {
+interface ParentInfoProps extends UserDetails, TabSetter {
   t: TFunction;
-  address?: string;
-  phoneNumber?: string;
-  email?: string;
-  number?: number;
-  city?: string;
 }
 
 // TODO: CRUD
@@ -83,7 +80,10 @@ const Details = ({
   email,
   number,
   city,
+  setSelectedTab,
 }: ParentInfoProps) => {
+  const setSearchParams = useSearchParams()[1];
+
   return (
     <Card
       // variant="outlined"
@@ -118,11 +118,15 @@ const Details = ({
 
       <CardActions>
         <Button
-          component={Link}
-          to="/parent/editInfo"
-          className="edit-button"
           startIcon={<EditIcon />}
           sx={{ color: 'secondary.contrastText' }}
+          onClick={() => {
+            setSelectedTab('settings');
+            setSearchParams(prev => {
+              prev.set('tab', 'settings');
+              return prev;
+            });
+          }}
         >
           {t('parent.babysitterAd.edit')}
         </Button>

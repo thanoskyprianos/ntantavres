@@ -1,7 +1,8 @@
 import { NavTab, TabNav } from '@components/tabs/TabNav.tsx';
 import { Paper, tabsClasses, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 interface ProfileNavProps {
   tabs?: NavTab[];
@@ -14,9 +15,21 @@ export const ProfileNav = ({
   selectedTab,
   handleSelectedTab,
 }: ProfileNavProps) => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { device } = useDeviceDetect();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (!tab) {
+      return;
+    }
+
+    navigate(location.pathname + location.search);
+  }, [searchParams]);
 
   return (
     <Paper sx={{ borderRadius: '15px' }}>

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { UserDetails } from '@/types/UserDetails.ts';
 import { useTranslation } from 'react-i18next';
 import { Base64String } from '@/types/Avatar.ts';
 import { Box, Stack, Typography } from '@mui/material';
 import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { NavTab } from '@components/tabs/TabNav.tsx';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ContactsIcon from '@mui/icons-material/Contacts';
@@ -15,8 +15,8 @@ import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ProfileNav } from '@components/tabs/ProfileNav.tsx';
-import { ParentInfo } from '@components/tabs/parent/ParentInfo.tsx';
-import { ParentSettings } from '@components/tabs/parent/ParentSettings.tsx';
+import { ParentInfo, ParentSettings } from '@/routing/lazy.tabs.ts';
+import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 
 interface ParentProfilePageProps extends UserDetails {
   avatar?: Base64String;
@@ -26,12 +26,18 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
   const { firstName, lastName, avatar } = props;
 
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { device } = useDeviceDetect();
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab');
+  const setSelectedTabStr = (tab: string | number) => {
+    if (typeof tab === 'number') {
+      setSelectedTab(tab >= Tabs.length || tab < 0 ? 0 : tab);
+    } else {
+      setSelectedTab(Tabs.map(t => t.paramRoute).indexOf(tab) || 0);
+    }
+  };
 
   const Tabs: NavTab[] = [
     {
@@ -39,10 +45,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       icon: <InfoIcon />,
       paramRoute: 'info',
       content: (
-        // <Box
-        //   sx={{ width: '1000px', height: '250px', backgroundColor: 'red' }}
-        // />
-        <ParentInfo t={t} {...props} />
+        <ParentInfo t={t} {...props} setSelectedTab={setSelectedTabStr} />
       ),
     },
     {
@@ -110,28 +113,20 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     }
 
     setSelectedTab(start);
-
-    const other = Array.from(searchParams.entries())
-      .filter(([key]) => key !== 'tab')
-      .map(([key, value]) => `${key}=${value}`)
-      .join('&');
-    navigate(
-      `${location.pathname}?tab=${Tabs[start].paramRoute}${other ? '&' + other : ''}`
-    );
+    setSearchParams(prev => {
+      prev.set('tab', Tabs[start].paramRoute || 'info');
+      return prev;
+    });
   }, []);
 
   const handleSelectedTab = (e: React.SyntheticEvent, newValue: number) => {
     e.preventDefault();
 
     setSelectedTab(newValue);
-
-    const other = Array.from(searchParams.entries())
-      .filter(([key]) => key !== 'tab')
-      .map(([key, value]) => `${key}=${value}`)
-      .join('&');
-    navigate(
-      `${location.pathname}?tab=${Tabs[newValue].paramRoute}${other ? '&' + other : ''}`
-    );
+    setSearchParams(prev => {
+      prev.set('tab', Tabs[newValue].paramRoute || 'info');
+      return prev;
+    });
   };
 
   const [open, setOpen] = useState(false);
@@ -226,7 +221,9 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
           handleSelectedTab={handleSelectedTab}
           tabs={Tabs}
         />
-        <Box sx={{ width: '100%' }}>{Tabs[selectedTab].content}</Box>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Box sx={{ width: '100%' }}>{Tabs[selectedTab].content}</Box>
+        </Suspense>
       </Stack>
     </Stack>
   );

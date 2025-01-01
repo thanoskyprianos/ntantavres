@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { Dispatch, ReactElement, ReactNode } from 'react';
 import { Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 
 export interface NavTab {
@@ -6,6 +6,10 @@ export interface NavTab {
   paramRoute?: string;
   icon?: ReactElement;
   content?: ReactNode;
+}
+
+export interface TabSetter {
+  setSelectedTab: Dispatch<string | number>;
 }
 
 interface TabNavProps {

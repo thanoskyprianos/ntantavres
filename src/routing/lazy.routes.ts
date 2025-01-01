@@ -1,4 +1,4 @@
-const lazyRoute = (path: string, componentName: string) => async () => {
+export const lazyRoute = (path: string, componentName: string) => async () => {
   const importFn = () => import(path.replace('@', '../'));
   const module = await importFn();
   return { Component: module[componentName] };
@@ -16,10 +16,6 @@ export const ParentProfilePage = lazyRoute(
 export const JobPosting = lazyRoute(
   '@pages/parent/JobPosting.tsx',
   'JobPosting'
-);
-export const InfoParents = lazyRoute(
-  '@pages/parent/InfoParents.tsx',
-  'InfoParents'
 );
 export const BabysitterPage = lazyRoute(
   '@pages/babysitter/BabysitterPage.tsx',

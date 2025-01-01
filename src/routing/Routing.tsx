@@ -8,7 +8,6 @@ import {
   CardDetailPage,
   EditActiveCollab,
   HomePage,
-  InfoParents,
   JobPosting,
   ParentPage,
   ParentProfilePage,
@@ -48,10 +47,6 @@ const router = createBrowserRouter([
           {
             path: 'createOrEdit',
             lazy: JobPosting,
-          },
-          {
-            path: 'editInfo',
-            lazy: InfoParents,
           },
           {
             path: 'activeCollabs',

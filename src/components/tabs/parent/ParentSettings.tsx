@@ -4,6 +4,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Divider,
   Stack,
 } from '@mui/material';
 import { TFunction } from 'i18next';
@@ -17,6 +18,16 @@ import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { removeEmptyFields } from '@components/util/util.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
+import {
+  ConfirmPasswordInput,
+  ConfirmPasswordInputProps,
+  PasswordInput,
+  PasswordInputProps,
+} from '@components/auth/RegisterCard.tsx';
+import {
+  emailValidation,
+  passwordValidation,
+} from '@util/authValidation.util.ts';
 
 interface ParentSettingsProps extends UserDetails {
   t: TFunction;
@@ -37,8 +48,14 @@ interface DetailsSettingsProps extends UserDetails {
   isUpdating: boolean;
 }
 
-interface AuthSettingsProps extends UserDetails {
+interface AuthSettingsProps
+  extends UserDetails,
+    PasswordInputProps,
+    ConfirmPasswordInputProps {
   t: TFunction;
+  newEmail: string;
+  setNewEmail: Dispatch<string>;
+  isLoading: boolean;
 }
 
 const DetailsSettings = (props: DetailsSettingsProps) => {
@@ -106,22 +123,59 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
 };
 
 const AuthSettings = (props: AuthSettingsProps) => {
-  const { t, email } = props;
-  const { width } = useDeviceDetect();
+  const {
+    t,
+    email,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    confirmPassword,
+    setConfirmPassword,
+    passwordValidation,
+    passwordsMatch,
+    newEmail,
+    setNewEmail,
+    isLoading,
+  } = props;
+
+  const isValidEmail = emailValidation(newEmail);
 
   return (
-    <Stack spacing={1} sx={{ width: '100%' }}>
+    <Stack spacing={1} sx={{ width: '100%' }} divider={<Divider flexItem />}>
       <TextFieldSmall
+        type="email"
         label={t('textField.email')}
         placeholder={email}
+        value={newEmail}
         slotProps={{ inputLabel: { shrink: true } }}
+        onChange={e => setNewEmail(e.target.value)}
+        error={newEmail.length > 0 && !isValidEmail}
+        helperText={
+          newEmail.length > 0 && !isValidEmail ? t('auth.invalidEmail') : ''
+        }
+        disabled={isLoading}
       />
-      <Stack
-        direction={width < 1000 && width > 852 ? 'column' : 'row'}
-        spacing={1}
-      >
-        <TextFieldSmall label={t('textField.password')} />
-        <TextFieldSmall label={t('textField.confirmPassword')} />
+      <Stack spacing={1}>
+        <PasswordInput
+          t={t}
+          password={password}
+          setPassword={setPassword}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          passwordValidation={passwordValidation}
+          required={false}
+          disabled={isLoading}
+        />
+        <ConfirmPasswordInput
+          t={t}
+          password={password}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          passwordsMatch={passwordsMatch}
+          required={false}
+          disabled={!password || isLoading}
+        />
       </Stack>
     </Stack>
   );
@@ -130,11 +184,12 @@ const AuthSettings = (props: AuthSettingsProps) => {
 export const ParentSettings = (props: ParentSettingsProps) => {
   const { t } = props;
   const { device } = useDeviceDetect();
-  const { user } = useAuthContext();
+  const { user, updateEmail, updatePassword, onLogOut } = useAuthContext();
   const { updateUserDetails, isRequesting } = useUserDetails();
   const dispatch = useSnackbarContext();
 
   const [isUpdatingDetails, setIsUpdatingDetails] = useState(false);
+  const [isUpdatingAuth, setIsUpdatingAuth] = useState(false);
 
   const [newFirstName, setNewFirstName] = useState('');
   const [newLastName, setNewLastName] = useState('');
@@ -142,12 +197,26 @@ export const ParentSettings = (props: ParentSettingsProps) => {
   const [newAddress, setNewAddress] = useState('');
   const [newCity, setNewCity] = useState('');
 
+  const [newEmail, setNewEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const passwordValidationList = passwordValidation(password);
+  const passwordsMatch = password === confirmPassword;
+
   const handleDetailsClear = () => {
     setNewFirstName('');
     setNewLastName('');
     setNewNumber(0);
     setNewAddress('');
     setNewCity('');
+  };
+
+  const handleAuthClear = () => {
+    setNewEmail('');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   const handleDetailsSubmit = async () => {
@@ -163,8 +232,6 @@ export const ParentSettings = (props: ParentSettingsProps) => {
       city: newCity,
     }) as unknown as UserDetails;
 
-    console.log(updatedDetails);
-
     if (!updatedDetails || Object.keys(updatedDetails).length === 0) {
       return;
     }
@@ -173,10 +240,7 @@ export const ParentSettings = (props: ParentSettingsProps) => {
 
     try {
       await updateUserDetails(user, updatedDetails);
-    } catch {
-      handleDetailsClear();
-    } finally {
-      setIsUpdatingDetails(false);
+
       handleDetailsClear();
       dispatch!({
         type: 'success',
@@ -185,6 +249,79 @@ export const ParentSettings = (props: ParentSettingsProps) => {
         },
       });
       setTimeout(() => window.location.reload(), 2000);
+    } catch {
+      handleDetailsClear();
+    } finally {
+      setIsUpdatingDetails(false);
+    }
+  };
+
+  const handleAuthSubmit = async () => {
+    if (!newEmail && !password) {
+      return;
+    }
+
+    setIsUpdatingAuth(true);
+    try {
+      if (newEmail && emailValidation(newEmail)) {
+        await updateEmail(newEmail);
+
+        dispatch!({
+          type: 'success',
+          payload: {
+            message: `${t('parent.settings.success')}. ${t('general.reloading')}`,
+          },
+        });
+
+        setTimeout(() => window.location.reload(), 2000);
+      }
+
+      if (
+        password &&
+        confirmPassword &&
+        passwordsMatch &&
+        !Array.from(passwordValidationList.values()).includes(false)
+      ) {
+        await updatePassword(password);
+
+        dispatch!({
+          type: 'success',
+          payload: {
+            message: `${t('parent.settings.success')}. ${t('general.reloading')}`,
+          },
+        });
+
+        setTimeout(() => window.location.reload(), 2000);
+      }
+
+      handleAuthClear();
+    } catch (err) {
+      handleAuthClear();
+
+      if (!(err instanceof Error)) {
+        throw new Error();
+      }
+
+      if (err.message === 'Update email') {
+        dispatch!({
+          type: 'error',
+          payload: { message: t('error.updateEmail') },
+        });
+      } else if (err.message === 'Update password') {
+        dispatch!({
+          type: 'error',
+          payload: { message: t('error.updateEmail') },
+        });
+      } else if (err.message === 'Login again') {
+        dispatch!({
+          type: 'error',
+          payload: { message: t('error.loginAgain') },
+        });
+
+        setTimeout(() => onLogOut(), 2000);
+      }
+    } finally {
+      setIsUpdatingAuth(false);
     }
   };
 
@@ -259,8 +396,57 @@ export const ParentSettings = (props: ParentSettingsProps) => {
         <Card sx={{ borderRadius: '15px', width: '100%' }}>
           <CardHeader title={t('parent.settings.auth')} />
           <CardContent>
-            <AuthSettings {...props} />
+            <AuthSettings
+              {...props}
+              password={password}
+              setPassword={setPassword}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+              passwordValidation={passwordValidationList}
+              passwordsMatch={passwordsMatch}
+              newEmail={newEmail}
+              setNewEmail={setNewEmail}
+              isLoading={isUpdatingAuth}
+            />
           </CardContent>
+          <CardActions>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                padding: '0 15px 15px 15px',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              {isUpdatingAuth ? (
+                <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+              ) : (
+                // dummy div to make space-between work
+                <div></div>
+              )}
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="text"
+                  onClick={handleAuthClear}
+                  disabled={isRequesting || isUpdatingAuth}
+                >
+                  {t('auth.clear')}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleAuthSubmit}
+                  type="submit"
+                  disabled={isRequesting || isUpdatingAuth}
+                >
+                  {t('auth.babysitterDialog.submit')}
+                </Button>
+              </Stack>
+            </Stack>
+          </CardActions>
         </Card>
       </Stack>
     </Stack>

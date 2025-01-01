@@ -27,10 +27,15 @@
     "generic": "There was an error, please try again later",
     "emailExists": "Email '{{email}}' is already in use",
     "invalidCredentials": "Login credentials are invalid",
+    "invalidEmail": "Email is invalid",
+    "invalidPassword": "Password is invalid",
     "404": "Oh no! The page you are looking for does not exist...",
     "updatingDetails": "Error while updating",
     "avatarGet": "Error while fetching avatar",
-    "avatarSet": "Error while setting new avatar"
+    "avatarSet": "Error while setting new avatar",
+    "updateEmail": "Error while updating email",
+    "updatePassword": "Error while updating password",
+    "loginAgain": "This actions requires new login"
   },
   "textField": {
     "firstName": "First Name",

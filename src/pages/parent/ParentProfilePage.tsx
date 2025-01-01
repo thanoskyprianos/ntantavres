@@ -22,14 +22,9 @@ interface ParentProfilePageProps extends UserDetails {
   avatar?: Base64String;
 }
 
-export const ParentProfilePage = ({
-  firstName,
-  lastName,
-  email,
-  address,
-  phoneNumber,
-  avatar,
-}: ParentProfilePageProps) => {
+export const ParentProfilePage = (props: ParentProfilePageProps) => {
+  const { firstName, lastName, avatar } = props;
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { device } = useDeviceDetect();
@@ -47,12 +42,7 @@ export const ParentProfilePage = ({
         // <Box
         //   sx={{ width: '1000px', height: '250px', backgroundColor: 'red' }}
         // />
-        <ParentInfo
-          t={t}
-          address={address}
-          phoneNumber={phoneNumber}
-          email={email}
-        />
+        <ParentInfo t={t} {...props} />
       ),
     },
     {
@@ -109,7 +99,7 @@ export const ParentProfilePage = ({
       title: t('parent.actions.settings'),
       icon: <SettingsIcon />,
       paramRoute: 'settings',
-      content: <ParentSettings t={t} />,
+      content: <ParentSettings t={t} {...props} />,
     },
   ];
 

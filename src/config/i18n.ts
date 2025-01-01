@@ -5,6 +5,8 @@ import { initReactI18next } from 'react-i18next';
 import translation_en from './translations/en/translation_en.json';
 import translation_el from './translations/el/translation_el.json';
 import { el, enUS, Locale } from 'date-fns/locale';
+import { cities_en } from '@config/cities/cities.en.ts';
+import { cities_el } from '@config/cities/cities.el.ts';
 
 i18n
   .use(LanguageDetector)
@@ -33,6 +35,11 @@ export const langsMap = new Map<string, string>([
 export const localeTextMap = new Map<string, Locale>([
   ['en-US', enUS],
   ['el-GR', el],
+]);
+
+export const cities = new Map<string, string[]>([
+  ['en-US', cities_en],
+  ['el-GR', cities_el],
 ]);
 
 export const langs = Array.from(langsMap.keys());

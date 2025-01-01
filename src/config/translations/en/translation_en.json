@@ -24,9 +24,13 @@
     "auth": "Auth"
   },
   "error": {
+    "generic": "There was an error, please try again later",
     "emailExists": "Email '{{email}}' is already in use",
     "invalidCredentials": "Login credentials are invalid",
-    "404": "Oh no! The page you are looking for does not exist..."
+    "404": "Oh no! The page you are looking for does not exist...",
+    "updatingDetails": "Error while updating",
+    "avatarGet": "Error while fetching avatar",
+    "avatarSet": "Error while setting new avatar"
   },
   "textField": {
     "firstName": "First Name",
@@ -60,7 +64,8 @@
     }
   },
   "general": {
-    "or": "or"
+    "or": "or",
+    "reloading": "Reloading page..."
   },
   "tooltip": {
     "password": {
@@ -95,6 +100,14 @@
       "prompt": "Attention, your previous ad will get deleted",
       "ok": "OK",
       "cancel": "CANCEL"
+    },
+    "settings": {
+      "details": "INFO",
+      "auth": "AUTH",
+      "info": "Update any field and press the submit button on the corresponding box",
+      "address": "Address",
+      "city": "City",
+      "success": "Successful update"
     }
   }
 }

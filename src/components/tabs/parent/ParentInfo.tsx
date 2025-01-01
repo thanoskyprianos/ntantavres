@@ -20,6 +20,8 @@ interface ParentInfoProps {
   address?: string;
   phoneNumber?: string;
   email?: string;
+  number?: number;
+  city?: string;
 }
 
 // TODO: CRUD
@@ -74,7 +76,14 @@ const BabysitterAd = ({ t }: BabysitterAdProps) => {
   );
 };
 
-const Details = ({ t, address, phoneNumber, email }: ParentInfoProps) => {
+const Details = ({
+  t,
+  address,
+  phoneNumber,
+  email,
+  number,
+  city,
+}: ParentInfoProps) => {
   return (
     <Card
       // variant="outlined"
@@ -89,7 +98,9 @@ const Details = ({ t, address, phoneNumber, email }: ParentInfoProps) => {
           {t('parent.info.address')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {address || t('parent.info.notSet')}
+          {number && address && city
+            ? `${number} ${address} ${city}`
+            : t('parent.info.notSet')}
         </Typography>
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('parent.info.phoneNumber')}

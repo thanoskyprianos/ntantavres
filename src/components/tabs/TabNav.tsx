@@ -6,6 +6,7 @@ export interface NavTab {
   paramRoute?: string;
   icon?: ReactElement;
   content?: ReactNode;
+  privateTab?: boolean;
 }
 
 export interface TabSetter {

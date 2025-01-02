@@ -364,8 +364,24 @@ export const RegisterCard = () => {
 
         await registerUser(user, details, avatar);
       } catch (err) {
-        // TODO: snackbar
-        console.error(err);
+        if (!(err instanceof Error)) {
+          throw new Error();
+        }
+
+        switch (err.message) {
+          case 'Invalid email':
+            dispatch!({
+              type: 'error',
+              payload: { message: t('error.emailExists', { email: email }) },
+            });
+            break;
+          default:
+            dispatch!({
+              type: 'error',
+              payload: { message: t('error.generic') },
+            });
+            break;
+        }
       } finally {
         setIsRegistering(false);
       }
@@ -375,7 +391,6 @@ export const RegisterCard = () => {
         payload: { message: t('auth.successfulRegister') },
       });
 
-      // TODO: display user details on profile
       navigate(location?.state?.from || `/profile/${user.uid}`);
     } catch (err) {
       if (!(err instanceof Error)) {

@@ -16,7 +16,7 @@ import { AddressInput } from '@components/util/AddressInput.tsx';
 import { Dispatch, useState } from 'react';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
-import { removeEmptyFields } from '@components/util/util.ts';
+import { removeEmptyFields } from '@util/util.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import {
@@ -368,7 +368,7 @@ export const ParentSettings = (props: ParentSettingsProps) => {
       } else if (err.message === 'Update password') {
         dispatch!({
           type: 'error',
-          payload: { message: t('error.updateEmail') },
+          payload: { message: t('error.updatePassword') },
         });
       } else if (err.message === 'Login again') {
         dispatch!({
@@ -377,6 +377,11 @@ export const ParentSettings = (props: ParentSettingsProps) => {
         });
 
         setTimeout(() => onLogOut(), 2000);
+      } else if (err.message === 'Invalid email') {
+        dispatch!({
+          type: 'error',
+          payload: { message: t('error.emailExists', { email: newEmail }) },
+        });
       }
     } finally {
       setIsUpdatingAuth(false);

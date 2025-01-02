@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { UserDetails } from '@/types/UserDetails.ts';
 import { useTranslation } from 'react-i18next';
 import { Base64String } from '@/types/Avatar.ts';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Card, Stack, Typography } from '@mui/material';
 import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useSearchParams } from 'react-router-dom';
@@ -17,13 +17,15 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { ProfileNav } from '@components/tabs/ProfileNav.tsx';
 import { ParentInfo, ParentSettings } from '@/routing/lazy.tabs.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
 
 interface ParentProfilePageProps extends UserDetails {
   avatar?: Base64String;
 }
 
 export const ParentProfilePage = (props: ParentProfilePageProps) => {
-  const { firstName, lastName, avatar } = props;
+  const { user } = useAuthContext();
+  const { uid, firstName, lastName, avatar, city } = props;
 
   const { t } = useTranslation();
   const { device } = useDeviceDetect();
@@ -72,6 +74,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       title: t('parent.actions.temporaryApplications'),
       icon: <ContactsIcon />,
       paramRoute: 'applications',
+      privateTab: true,
       content: (
         <Box
           style={{ width: '250px', height: '250px', backgroundColor: 'blue' }}
@@ -92,6 +95,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       title: t('parent.actions.payment'),
       icon: <Payment />,
       paramRoute: 'payment',
+      privateTab: true,
       content: (
         <Box
           style={{ width: '250px', height: '250px', backgroundColor: 'orange' }}
@@ -102,9 +106,10 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       title: t('parent.actions.settings'),
       icon: <SettingsIcon />,
       paramRoute: 'settings',
+      privateTab: true,
       content: <ParentSettings t={t} {...props} avatar={avatar} />,
     },
-  ];
+  ].filter(tab => (user ? (user.uid !== uid ? !tab.privateTab : true) : false));
 
   useEffect(() => {
     let start = Tabs.findIndex(res => res.paramRoute === currentTab);
@@ -117,7 +122,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       prev.set('tab', Tabs[start].paramRoute || 'info');
       return prev;
     });
-  }, []);
+  }, [currentTab]);
 
   const handleSelectedTab = (e: React.SyntheticEvent, newValue: number) => {
     e.preventDefault();
@@ -129,89 +134,63 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     });
   };
 
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const mobileOverflowFix = device !== 'desktop' ? { width: '100%' } : {};
 
-  // return (
-  //   <div>
-  //     <Stack
-  //       direction="column"
-  //       spacing={3}
-  //       sx={{
-  //         justifyContent: 'center',
-  //         alignItems: 'center',
-  //       }}
-  //     >
-  //       <Stack direction="row" spacing={2}>
-
-  //
-
-  //
-  //         <Dialog open={open} onClose={handleClose}>
-  //           <DialogTitle>{t('parent.babysitterAd.createTitle')}</DialogTitle>
-  //           <DialogContent>
-  //             <DialogContentText>
-  //               {t('parent.babysitterAd.prompt')}
-  //             </DialogContentText>
-  //           </DialogContent>
-  //           <DialogActions>
-  //             <Button
-  //               onClick={handleClose}
-  //               component={Link}
-  //               to="/parent/createORedit"
-  //               sx={{ color: 'secondary.contrastText' }}
-  //             >
-  //               {t('parent.babysitterAd.ok')}
-  //             </Button>
-  //           </DialogActions>
-  //         </Dialog>
-  //       </Stack>
-  //     </Stack>
-  //   </div>
-  // );
-
   return (
-    <Stack sx={{ placeItems: 'center' }} spacing={2}>
-      <Stack direction="row" spacing={1}>
-        <AvatarDisplay
-          avatar={avatar}
+    <Stack
+      sx={{
+        placeItems: 'center',
+        padding: '0 15px',
+      }}
+      spacing={1}
+    >
+      <Card
+        sx={{
+          width: '75%',
+          borderRadius: '15px',
+          padding: '0 15px',
+          ...mobileOverflowFix,
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={1}
           sx={{
-            width: 100,
-            height: 100,
-            border: '2px solid',
-            borderColor: 'primary.main',
+            padding: '20px 0',
+            placeContent: device !== 'mobile' ? 'center' : 'start',
+            overflow: 'auto',
           }}
         >
-          <Typography variant="h3">
-            {firstName &&
-              lastName &&
-              firstName.charAt(0).toUpperCase() +
-                lastName.charAt(0).toUpperCase()}
-          </Typography>
-        </AvatarDisplay>
+          <AvatarDisplay
+            avatar={avatar}
+            sx={{
+              width: 100,
+              height: 100,
+              border: '2px solid',
+              borderColor: 'primary.main',
+            }}
+          >
+            <Typography variant="h3">
+              {firstName &&
+                lastName &&
+                firstName.charAt(0).toUpperCase() +
+                  lastName.charAt(0).toUpperCase()}
+            </Typography>
+          </AvatarDisplay>
 
-        <Stack>
-          <Typography variant="h3">
-            {firstName} {lastName}
-          </Typography>
-          <Typography variant="h6">to be changed</Typography>
+          <Stack>
+            <Typography variant="h4" sx={{ textWrap: 'nowrap' }}>
+              {firstName} {lastName}
+            </Typography>
+            <Typography variant="h6">{city}</Typography>
+          </Stack>
         </Stack>
-      </Stack>
+      </Card>
       <Stack
         direction={device === 'desktop' ? 'row' : 'column'}
         spacing={1}
         sx={{
           width: '75%',
-          padding: '0 15px',
           [device === 'desktop' ? 'alignItems' : 'placeContent']: 'start',
           ...mobileOverflowFix,
         }}

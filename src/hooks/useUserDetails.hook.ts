@@ -188,9 +188,16 @@ export const useUserDetails = () => {
 
     try {
       await _registerUser(user, details, avatar);
-    } catch {
-      // TODO: translate (validations)
-      dispatch!({ type: 'error', payload: { message: t('error.generic') } });
+    } catch (err) {
+      if (!(err instanceof Error)) {
+        throw new Error();
+      }
+
+      if (err.message.includes('auth/invalid-email')) {
+        throw new Error('Invalid email');
+      } else {
+        throw new Error('Auth error');
+      }
     }
 
     setIsRequesting(false);

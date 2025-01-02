@@ -57,7 +57,6 @@ const useAuth = () => {
           setUser(null);
           setIsLoading(false);
 
-          // TODO: FIX THIS
           navigate('/auth', { state: { from: location.pathname } });
         }
 
@@ -121,9 +120,7 @@ const useAuth = () => {
       setUser(credentials.user);
       return credentials.user;
     } catch {
-      // TODO: check with regex maybe
       throw new Error(t('error.emailExists', { email: email }));
-      // TODO: check for password and email errors (format validation)
     } finally {
       setIsLoading(false);
     }

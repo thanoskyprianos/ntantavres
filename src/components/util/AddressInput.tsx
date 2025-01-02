@@ -51,7 +51,7 @@ export const AddressInput = ({
             label="#"
             placeholder={oldNumber?.toString() || ''}
             sx={{ width: '50%' }}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{ inputLabel: { shrink: !!oldNumber || !!newNumber } }}
             value={newNumber || ''}
             onChange={e => {
               console.log('test');
@@ -68,7 +68,7 @@ export const AddressInput = ({
             label={t('parent.settings.address')}
             placeholder={oldAddress || ''}
             sx={{ width: '100%' }}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{ inputLabel: { shrink: !!oldAddress || !!newAddress } }}
             value={newAddress}
             onChange={e => setExtAddress(e.target.value)}
             disabled={isLoading}

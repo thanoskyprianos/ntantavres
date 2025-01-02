@@ -70,7 +70,8 @@
   },
   "general": {
     "or": "or",
-    "reloading": "Reloading page..."
+    "reloading": "Reloading page...",
+    "update": "UPDATE"
   },
   "tooltip": {
     "password": {
@@ -101,7 +102,7 @@
       "title": "WANTED BABYSITTER AD",
       "create": "Create",
       "createTitle": "Create ad",
-      "edit": "Edit",
+      "edit": "EDIT",
       "prompt": "Attention, your previous ad will get deleted",
       "ok": "OK",
       "cancel": "CANCEL"

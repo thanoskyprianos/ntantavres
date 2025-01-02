@@ -102,7 +102,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       title: t('parent.actions.settings'),
       icon: <SettingsIcon />,
       paramRoute: 'settings',
-      content: <ParentSettings t={t} {...props} />,
+      content: <ParentSettings t={t} {...props} avatar={avatar} />,
     },
   ];
 

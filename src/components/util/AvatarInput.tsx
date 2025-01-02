@@ -1,7 +1,7 @@
 import { Badge, Box, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Dispatch, ReactNode, useRef, useState } from 'react';
+import { Dispatch, ReactNode, useEffect, useRef, useState } from 'react';
 import { TFunction } from 'i18next';
 import { ONE_MB, toBase64 } from '@util/imageManipulation.util.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
@@ -24,12 +24,16 @@ interface AvatarInputProps {
   t: TFunction;
   setAvatarExt: Dispatch<Base64String>;
   children?: ReactNode;
+  oldAvatar?: Base64String;
+  incToClear?: number;
 }
 
 export const AvatarInput = ({
   t,
   setAvatarExt,
   children,
+  oldAvatar,
+  incToClear,
 }: AvatarInputProps) => {
   const dispatch = useSnackbarContext();
 
@@ -61,6 +65,12 @@ export const AvatarInput = ({
     setAvatar(b64);
     setAvatarExt(b64);
   };
+
+  // if incToClear get changed the avatar is cleared (to bored to implement refs)
+  useEffect(() => {
+    setAvatar('');
+    setAvatarExt('');
+  }, [incToClear]);
 
   return (
     <Stack sx={{ alignItems: 'center' }} spacing={0.5}>
@@ -104,7 +114,7 @@ export const AvatarInput = ({
             }}
           >
             <AvatarDisplay
-              avatar={avatar}
+              avatar={avatar || oldAvatar}
               sx={{
                 height: '100px',
                 width: '100px',

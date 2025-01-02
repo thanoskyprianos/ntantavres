@@ -6,6 +6,7 @@ import {
   CardHeader,
   Divider,
   Stack,
+  Typography,
 } from '@mui/material';
 import { TFunction } from 'i18next';
 import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
@@ -28,9 +29,12 @@ import {
   emailValidation,
   passwordValidation,
 } from '@util/authValidation.util.ts';
+import { AvatarInput } from '@components/util/AvatarInput.tsx';
+import { Base64String } from '@/types/Avatar.ts';
 
 interface ParentSettingsProps extends UserDetails {
   t: TFunction;
+  avatar?: Base64String;
 }
 
 interface DetailsSettingsProps extends UserDetails {
@@ -46,6 +50,12 @@ interface DetailsSettingsProps extends UserDetails {
   newCity: string;
   setNewCity: Dispatch<string>;
   isUpdating: boolean;
+  oldAvatar?: Base64String;
+  avatar: Base64String;
+  setAvatar: Dispatch<Base64String>;
+  incToClear: number;
+  newPhoneNumber: string;
+  setNewPhoneNumber: Dispatch<string>;
 }
 
 interface AuthSettingsProps
@@ -77,13 +87,32 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
     newCity,
     setNewCity,
     isUpdating,
+    oldAvatar,
+    setAvatar,
+    incToClear,
+    newPhoneNumber,
+    setNewPhoneNumber,
+    phoneNumber,
   } = props;
 
   const { width } = useDeviceDetect();
 
   return (
     <>
-      <Stack sx={{ width: '100%' }} spacing={1}>
+      <Stack sx={{ width: '100%' }} spacing={2} divider={<Divider flexItem />}>
+        <AvatarInput
+          t={t}
+          setAvatarExt={setAvatar}
+          oldAvatar={oldAvatar}
+          incToClear={incToClear}
+        >
+          {firstName && lastName && (
+            <Typography variant="h3">
+              {firstName.charAt(0).toUpperCase() +
+                lastName.charAt(0).toUpperCase()}
+            </Typography>
+          )}
+        </AvatarInput>
         <Stack
           direction={width < 1000 && width > 852 ? 'column' : 'row'}
           spacing={1}
@@ -117,6 +146,14 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
           setExtCity={setNewCity}
           isLoading={isUpdating}
         />
+        <TextFieldSmall
+          label={t('parent.info.phoneNumber')}
+          placeholder={phoneNumber}
+          slotProps={{ inputLabel: { shrink: true } }}
+          value={newPhoneNumber}
+          onChange={e => setNewPhoneNumber(e.target.value)}
+          disabled={isUpdating}
+        />
       </Stack>
     </>
   );
@@ -142,7 +179,7 @@ const AuthSettings = (props: AuthSettingsProps) => {
   const isValidEmail = emailValidation(newEmail);
 
   return (
-    <Stack spacing={1} sx={{ width: '100%' }} divider={<Divider flexItem />}>
+    <Stack spacing={2} sx={{ width: '100%' }} divider={<Divider flexItem />}>
       <TextFieldSmall
         type="email"
         label={t('textField.email')}
@@ -185,11 +222,14 @@ export const ParentSettings = (props: ParentSettingsProps) => {
   const { t } = props;
   const { device } = useDeviceDetect();
   const { user, updateEmail, updatePassword, onLogOut } = useAuthContext();
-  const { updateUserDetails, isRequesting } = useUserDetails();
+  const { updateUserDetails, isRequesting, setUserAvatar } = useUserDetails();
   const dispatch = useSnackbarContext();
 
   const [isUpdatingDetails, setIsUpdatingDetails] = useState(false);
   const [isUpdatingAuth, setIsUpdatingAuth] = useState(false);
+
+  const [avatar, setAvatar] = useState<Base64String>('');
+  const [incToClear, setIncToClear] = useState(0);
 
   const [newFirstName, setNewFirstName] = useState('');
   const [newLastName, setNewLastName] = useState('');
@@ -202,6 +242,8 @@ export const ParentSettings = (props: ParentSettingsProps) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  const [newPhoneNumber, setNewPhoneNumber] = useState('');
+
   const passwordValidationList = passwordValidation(password);
   const passwordsMatch = password === confirmPassword;
 
@@ -211,6 +253,7 @@ export const ParentSettings = (props: ParentSettingsProps) => {
     setNewNumber(0);
     setNewAddress('');
     setNewCity('');
+    setIncToClear(inc => inc + 1);
   };
 
   const handleAuthClear = () => {
@@ -230,16 +273,27 @@ export const ParentSettings = (props: ParentSettingsProps) => {
       number: newNumber,
       address: newAddress,
       city: newCity,
+      phoneNumber: newPhoneNumber,
     }) as unknown as UserDetails;
-
-    if (!updatedDetails || Object.keys(updatedDetails).length === 0) {
-      return;
-    }
 
     setIsUpdatingDetails(true);
 
     try {
-      await updateUserDetails(user, updatedDetails);
+      if (updatedDetails && Object.keys(updatedDetails).length !== 0) {
+        await updateUserDetails(user, updatedDetails);
+      }
+
+      if (avatar) {
+        await setUserAvatar(user, avatar);
+      }
+
+      // kinda messy but ait
+      if (
+        (!updatedDetails || Object.keys(updatedDetails).length === 0) &&
+        !avatar
+      ) {
+        return;
+      }
 
       handleDetailsClear();
       dispatch!({
@@ -353,6 +407,12 @@ export const ParentSettings = (props: ParentSettingsProps) => {
               newCity={newCity}
               setNewCity={setNewCity}
               isUpdating={isUpdatingDetails}
+              oldAvatar={props.avatar}
+              avatar={avatar}
+              setAvatar={setAvatar}
+              incToClear={incToClear}
+              newPhoneNumber={newPhoneNumber}
+              setNewPhoneNumber={setNewPhoneNumber}
               {...props}
             />
           </CardContent>

@@ -300,6 +300,7 @@ export const RegisterCard = () => {
   // const [optBabysitter, setOptBabysitter] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [incToClear, setIncToClear] = useState(0);
 
   const isValidEmail = emailValidation(email);
 
@@ -313,6 +314,7 @@ export const RegisterCard = () => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setIncToClear(inc => inc + 1);
   };
 
   // const handleActiveCheckbox = () => {
@@ -405,7 +407,7 @@ export const RegisterCard = () => {
           placeItems: 'center',
         }}
       >
-        <AvatarInput t={t} setAvatarExt={setAvatar}>
+        <AvatarInput t={t} setAvatarExt={setAvatar} incToClear={incToClear}>
           {firstName && lastName && (
             <Typography variant="h3">
               {firstName.charAt(0).toUpperCase() +

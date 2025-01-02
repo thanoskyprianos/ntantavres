@@ -20,7 +20,7 @@ export const passwordValidation = (password: string): Map<string, boolean> => {
 };
 
 export const emailValidation = (email: string): boolean => {
-  return /^\S+@\S+\.\S+$/.test(email);
+  return /^\S+@\S+\.\S{2,}$/.test(email);
 };
 
 export const ageValidation = (birthdate: Date): boolean => {

@@ -120,7 +120,9 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
           <TextFieldSmall
             label={t('textField.firstName')}
             placeholder={firstName}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{
+              inputLabel: { shrink: !!firstName || !!newFirstName },
+            }}
             value={newFirstName}
             onChange={e => setNewFirstName(e.target.value)}
             disabled={isUpdating}
@@ -128,7 +130,7 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
           <TextFieldSmall
             label={t('textField.lastName')}
             placeholder={lastName}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{ inputLabel: { shrink: !!lastName || !newFirstName } }}
             value={newLastName}
             onChange={e => setNewLastName(e.target.value)}
             disabled={isUpdating}
@@ -149,7 +151,9 @@ const DetailsSettings = (props: DetailsSettingsProps) => {
         <TextFieldSmall
           label={t('parent.info.phoneNumber')}
           placeholder={phoneNumber}
-          slotProps={{ inputLabel: { shrink: true } }}
+          slotProps={{
+            inputLabel: { shrink: !!phoneNumber || !!newPhoneNumber },
+          }}
           value={newPhoneNumber}
           onChange={e => setNewPhoneNumber(e.target.value)}
           disabled={isUpdating}
@@ -185,7 +189,7 @@ const AuthSettings = (props: AuthSettingsProps) => {
         label={t('textField.email')}
         placeholder={email}
         value={newEmail}
-        slotProps={{ inputLabel: { shrink: true } }}
+        slotProps={{ inputLabel: { shrink: !!email || !!newEmail } }}
         onChange={e => setNewEmail(e.target.value)}
         error={newEmail.length > 0 && !isValidEmail}
         helperText={
@@ -447,7 +451,7 @@ export const ParentSettings = (props: ParentSettingsProps) => {
                   type="submit"
                   disabled={isRequesting || isUpdatingDetails}
                 >
-                  {t('auth.babysitterDialog.submit')}
+                  {t('general.update')}
                 </Button>
               </Stack>
             </Stack>
@@ -502,7 +506,7 @@ export const ParentSettings = (props: ParentSettingsProps) => {
                   type="submit"
                   disabled={isRequesting || isUpdatingAuth}
                 >
-                  {t('auth.babysitterDialog.submit')}
+                  {t('general.update')}
                 </Button>
               </Stack>
             </Stack>

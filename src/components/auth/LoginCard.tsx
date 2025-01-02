@@ -16,7 +16,7 @@ export const LoginCard = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggingIn, setIsLogginIn] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleClear = () => {
     setEmail('');
@@ -29,7 +29,7 @@ export const LoginCard = () => {
     }
 
     try {
-      setIsLogginIn(true);
+      setIsLoggingIn(true);
       const user = await onLogIn({ email, password });
 
       dispatch!({
@@ -42,10 +42,31 @@ export const LoginCard = () => {
         throw err;
       }
 
-      dispatch!({ type: 'error', payload: { message: err.message } });
-      handleClear();
+      switch (err.message) {
+        case 'Invalid email':
+          dispatch!({
+            type: 'error',
+            payload: { message: t('error.invalidEmail') },
+          });
+          handleClear();
+          break;
+        case 'Invalid password':
+          dispatch!({
+            type: 'error',
+            payload: { message: t('error.invalidPassword') },
+          });
+          setPassword('');
+          break;
+        default:
+          dispatch!({
+            type: 'error',
+            payload: { message: t('error.invalidCredentials') },
+          });
+          handleClear();
+          break;
+      }
     } finally {
-      setIsLogginIn(false);
+      setIsLoggingIn(false);
     }
   };
 

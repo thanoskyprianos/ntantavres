@@ -4,6 +4,7 @@ export type DeviceUsed = 'desktop' | 'tablet' | 'mobile';
 
 export const useDeviceDetect = () => {
   const [device, setDevice] = useState<DeviceUsed>('desktop');
+  const [width, setWidth] = useState<number>(() => window.innerWidth);
 
   useEffect(() => {
     const handleResize = () => {
@@ -14,6 +15,8 @@ export const useDeviceDetect = () => {
       } else {
         setDevice('desktop');
       }
+
+      setWidth(window.innerWidth);
     };
 
     handleResize();
@@ -24,5 +27,5 @@ export const useDeviceDetect = () => {
     };
   }, []);
 
-  return { device };
+  return { device, width };
 };

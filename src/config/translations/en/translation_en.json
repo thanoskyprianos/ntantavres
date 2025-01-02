@@ -14,7 +14,8 @@
     "parent": "Parent",
     "babysitter": "Babysitter",
     "questions": "Questions",
-    "auth": "Auth"
+    "auth": "Auth",
+    "profile": "Profile"
   },
   "title": {
     "parent": "Parent",
@@ -23,9 +24,18 @@
     "auth": "Auth"
   },
   "error": {
+    "generic": "There was an error, please try again later",
     "emailExists": "Email '{{email}}' is already in use",
     "invalidCredentials": "Login credentials are invalid",
-    "404": "Oh no! The page you are looking for does not exist..."
+    "invalidEmail": "Email is invalid",
+    "invalidPassword": "Password is invalid",
+    "404": "Oh no! The page you are looking for does not exist...",
+    "updatingDetails": "Error while updating",
+    "avatarGet": "Error while fetching avatar",
+    "avatarSet": "Error while setting new avatar",
+    "updateEmail": "Error while updating email",
+    "updatePassword": "Error while updating password",
+    "loginAgain": "This actions requires new login"
   },
   "textField": {
     "firstName": "First Name",
@@ -59,7 +69,9 @@
     }
   },
   "general": {
-    "or": "or"
+    "or": "or",
+    "reloading": "Reloading page...",
+    "update": "UPDATE"
   },
   "tooltip": {
     "password": {
@@ -76,22 +88,32 @@
       "activeCollaborations": "ACTIVE COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
-      "payment": "PAYMENT"
+      "payment": "PAYMENT",
+      "settings": "SETTINGS"
     },
     "info": {
       "title": "INFO",
       "address": "Address",
       "phoneNumber": "Phone number",
-      "email": "Email"
+      "email": "Email",
+      "notSet": "(Not set)"
     },
     "babysitterAd": {
       "title": "WANTED BABYSITTER AD",
       "create": "Create",
       "createTitle": "Create ad",
-      "edit": "Edit",
+      "edit": "EDIT",
       "prompt": "Attention, your previous ad will get deleted",
       "ok": "OK",
       "cancel": "CANCEL"
+    },
+    "settings": {
+      "details": "INFO",
+      "auth": "AUTH",
+      "info": "Update any field and press the submit button on the corresponding box",
+      "address": "Address",
+      "city": "City",
+      "success": "Successful update"
     }
   }
 }

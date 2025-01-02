@@ -48,7 +48,7 @@ interface PasswordTooltipListProps {
   passwordValidation: Map<string, boolean>;
 }
 
-interface PasswordInputProps {
+export interface PasswordInputProps {
   t: TFunction;
   password: string;
   setPassword: Dispatch<string>;
@@ -56,15 +56,17 @@ interface PasswordInputProps {
   setShowPassword: Dispatch<SetStateAction<boolean>>;
   disabled?: boolean;
   passwordValidation: Map<string, boolean>;
+  required?: boolean;
 }
 
-interface ConfirmPasswordInputProps {
+export interface ConfirmPasswordInputProps {
   t: TFunction;
   password: string;
   confirmPassword: string;
   setConfirmPassword: Dispatch<string>;
   passwordsMatch: boolean;
   disabled?: boolean;
+  required?: boolean;
 }
 
 interface BabysitterDocumentsProps {
@@ -127,7 +129,7 @@ const PasswordTooltipList = ({
   );
 };
 
-const PasswordInput = ({
+export const PasswordInput = ({
   t,
   password,
   setPassword,
@@ -135,6 +137,7 @@ const PasswordInput = ({
   setShowPassword,
   disabled = false,
   passwordValidation,
+  required = true,
 }: PasswordInputProps) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -143,7 +146,7 @@ const PasswordInput = ({
       <TextFieldSmall
         type={showPassword ? 'text' : 'password'}
         label={t('textField.password')}
-        required
+        required={required}
         value={password}
         onChange={e => setPassword(e.target.value)}
         slotProps={{
@@ -210,19 +213,20 @@ const PasswordInput = ({
   );
 };
 
-const ConfirmPasswordInput = ({
+export const ConfirmPasswordInput = ({
   t,
   password,
   confirmPassword,
   setConfirmPassword,
   passwordsMatch,
   disabled = false,
+  required = true,
 }: ConfirmPasswordInputProps) => {
   return (
     <TextFieldSmall
       type="password"
       label={t('textField.confirmPassword')}
-      required
+      required={required}
       value={confirmPassword}
       onChange={e => setConfirmPassword(e.target.value)}
       error={
@@ -296,6 +300,7 @@ export const RegisterCard = () => {
   // const [optBabysitter, setOptBabysitter] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [incToClear, setIncToClear] = useState(0);
 
   const isValidEmail = emailValidation(email);
 
@@ -309,6 +314,7 @@ export const RegisterCard = () => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setIncToClear(inc => inc + 1);
   };
 
   // const handleActiveCheckbox = () => {
@@ -401,7 +407,7 @@ export const RegisterCard = () => {
           placeItems: 'center',
         }}
       >
-        <AvatarInput t={t} setAvatarExt={setAvatar}>
+        <AvatarInput t={t} setAvatarExt={setAvatar} incToClear={incToClear}>
           {firstName && lastName && (
             <Typography variant="h3">
               {firstName.charAt(0).toUpperCase() +

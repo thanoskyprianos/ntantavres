@@ -178,7 +178,6 @@ const QuestionsAndProfile = ({ device, t }: PartOfHeaderProps) => {
             },
             ...commonTheme,
           }}
-          showLabel={true}
           handleChange={handleProfileOptions}
         />
         // <IconLabelDropdownMenu

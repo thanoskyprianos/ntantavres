@@ -21,4 +21,10 @@ export const firebaseConfig = {
 
 Obviously replace the values inside `<...>`
 
-To run do: `yarn install` and the `yarn run dev`
+To run do: `yarn install` and then `yarn run dev`
+
+***
+
+# TODO
+
+* Add firestore security rules here

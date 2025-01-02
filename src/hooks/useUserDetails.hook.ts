@@ -1,7 +1,13 @@
 import { db } from '@config/firebase.ts';
 import { User } from 'firebase/auth';
 import { UserDetails } from '../types/UserDetails.ts';
-import { doc, getDoc, runTransaction, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { chunk, CHUNK_LIMIT } from '@util/imageManipulation.util.ts';
 import { useState } from 'react';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
@@ -58,6 +64,10 @@ const _registerUser = (
   ]);
 };
 
+const _updateUserDetails = (user: User, details: UserDetails) => {
+  return updateDoc(doc(db, 'user', user.uid), { ...details });
+};
+
 const _getUserDetails = (uid: string) => {
   return getDoc(doc(db, 'user', uid));
 };
@@ -71,7 +81,7 @@ const _getUserAvatar = async (uid: string) => {
     );
 
     if (!sizeDoc.exists()) {
-      throw new Error();
+      throw new Error('No avatar');
     }
 
     const size = sizeDoc.get('data') as number;
@@ -116,9 +126,16 @@ export const useUserDetails = () => {
 
     try {
       b64 = await _getUserAvatar(uid);
-    } catch {
-      // TODO: translate
-      dispatch!({ type: 'error', payload: { message: t('error') } });
+    } catch (err) {
+      if (!(err instanceof Error)) {
+        throw new Error();
+      }
+
+      if (err.message === 'No avatar') {
+        return;
+      }
+
+      dispatch!({ type: 'error', payload: { message: t('error.avatarGet') } });
     } finally {
       setIsRequesting(false);
     }
@@ -140,11 +157,26 @@ export const useUserDetails = () => {
     try {
       await _setUserAvatar(user, avatar);
     } catch {
-      // TODO: translate
-      dispatch!({ type: 'error', payload: { message: t('error') } });
+      dispatch!({ type: 'error', payload: { message: t('error.avatarSet') } });
+    } finally {
+      setIsRequesting(false);
     }
+  };
 
-    setIsRequesting(false);
+  const updateUserDetails = async (user: User, details: UserDetails) => {
+    setIsRequesting(true);
+
+    try {
+      await _updateUserDetails(user, details);
+    } catch {
+      dispatch!({
+        type: 'error',
+        payload: { message: t('error.updatingDetails') },
+      });
+      throw new Error();
+    } finally {
+      setIsRequesting(false);
+    }
   };
 
   const registerUser = async (
@@ -157,8 +189,8 @@ export const useUserDetails = () => {
     try {
       await _registerUser(user, details, avatar);
     } catch {
-      // TODO: translate
-      dispatch!({ type: 'error', payload: { message: t('error') } });
+      // TODO: translate (validations)
+      dispatch!({ type: 'error', payload: { message: t('error.generic') } });
     }
 
     setIsRequesting(false);
@@ -171,5 +203,6 @@ export const useUserDetails = () => {
     setUserDetails,
     setUserAvatar,
     registerUser,
+    updateUserDetails,
   };
 };

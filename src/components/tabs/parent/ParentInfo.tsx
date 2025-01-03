@@ -25,9 +25,6 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import { AddCircleOutline } from '@mui/icons-material';
-import { TFunction } from 'i18next';
-import { UserDetails } from '@/types/UserDetails.ts';
-import { TabSetter } from '@components/tabs/TabNav.tsx';
 import { useParentAds } from '@hooks/useParentAds.hook.ts';
 import { useEffect, useState } from 'react';
 import { ParentAd, WorkDuration, WorkType } from '@/types/ParentAd.ts';
@@ -37,27 +34,17 @@ import { Switch } from '@components/guard/Switch.tsx';
 import { Child } from '@/types/Child.ts';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { removeEmptyFields } from '@util/util.ts';
+import { isEmpty, removeEmptyFields } from '@util/util.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
+import { useProfileContext } from '@/context/ProfileProvider.tsx';
+import { useTranslation } from 'react-i18next';
+import { useTabSetterContext } from '@/context/TabSetterProvider.tsx';
 
-interface ParentInfoProps extends UserDetails, TabSetter {
-  t: TFunction;
-}
-
-// TODO: CRUD
-interface ParentAdCardProps extends UserDetails {
-  t: TFunction;
-}
-
-const ParentAdCard = ({
-  t,
-  firstName,
-  lastName,
-  uid,
-  city,
-}: ParentAdCardProps) => {
+const ParentAdCard = () => {
   const dispatch = useSnackbarContext();
   const { isLoading, getAd, setAd: setAdF, updateAd } = useParentAds();
+  const { firstName, lastName, uid, location } = useProfileContext();
+  const { t } = useTranslation();
 
   const [ad, setAd] = useState<ParentAd>();
 
@@ -75,15 +62,19 @@ const ParentAdCard = ({
       return;
     }
 
-    setIsUpdating(true);
-
     const toSave = removeEmptyFields({
-      location: city,
+      location,
       duration,
       type,
       children,
       description,
     }) as unknown as ParentAd;
+
+    if (isEmpty(toSave)) {
+      return;
+    }
+
+    setIsUpdating(true);
 
     try {
       if (!ad) {
@@ -371,17 +362,12 @@ const ParentAdCard = ({
   );
 };
 
-const Details = ({
-  t,
-  address,
-  phoneNumber,
-  email,
-  number,
-  city,
-  setSelectedTab,
-  uid,
-}: ParentInfoProps) => {
+const Details = () => {
   const setSearchParams = useSearchParams()[1];
+
+  const { uid, phoneNumber, email, location } = useProfileContext();
+  const { setSelectedTab } = useTabSetterContext();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -396,8 +382,8 @@ const Details = ({
           {t('parent.info.address')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {number && address && city
-            ? `${number} ${address} ${city}`
+          {location && location.number && location.address && location.city
+            ? `${location.number} ${location.address} ${location.city}`
             : t('parent.info.notSet')}
         </Typography>
         <Typography variant="h6" sx={{ color: 'text.main' }}>
@@ -437,7 +423,7 @@ const Details = ({
   );
 };
 
-export const ParentInfo = (props: ParentInfoProps) => {
+export const ParentInfo = () => {
   const { device } = useDeviceDetect();
 
   return (
@@ -446,8 +432,8 @@ export const ParentInfo = (props: ParentInfoProps) => {
       sx={{ width: '100%', alignItems: 'start' }}
       spacing={1}
     >
-      <ParentAdCard {...props} />
-      <Details {...props} />
+      <ParentAdCard />
+      <Details />
     </Stack>
   );
 };

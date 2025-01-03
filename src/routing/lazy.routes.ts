@@ -9,10 +9,6 @@ export const ParentPage = lazyRoute(
   '@pages/parent/ParentPage.tsx',
   'ParentPage'
 );
-export const ParentProfilePage = lazyRoute(
-  '@pages/parent/ParentProfilePage.tsx',
-  'ParentProfilePage'
-);
 export const BabysitterPage = lazyRoute(
   '@pages/babysitter/BabysitterPage.tsx',
   'BabysitterPage'
@@ -56,4 +52,7 @@ export const PaymentPage = lazyRoute(
   'PaymentPage'
 );
 
-export const ProfilePage = lazyRoute('@pages/ProfilePage.tsx', 'ProfilePage');
+export const ProfilePage = lazyRoute(
+  '@pages/profile/ProfilePage.tsx',
+  'ProfilePage'
+);

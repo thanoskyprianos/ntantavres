@@ -9,7 +9,6 @@ import {
   EditActiveCollab,
   HomePage,
   ParentPage,
-  ParentProfilePage,
   PaymentPage,
   ProfilePage,
   QuestionsPage,
@@ -39,10 +38,6 @@ const router = createBrowserRouter([
           {
             index: true,
             lazy: ParentPage,
-          },
-          {
-            path: 'profile',
-            lazy: ParentProfilePage,
           },
           {
             path: 'activeCollabs',

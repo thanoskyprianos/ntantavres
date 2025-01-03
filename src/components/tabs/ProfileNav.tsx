@@ -1,35 +1,22 @@
 import { NavTab, TabNav } from '@components/tabs/TabNav.tsx';
 import { Paper, tabsClasses, useTheme } from '@mui/material';
-import React, { useEffect } from 'react';
+import { Dispatch } from 'react';
 import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 interface ProfileNavProps {
   tabs?: NavTab[];
   selectedTab: number;
-  handleSelectedTab: (e: React.SyntheticEvent, n: number) => void;
+  setSelectedTab: Dispatch<number>;
 }
 
 export const ProfileNav = ({
   tabs,
   selectedTab,
-  handleSelectedTab,
+  setSelectedTab,
 }: ProfileNavProps) => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { device } = useDeviceDetect();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (!tab) {
-      return;
-    }
-
-    navigate(location.pathname + location.search);
-  }, [searchParams]);
 
   return (
     <Paper sx={{ borderRadius: '15px' }}>
@@ -49,8 +36,8 @@ export const ProfileNav = ({
         tabsProps={{
           orientation: device === 'desktop' ? 'vertical' : 'horizontal',
           value: selectedTab,
-          onChange: handleSelectedTab,
           variant: 'scrollable',
+          onChange: (_e, v) => setSelectedTab(v),
           allowScrollButtonsMobile: true,
           sx: {
             borderRadius: '15px',

@@ -1,15 +1,15 @@
-import { Dispatch, ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { Tab, TabProps, Tabs, TabsProps } from '@mui/material';
+import { Role } from '@/types/UserDetails.ts';
+import { Link } from 'react-router-dom';
 
 export interface NavTab {
   title: string;
-  paramRoute?: string;
+  paramRoute: string;
   icon?: ReactElement;
   content?: ReactNode;
-}
-
-export interface TabSetter {
-  setSelectedTab: Dispatch<string | number>;
+  privateTab?: boolean;
+  role: Role | 'BOTH';
 }
 
 interface TabNavProps {
@@ -27,12 +27,14 @@ export const TabNav = ({
 }: TabNavProps) => {
   return (
     <Tabs {...tabsProps}>
-      {tabs?.map(({ title, icon }) => (
+      {tabs?.map(tab => (
         <Tab
+          to={`?tab=${tab.paramRoute}`}
+          component={Link}
           {...tabProps}
-          label={showLabels ? title : undefined}
-          icon={icon}
-          key={title}
+          label={showLabels ? tab.title : undefined}
+          icon={tab.icon}
+          key={tab.title}
         />
       ))}
     </Tabs>

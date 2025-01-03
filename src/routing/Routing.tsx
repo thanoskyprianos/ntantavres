@@ -8,9 +8,7 @@ import {
   CardDetailPage,
   EditActiveCollab,
   HomePage,
-  JobPosting,
   ParentPage,
-  ParentProfilePage,
   PaymentPage,
   ProfilePage,
   QuestionsPage,
@@ -23,6 +21,7 @@ import {
 const router = createBrowserRouter([
   {
     element: <Layout />,
+    // TODO: re-add this
     // errorElement: (
     //   <Layout>
     //     <ErrorPage />
@@ -39,14 +38,6 @@ const router = createBrowserRouter([
           {
             index: true,
             lazy: ParentPage,
-          },
-          {
-            path: 'profile',
-            lazy: ParentProfilePage,
-          },
-          {
-            path: 'createOrEdit',
-            lazy: JobPosting,
           },
           {
             path: 'activeCollabs',

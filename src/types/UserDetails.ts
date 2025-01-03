@@ -1,5 +1,11 @@
 export type Role = 'PARENT' | 'BABYSITTER';
 
+export interface Location {
+  number?: number;
+  address?: string;
+  city?: string;
+}
+
 export interface UserDetails {
   uid: string;
   firstName: string;
@@ -7,12 +13,6 @@ export interface UserDetails {
   email: string;
   birthdate: Date;
   role: Role;
-
-  number?: number;
-  address?: string;
-  city?: string;
-  
+  location?: Location;
   phoneNumber?: string;
-
-  // TODO: also add the job offer ad
 }

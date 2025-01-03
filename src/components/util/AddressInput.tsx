@@ -4,30 +4,19 @@ import { Dispatch, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
 import { cities } from '@config/i18n.ts';
+import { Location } from '@/types/UserDetails.ts';
 
 interface AddressInputProps {
-  oldNumber?: number;
-  oldAddress?: string;
-  oldCity?: string;
-  newNumber?: number | string;
-  newAddress?: string;
-  newCity?: string;
-  setExtNumber: Dispatch<number | string>;
-  setExtAddress: Dispatch<string>;
-  setExtCity: Dispatch<string>;
+  newLocation?: Location;
+  oldLocation?: Location;
+  setExtLocation: Dispatch<Location>;
   isLoading?: boolean;
 }
 
 export const AddressInput = ({
-  oldNumber,
-  oldAddress,
-  oldCity,
-  newNumber,
-  newAddress,
-  newCity,
-  setExtNumber,
-  setExtAddress,
-  setExtCity,
+  oldLocation,
+  newLocation,
+  setExtLocation,
   isLoading = false,
 }: AddressInputProps) => {
   const { width } = useDeviceDetect();
@@ -35,7 +24,7 @@ export const AddressInput = ({
 
   useEffect(() => {
     // clear city because of wrong translation
-    setExtCity('');
+    setExtLocation({ ...newLocation, city: '' });
   }, [t]);
 
   return (
@@ -49,28 +38,39 @@ export const AddressInput = ({
           <TextFieldSmall
             id="number"
             label="#"
-            placeholder={oldNumber?.toString() || ''}
+            placeholder={oldLocation?.number?.toString() || ''}
             sx={{ width: '50%' }}
-            slotProps={{ inputLabel: { shrink: !!oldNumber || !!newNumber } }}
-            value={newNumber || ''}
+            slotProps={{
+              inputLabel: {
+                shrink: !!oldLocation?.number || !!newLocation?.number,
+              },
+            }}
+            value={newLocation?.number || ''}
             onChange={e => {
-              console.log('test');
               const valid = /^\d*$/.test(e.target.value) || !e.target.value;
               if (valid) {
-                setExtNumber(e.target.value);
+                setExtLocation({
+                  ...newLocation,
+                  number: Number(e.target.value),
+                });
               }
             }}
-            onInput={() => console.log('input')}
             disabled={isLoading}
           />
           <TextFieldSmall
             id="address"
             label={t('parent.settings.address')}
-            placeholder={oldAddress || ''}
+            placeholder={oldLocation?.address || ''}
             sx={{ width: '100%' }}
-            slotProps={{ inputLabel: { shrink: !!oldAddress || !!newAddress } }}
-            value={newAddress}
-            onChange={e => setExtAddress(e.target.value)}
+            slotProps={{
+              inputLabel: {
+                shrink: !!oldLocation?.address || !!newLocation?.address,
+              },
+            }}
+            value={newLocation?.address || ''}
+            onChange={e =>
+              setExtLocation({ ...newLocation, address: e.target.value })
+            }
             disabled={isLoading}
           />
         </Stack>
@@ -81,14 +81,17 @@ export const AddressInput = ({
             <TextFieldSmall
               {...params}
               label={
-                t('parent.settings.city') + (oldCity ? ` (${oldCity})` : '')
+                t('parent.settings.city') +
+                (oldLocation?.city ? ` (${oldLocation.city})` : '')
               }
             />
           )}
           options={cities.get(i18n.language) || []}
           sx={{ width: '100%' }}
-          value={newCity}
-          onChange={(_e, n) => setExtCity(n || '')}
+          value={newLocation?.city || ''}
+          onChange={(_e, n) =>
+            setExtLocation({ ...newLocation, city: n || '' })
+          }
           disabled={isLoading}
         />
       </Stack>

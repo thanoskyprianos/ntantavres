@@ -71,7 +71,9 @@
   "general": {
     "or": "or",
     "reloading": "Reloading page...",
-    "update": "UPDATE"
+    "update": "UPDATE",
+    "save": "SAVE",
+    "undo": "UNDO"
   },
   "tooltip": {
     "password": {
@@ -98,14 +100,34 @@
       "email": "Email",
       "notSet": "(Not set)"
     },
-    "babysitterAd": {
+    "ad": {
       "title": "WANTED BABYSITTER AD",
-      "create": "Create",
+      "create": "CREATE",
       "createTitle": "Create ad",
       "edit": "EDIT",
       "prompt": "Attention, your previous ad will get deleted",
       "ok": "OK",
-      "cancel": "CANCEL"
+      "cancel": "CANCEL",
+      "location": "Location",
+      "duration": {
+        "title": "Duration",
+        "months": "month(s)"
+      },
+      "type": {
+        "title": "Type",
+        "PART_TIME": "Part time",
+        "FULL_TIME": "Full time"
+      },
+      "children": {
+        "title": "Children",
+        "months": "month(s) old",
+        "age": "Age"
+      },
+      "description": "Description",
+      "notFound": {
+        "others": "User {{firstName}} {{lastName}} has not posted an ad",
+        "self": "You have not posted an ad. You can do that by clicking the 'CREATE' button"
+      }
     },
     "settings": {
       "details": "INFO",

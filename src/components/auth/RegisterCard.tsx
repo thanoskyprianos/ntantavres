@@ -12,11 +12,14 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Checkbox,
+  FormControlLabel,
+  DialogContent
 } from '@mui/material';
 import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState, useRef } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ClearIcon, DatePicker } from '@mui/x-date-pickers';
@@ -247,8 +250,18 @@ const BabysitterDocuments = ({
   isDialogOpen,
   setIsDialogOpen,
 }: BabysitterDocumentsProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleOnSubmit = () => {
-    setIsDialogOpen(false);
+      fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('File selected:', file);
+      setIsDialogOpen(false); // Close the dialog after file selection
+    }
   };
 
   return (
@@ -256,7 +269,7 @@ const BabysitterDocuments = ({
       open={isDialogOpen}
       onClose={() => setIsDialogOpen(false)}
       maxWidth="xs"
-      fullWidth={true}
+      fullWidth
     >
       <DialogTitle>
         <Stack
@@ -269,17 +282,30 @@ const BabysitterDocuments = ({
           </IconButton>
         </Stack>
       </DialogTitle>
+      <DialogContent>
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx" // ++?
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+      </DialogContent>
       <DialogActions>
         <Button variant="text" sx={{ color: 'primary.light' }}>
           {t('auth.clear')}
         </Button>
-        <Button variant="contained" onClick={handleOnSubmit}>
+        <Button
+          variant="contained"
+          onClick={handleOnSubmit}
+        >
           {t('auth.babysitterDialog.submit')}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
 
 export const RegisterCard = () => {
   const { t } = useTranslation();
@@ -493,19 +519,22 @@ export const RegisterCard = () => {
           passwordsMatch={passwordsMatch}
           disabled={isLoading || isRegistering}
         />
-        {/*<FormControlLabel*/}
-        {/*  control={*/}
-        {/*    <Checkbox*/}
-        {/*      edge={'start'}*/}
-        {/*      onClick={handleActiveCheckbox}*/}
-        {/*      checked={optBabysitter}*/}
-        {/*      color="success"*/}
-        {/*      size="small"*/}
-        {/*    />*/}
-        {/*  }*/}
-        {/*  label={t('auth.isBabysitter')}*/}
-        {/*  sx={{ alignSelf: 'start' }}*/}
-        {/*/>*/}
+        <FormControlLabel
+          control={
+            <Checkbox
+              edge={'start'}
+              onChange={(event) => {
+                if (event.target.checked) {
+                  setDialogOpen(true);
+                }
+              }}
+              color="success"
+              size="small"
+            />
+          }
+          label={t('auth.isBabysitter')}
+          sx={{ alignSelf: 'start' }}
+        />
       </Stack>
 
       <Stack

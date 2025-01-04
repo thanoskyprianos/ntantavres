@@ -250,18 +250,31 @@ const BabysitterDocuments = ({
   isDialogOpen,
   setIsDialogOpen,
 }: BabysitterDocumentsProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]); // To store uploaded file names
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
 
-  const handleOnSubmit = () => {
-      fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log('File selected:', file);
-      setIsDialogOpen(false); // Close the dialog after file selection
+      // Add the file name to the uploaded files state
+      setUploadedFiles(prevFiles => {
+        const newFiles = [...prevFiles];
+        newFiles[index] = file.name; // Store file name at the correct index
+        return newFiles;
+      });
     }
+  };
+
+  const handleClearFiles = () => {
+    setUploadedFiles([]); // Clear the uploaded files
+  };
+
+  // Handle submit button (to submit files to Firebase later)
+  const handleSubmit = () => {
+    // Logic for submitting files to Firebase will go here
+    console.log("Submitting files:", uploadedFiles);
+    setIsDialogOpen(false); // Close dialog after submitting
   };
 
   return (
@@ -283,21 +296,52 @@ const BabysitterDocuments = ({
         </Stack>
       </DialogTitle>
       <DialogContent>
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx" // ++?
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
+        {/* File Upload Buttons */}
+        <Stack spacing={2} sx={{ alignItems: 'center' }}>
+          {[...Array(3)].map((_, index) => (
+            <Button
+              key={index}
+              variant="outlined"
+              component="label"
+              sx={{ width: '100%' }}
+            >
+              {t(`auth.uploadFile${index + 1}`)} {/* e.g., "Upload File 1", "Upload File 2", etc. */}
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={(e) => handleFileChange(e, index)}
+              />
+            </Button>
+          ))}
+        </Stack>
+
+        {/* Display Uploaded File Names */}
+        {uploadedFiles.length > 0 && (
+          <Stack spacing={1} sx={{ marginTop: '20px' }}>
+            <Typography variant="body2">{t('auth.uploadedFiles')}</Typography>
+            {uploadedFiles.map((fileName, index) => (
+              <Typography key={index} variant="body2" sx={{ color: 'text.secondary' }}>
+                {fileName}
+              </Typography>
+            ))}
+          </Stack>
+        )}
       </DialogContent>
+
       <DialogActions>
-        <Button variant="text" sx={{ color: 'primary.light' }}>
+      <Button
+          variant="text"
+          onClick={handleClearFiles} // Clear the uploaded files
+          sx={{ color: 'primary.light' }}
+        >
           {t('auth.clear')}
         </Button>
         <Button
           variant="contained"
-          onClick={handleOnSubmit}
+          onClick={handleSubmit} // Submit the uploaded files
+          disabled={uploadedFiles.length === 0} // Disable if no files are uploaded
         >
           {t('auth.babysitterDialog.submit')}
         </Button>
@@ -305,6 +349,7 @@ const BabysitterDocuments = ({
     </Dialog>
   );
 };
+
 
 
 export const RegisterCard = () => {

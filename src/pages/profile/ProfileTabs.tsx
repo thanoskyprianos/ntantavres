@@ -8,18 +8,17 @@ import { Payment } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ParentInfo, ParentSettings } from '@/routing/lazy.tabs.ts';
-import i18next from 'i18next';
 
 export const ProfileTabs: NavTab[] = [
   {
-    title: i18next.t('parent.info.title'),
+    title: 'parent.info.title',
     icon: <InfoIcon />,
     paramRoute: 'info',
     role: 'PARENT',
     content: <ParentInfo />,
   },
   {
-    title: i18next.t('parent.actions.plannedMeetings'),
+    title: 'parent.actions.plannedMeetings',
     icon: <CalendarMonthIcon />,
     paramRoute: 'meetings',
     role: 'BOTH',
@@ -30,7 +29,7 @@ export const ProfileTabs: NavTab[] = [
     ),
   },
   {
-    title: i18next.t('parent.actions.activeCollaborations'),
+    title: 'parent.actions.activeCollaborations',
     icon: <ChecklistIcon />,
     paramRoute: 'collaborations',
     role: 'BOTH',
@@ -41,7 +40,7 @@ export const ProfileTabs: NavTab[] = [
     ),
   },
   {
-    title: i18next.t('parent.actions.temporaryApplications'),
+    title: 'parent.actions.temporaryApplications',
     icon: <ContactsIcon />,
     paramRoute: 'applications',
     privateTab: true,
@@ -53,7 +52,7 @@ export const ProfileTabs: NavTab[] = [
     ),
   },
   {
-    title: i18next.t('parent.actions.history'),
+    title: 'parent.actions.history',
     icon: <HistoryIcon />,
     paramRoute: 'history',
     role: 'BOTH',
@@ -64,7 +63,7 @@ export const ProfileTabs: NavTab[] = [
     ),
   },
   {
-    title: i18next.t('parent.actions.payment'),
+    title: 'parent.actions.payment',
     icon: <Payment />,
     paramRoute: 'payment',
     privateTab: true,
@@ -76,7 +75,7 @@ export const ProfileTabs: NavTab[] = [
     ),
   },
   {
-    title: i18next.t('parent.actions.settings'),
+    title: 'parent.actions.settings',
     icon: <SettingsIcon />,
     paramRoute: 'settings',
     privateTab: true,

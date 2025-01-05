@@ -2,6 +2,7 @@ import { ReactElement, ReactNode } from 'react';
 import { Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 import { Role } from '@/types/UserDetails.ts';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export interface NavTab {
   title: string;
@@ -25,6 +26,8 @@ export const TabNav = ({
   tabs,
   showLabels = true,
 }: TabNavProps) => {
+  const { t } = useTranslation();
+
   return (
     <Tabs {...tabsProps}>
       {tabs?.map(tab => (
@@ -32,7 +35,7 @@ export const TabNav = ({
           to={`?tab=${tab.paramRoute}`}
           component={Link}
           {...tabProps}
-          label={showLabels ? tab.title : undefined}
+          label={showLabels ? t(tab.title) : undefined}
           icon={tab.icon}
           key={tab.title}
         />

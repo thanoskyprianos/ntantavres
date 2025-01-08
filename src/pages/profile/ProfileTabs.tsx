@@ -8,6 +8,7 @@ import { Payment } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ParentInfo, ParentSettings } from '@/routing/lazy.tabs.ts';
+import { TabBox } from './TabBox.tsx';
 
 export const ProfileTabs: NavTab[] = [
   {
@@ -22,22 +23,14 @@ export const ProfileTabs: NavTab[] = [
     icon: <CalendarMonthIcon />,
     paramRoute: 'meetings',
     role: 'BOTH',
-    content: (
-      <Box
-        style={{ width: '250px', height: '250px', backgroundColor: 'green' }}
-      />
-    ),
+    content: <TabBox variant="meetings"/>,
   },
   {
     title: 'parent.actions.activeCollaborations',
     icon: <ChecklistIcon />,
     paramRoute: 'collaborations',
     role: 'BOTH',
-    content: (
-      <Box
-        style={{ width: '250px', height: '250px', backgroundColor: 'yellow' }}
-      />
-    ),
+    content: <TabBox variant="collaborations"/>,
   },
   {
     title: 'parent.actions.temporaryApplications',
@@ -45,22 +38,15 @@ export const ProfileTabs: NavTab[] = [
     paramRoute: 'applications',
     privateTab: true,
     role: 'PARENT',
-    content: (
-      <Box
-        style={{ width: '250px', height: '250px', backgroundColor: 'blue' }}
-      />
-    ),
+    content: <TabBox variant="applications"/>,
   },
   {
     title: 'parent.actions.history',
     icon: <HistoryIcon />,
     paramRoute: 'history',
     role: 'BOTH',
-    content: (
-      <Box
-        style={{ width: '250px', height: '250px', backgroundColor: 'pink' }}
-      />
-    ),
+    content: <TabBox variant="history"/>,
+
   },
   {
     title: 'parent.actions.payment',
@@ -68,11 +54,8 @@ export const ProfileTabs: NavTab[] = [
     paramRoute: 'payment',
     privateTab: true,
     role: 'BOTH',
-    content: (
-      <Box
-        style={{ width: '250px', height: '250px', backgroundColor: 'orange' }}
-      />
-    ),
+    content: <TabBox variant="payment"/>,
+
   },
   {
     title: 'parent.actions.settings',

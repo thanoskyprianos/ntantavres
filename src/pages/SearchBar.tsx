@@ -196,6 +196,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
         backdropFilter: 'blur(8px)',
       }}
     >  
+    
       <Stack spacing={2}>
         <Button
           onClick={handleResetFilters}
@@ -232,6 +233,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
         />
         {showTypeOfUser && (
         <>
+        <Divider></Divider>
           <Typography variant="body2" color="textSecondary">
               Είμαι
             <Tooltip title="Πραγματοποίηση αναζήτησης ως γονιός (εύρεση νταντάς)
@@ -242,28 +244,30 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
             </Tooltip>
           </Typography>
           <Stack direction={'row'} spacing={1}>
-            <Button
-              variant={selectedButton === 'Γονέας' ? 'contained' : 'outlined'}
-              onClick={() => handleButtonClick('Γονέας')}
-              sx={{
-                width: '150px',
-                bgcolor: selectedButton === 'Γονέας' ? '#1976d2' : 'inherit',
-                color: selectedButton === 'Γονέας' ? '#fff' : 'inherit',
-              }}
-            >
-              Γονέας
-            </Button>
-            <Button
-              variant={selectedButton === 'Επαγγελματίας' ? 'contained' : 'outlined'}
-              onClick={() => handleButtonClick('Επαγγελματίας')}
-              sx={{
-                width: '150px',
-                bgcolor: selectedButton === 'Επαγγελματίας' ? '#1976d2' : 'inherit',
-                color: selectedButton === 'Επαγγελματίας' ? '#fff' : 'inherit',
-              }}
-            >
-              Επαγγελματίας
-            </Button>
+          <Button
+            variant="outlined"
+            onClick={() => handleButtonClick('Γονέας')}
+            sx={{
+              width: '150px',
+              bgcolor: selectedButton === 'Γονέας' ? '#1976d2' : 'inherit',
+              color: selectedButton === 'Γονέας' ? '#fff' : 'inherit',
+              border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)'}`,
+            }}
+          >
+            Γονέας
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => handleButtonClick('Επαγγελματίας')}
+            sx={{
+              width: '150px',
+              bgcolor: selectedButton === 'Επαγγελματίας' ? '#1976d2' : 'inherit',
+              color: selectedButton === 'Επαγγελματίας' ? '#fff' : 'inherit',
+              border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)'}`,
+            }}
+          >
+            Επαγγελματίας
+          </Button>
           </Stack>
         </>
         )}
@@ -358,6 +362,18 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
                   min={1}
                   max={12}
                   marks={marks}
+                  sx={{
+                    color: isDarkMode ? 'white' : 'inherit',
+                    '& .MuiSlider-thumb': {
+                      borderColor: isDarkMode ? 'white' : 'inherit',
+                    },
+                    '& .MuiSlider-track': {
+                      borderColor: isDarkMode ? 'white' : 'inherit',
+                    },
+                    '& .MuiSlider-rail': {
+                      borderColor: isDarkMode ? 'white' : 'inherit',
+                    },
+                  }}
               />
 
               <Divider></Divider>
@@ -371,28 +387,30 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
               </Typography>
 
               <Stack direction={'row'} spacing={1}>
-                <Button
-                  variant={selectedButton === 'Μερική' ? 'contained' : 'outlined'}
-                  onClick={() => handleButtonClick('Μερική')}
-                  sx={{
-                    width: '150px',
-                    bgcolor: selectedButton === 'Μερική' ? '#1976d2' : 'inherit',
-                    color: selectedButton === 'Μερική' ? '#fff' : 'inherit',
-                  }}
-                >
-                  Μερική
-                </Button>
-                <Button
-                  variant={selectedButton === 'Πλήρης' ? 'contained' : 'outlined'}
-                  onClick={() => handleButtonClick('Πλήρης')}
-                  sx={{
-                    width: '150px',
-                    bgcolor: selectedButton === 'Πλήρης' ? '#1976d2' : 'inherit',
-                    color: selectedButton === 'Πλήρης' ? '#fff' : 'inherit',
-                  }}
-                >
-                  Πλήρης
-                </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleButtonClick('Μερική')}
+                sx={{
+                  border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)'}`,
+                  width: '150px',
+                  bgcolor: selectedButton === 'Μερική' ? '#1976d2' : 'inherit',
+                  color: selectedButton === 'Μερική' ? '#fff' : 'inherit',
+                }}
+              >
+                Μερική
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleButtonClick('Πλήρης')}
+                sx={{
+                  border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)'}`,
+                  width: '150px',
+                  bgcolor: selectedButton === 'Πλήρης' ? '#1976d2' : 'inherit',
+                  color: selectedButton === 'Πλήρης' ? '#fff' : 'inherit',
+                }}
+              >
+                Πλήρης
+              </Button>
               </Stack>
           </>
         )}

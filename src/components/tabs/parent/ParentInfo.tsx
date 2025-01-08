@@ -39,7 +39,6 @@ import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { useTranslation } from 'react-i18next';
 import { useTabSetterContext } from '@/context/TabSetterProvider.tsx';
-
 const ParentAdCard = () => {
   const dispatch = useSnackbarContext();
   const { isLoading, getAd, setAd: setAdF, updateAd } = useParentAds();
@@ -54,11 +53,19 @@ const ParentAdCard = () => {
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [description, setDescription] = useState('');
   const [editOrCreate, setEditOrCreate] = useState(false);
-
   const [isUpdating, setIsUpdating] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>({});
 
   const handleSubmit = async () => {
-    if (!duration || !type || children.length === 0) {
+    const errors: { [key: string]: string } = {};
+
+    if (!duration) errors.duration = t('error.durationRequired');
+    if (!type) errors.type = t('error.typeRequired');
+    if (children.length === 0) errors.children = t('error.childrenRequired');
+    if (!description) errors.description = t('error.descriptionRequired');
+
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors);
       return;
     }
 
@@ -103,8 +110,8 @@ const ParentAdCard = () => {
     setType(ad?.type || null);
     setChildren(ad?.children || []);
     setDescription(ad?.description || '');
-
     setSelectedAge(0);
+    setErrorMessages({});
   };
 
   useEffect(() => {
@@ -222,12 +229,17 @@ const ParentAdCard = () => {
                     label: (index + 1).toString(),
                   }))}
                   disabled={isUpdating}
+                  sx={errorMessages.duration ? { border: '1px solid red' } : {}}
                 />
+                {errorMessages.duration && (
+                  <Typography color="error">{errorMessages.duration}</Typography>
+                )}
                 <Divider flexItem sx={{ paddingTop: '15px' }} />
                 <InputLabel>{t('parent.ad.type.title')}</InputLabel>
                 <RadioGroup
                   value={type}
                   onChange={(_e, v) => setType(v as WorkType)}
+                  sx={errorMessages.type ? { border: '1px solid red', borderRadius: '5px', padding: '5px' } : {}}
                 >
                   <FormControlLabel
                     value="PART_TIME"
@@ -242,11 +254,14 @@ const ParentAdCard = () => {
                     disabled={isUpdating}
                   />
                 </RadioGroup>
+                {errorMessages.type && (
+                  <Typography color="error">{errorMessages.type}</Typography>
+                )}
                 <Divider flexItem />
                 <InputLabel>{t('parent.ad.children.title')}</InputLabel>
                 <Stack
                   spacing={1}
-                  sx={{ maxHeight: '150px', overflow: 'auto' }}
+                  sx={{ maxHeight: '150px', overflow: 'auto', border: errorMessages.children ? '1px solid red' : 'none', borderRadius: '5px', padding: '5px' }}
                 >
                   {children.map(child => (
                     <Stack
@@ -271,6 +286,9 @@ const ParentAdCard = () => {
                     </Stack>
                   ))}
                 </Stack>
+                {errorMessages.children && (
+                  <Typography color="error">{errorMessages.children}</Typography>
+                )}
                 <Stack direction="row" spacing={1}>
                   <Select
                     variant="outlined"
@@ -318,6 +336,8 @@ const ParentAdCard = () => {
                   onChange={e => setDescription(e.target.value)}
                   placeholder={t('parent.ad.description')}
                   rows={3}
+                  error={!!errorMessages.description}
+                  helperText={errorMessages.description}
                 />
               </Stack>
             </DialogContent>

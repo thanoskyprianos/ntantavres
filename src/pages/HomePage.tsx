@@ -143,9 +143,10 @@ const GradientButton = ({
       onClick={handleClick}
       color="primary"
       sx={{
-        height: '30px',
-        // width: '249px',
-        fontSize: '20px',
+        height: '40px',
+        width: '249px',
+        fontSize: '25px',
+        fontWeight: 600,
         color: isDarkMode ? '#fff' : '#000',
         background: isActive
           ? isDarkMode
@@ -155,6 +156,8 @@ const GradientButton = ({
             ? '#3a3a3a'
             : '#e0e0e0',
         '&:hover': {
+          transform: 'translateY(-1px)',
+          boxShadow: '0 5px 8px 2px rgba(83, 97, 255, .3)',
           background: isActive
             ? isDarkMode
               ? 'linear-gradient(to right, #5361ff, #11508e)'
@@ -212,7 +215,7 @@ function TopButtonsSection({
           handleClick={toggleButtons}
           isActive={activeButton === 'buttons'}
         >
-          Είμαι
+          ΕΙΜΑΙ
         </GradientButton>
         <GradientButton
           handleClick={toggleQuickSearch}

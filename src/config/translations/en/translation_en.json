@@ -73,7 +73,9 @@
     "reloading": "Reloading page...",
     "update": "UPDATE",
     "save": "SAVE",
-    "undo": "UNDO"
+    "undo": "UNDO",
+    "edit": "EDIT",
+    "submit": "SUBMIT"
   },
   "tooltip": {
     "password": {
@@ -104,7 +106,6 @@
       "title": "WANTED BABYSITTER AD",
       "create": "CREATE",
       "createTitle": "Create ad",
-      "edit": "EDIT",
       "prompt": "Attention, your previous ad will get deleted",
       "ok": "OK",
       "cancel": "CANCEL",
@@ -136,6 +137,38 @@
       "address": "Address",
       "city": "City",
       "success": "Successful update"
+    }
+  },
+  "babysitter": {
+    "info": {
+      "title": "INFO",
+      "address": "Address",
+      "phoneNumber": "Phone number",
+      "email": "Email",
+      "notSet": "(Not set)"
+    },
+    "calendar": {
+      "title": "AVAILABILITY",
+      "months": {
+        "january": "JANUARY",
+        "february": "FEBRUARY",
+        "march": "MARCH",
+        "april": "APRIL",
+        "may": "MAY",
+        "june": "JUNE",
+        "july": "JULY",
+        "august": "AUGUST",
+        "september": "SEPTEMBER",
+        "october": "OCTOBER",
+        "november": "NOVEMBER",
+        "december": "DECEMBER"
+      },
+      "error": {
+        "set": "Error while updating availability"
+      },
+      "success": {
+        "set": "Successfully updated availability"
+      }
     }
   }
 }

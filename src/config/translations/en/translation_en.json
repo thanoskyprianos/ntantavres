@@ -145,10 +145,17 @@
       "address": "Address",
       "phoneNumber": "Phone number",
       "email": "Email",
-      "notSet": "(Not set)"
+      "notSet": "(Not set)",
+      "experience": "Experience",
+      "studies": "Education level",
+      "about": "Get to know me"
     },
     "calendar": {
       "title": "AVAILABILITY",
+      "subheader": {
+        "self": "Click on edit and choose availability for each month",
+        "others": "Choose one of the available months and make an appointment"
+      },
       "months": {
         "january": "JANUARY",
         "february": "FEBRUARY",
@@ -168,6 +175,15 @@
       },
       "success": {
         "set": "Successfully updated availability"
+      }
+    },
+    "settings": {
+      "ad": "Ad",
+      "error": {
+        "ad": "Error while updating ad"
+      },
+      "success": {
+        "ad": "Successfully updated ad"
       }
     }
   }

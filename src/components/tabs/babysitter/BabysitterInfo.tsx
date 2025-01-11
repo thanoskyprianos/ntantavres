@@ -5,6 +5,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Divider,
   Grid2,
   Stack,
   Typography,
@@ -24,6 +25,8 @@ import {
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
+import { BabysitterAd } from '@/types/BabysitterAd.ts';
+import { Switch } from '@components/guard/Switch.tsx';
 
 const BabysitterCalendar = () => {
   const { t } = useTranslation();
@@ -71,7 +74,16 @@ const BabysitterCalendar = () => {
         borderRadius: '15px',
       }}
     >
-      <CardHeader title={t('babysitter.calendar.title')} />
+      <CardHeader
+        title={t('babysitter.calendar.title')}
+        subheader={
+          <Switch
+            uid={uid}
+            a={t('babysitter.calendar.subheader.self')}
+            b={t('babysitter.calendar.subheader.others')}
+          />
+        }
+      />
       <CardContent>
         <Grid2 container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
           {Object.entries(
@@ -155,6 +167,18 @@ const Details = () => {
   const { uid, phoneNumber, email, location } = useProfileContext();
   const { setSelectedTab } = useTabSetterContext();
   const { t } = useTranslation();
+  const [ad, setAd] = useState<BabysitterAd>();
+
+  const { getAd } = useBabysitter();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await getAd(uid);
+      setAd(data);
+    };
+
+    fetch().then();
+  }, []);
 
   return (
     <Card
@@ -184,6 +208,27 @@ const Details = () => {
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
           {email}
+        </Typography>
+
+        <Divider flexItem sx={{ margin: '5px 0' }} />
+
+        <Typography variant="h6" sx={{ color: 'text.main' }}>
+          {t('babysitter.info.experience')}
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {ad?.experience || t('babysitter.info.notSet')}
+        </Typography>
+        <Typography variant="h6" sx={{ color: 'text.main' }}>
+          {t('babysitter.info.studies')}
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {ad?.studies || t('babysitter.info.notSet')}
+        </Typography>
+        <Typography variant="h6" sx={{ color: 'text.main' }}>
+          {t('babysitter.info.about')}
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {ad?.about || t('babysitter.info.notSet')}
         </Typography>
       </CardContent>
 

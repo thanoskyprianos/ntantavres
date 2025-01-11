@@ -14,7 +14,7 @@ export const Footer = (props: any) => {
       }}
     >
       <Typography variant="body2" color="text.secondary" align="center">
-        © {2024} Network Team (Team 58)
+        © {new Date().getFullYear()} Network Team (Team 58)
       </Typography>
     </Box>
   );

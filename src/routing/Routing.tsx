@@ -4,7 +4,6 @@ import {
   ActiveCollabs,
   AuthPage,
   BabysitterPage,
-  BabysitterProfilePage,
   CardDetailPage,
   EditActiveCollab,
   HomePage,
@@ -71,10 +70,6 @@ const router = createBrowserRouter([
           {
             index: true,
             lazy: BabysitterPage,
-          },
-          {
-            path: 'profile',
-            lazy: BabysitterProfilePage,
           },
         ],
       },

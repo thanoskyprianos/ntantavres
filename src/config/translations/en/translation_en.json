@@ -175,10 +175,13 @@
       },
       "success": {
         "set": "Successfully updated availability"
+      },
+      "clickMonth": {
+        "self": "You can't make an appointment with yourself"
       }
     },
     "settings": {
-      "ad": "Ad",
+      "ad": "AD",
       "error": {
         "ad": "Error while updating ad"
       },

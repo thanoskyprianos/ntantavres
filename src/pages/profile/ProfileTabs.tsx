@@ -8,6 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
   BabysitterInfo,
+  BabysitterSettings,
   ParentInfo,
   ParentSettings,
 } from '@/routing/lazy.tabs.ts';
@@ -70,7 +71,15 @@ export const ProfileTabs: NavTab[] = [
     icon: <SettingsIcon />,
     paramRoute: 'settings',
     privateTab: true,
-    role: 'BOTH',
+    role: 'PARENT',
     content: <ParentSettings />,
+  },
+  {
+    title: 'parent.actions.settings',
+    icon: <SettingsIcon />,
+    paramRoute: 'settings',
+    privateTab: true,
+    role: 'BABYSITTER',
+    content: <BabysitterSettings />,
   },
 ];

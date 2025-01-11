@@ -17,3 +17,9 @@ export const ParentSettings = lazy(() =>
     default: module['ParentSettings'],
   }))
 );
+
+export const BabysitterSettings = lazy(() =>
+  import('@components/tabs/babysitter/BabysitterSettings').then(module => ({
+    default: module['BabysitterSettings'],
+  }))
+);

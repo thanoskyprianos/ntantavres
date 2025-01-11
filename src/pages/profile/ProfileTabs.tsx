@@ -35,6 +35,7 @@ export const ProfileTabs: NavTab[] = [
     paramRoute: 'meetings',
     role: 'BOTH',
     content: <TabBox variant="meetings" />,
+    requiresAuth: true,
   },
   {
     title: 'parent.actions.activeCollaborations',
@@ -42,6 +43,7 @@ export const ProfileTabs: NavTab[] = [
     paramRoute: 'collaborations',
     role: 'BOTH',
     content: <TabBox variant="collaborations" />,
+    requiresAuth: true,
   },
   {
     title: 'parent.actions.temporaryApplications',
@@ -57,6 +59,7 @@ export const ProfileTabs: NavTab[] = [
     paramRoute: 'history',
     role: 'BOTH',
     content: <TabBox variant="history" />,
+    requiresAuth: true,
   },
   {
     title: 'parent.actions.payment',

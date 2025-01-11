@@ -27,10 +27,12 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { BabysitterAd } from '@/types/BabysitterAd.ts';
 import { Switch } from '@components/guard/Switch.tsx';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
 
 const BabysitterCalendar = () => {
   const { t } = useTranslation();
   const { uid } = useProfileContext();
+  const { user } = useAuthContext();
   const dispatch = useSnackbarContext();
 
   const [edit, setEdit] = useState(false);
@@ -65,6 +67,24 @@ const BabysitterCalendar = () => {
     }
 
     setEdit(false);
+  };
+
+  const handleClick = (key: string) => {
+    if (edit) {
+      setAvailabilityLocal(prev => ({
+        ...prev,
+        [key as keyof MonthAvailability]: !prev[key as keyof MonthAvailability],
+      }));
+    } else {
+      if (uid === user?.uid) {
+        dispatch!({
+          type: 'info',
+          payload: { message: t('babysitter.calendar.clickMonth.self') },
+        });
+      } else {
+        // goto appointment scheduling
+      }
+    }
   };
 
   return (
@@ -103,15 +123,7 @@ const BabysitterCalendar = () => {
                   isLoading ||
                   (!edit && !availabilityLocal[key as keyof MonthAvailability])
                 }
-                onClick={() => {
-                  if (edit) {
-                    setAvailabilityLocal(prev => ({
-                      ...prev,
-                      [key as keyof MonthAvailability]:
-                        !prev[key as keyof MonthAvailability],
-                    }));
-                  }
-                }}
+                onClick={() => handleClick(key)}
               >
                 {value}
               </Button>

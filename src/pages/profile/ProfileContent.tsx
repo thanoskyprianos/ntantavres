@@ -18,15 +18,12 @@ export const ProfileContent = () => {
   const { device } = useDeviceDetect();
   const { firstName, lastName, avatar, location } = useProfileContext();
 
-  if (!user) {
-    return <LoadingSpinner />;
-  }
-
   const validTabs = ProfileTabs.filter(tab => {
-    const isPrivate = user.uid !== uid && tab.privateTab;
+    const requiresAuth = tab.requiresAuth ? !!user : true;
+    const isPrivate = user?.uid !== uid && tab.privateTab;
     const isCorrectRole = tab.role === 'BOTH' || tab.role === role;
 
-    return !isPrivate && isCorrectRole;
+    return requiresAuth && !isPrivate && isCorrectRole;
   });
 
   const setSelectedTabStr = (tab: string) => {

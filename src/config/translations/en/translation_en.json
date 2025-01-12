@@ -150,6 +150,25 @@
       "studies": "Education level",
       "about": "Get to know me"
     },
+    "ad": {
+      "title": "AD",
+      "location": {
+        "title": "Location",
+        "parentHome": "Parent home",
+        "self": "Your home"
+      },
+      "type": {
+        "title": "Type",
+        "PART_TIME": "Part time",
+        "FULL_TIME": "Full time"
+      },
+      "description": "Description",
+      "notFound": {
+        "others": "User {{firstName}} {{lastName}} has not posted an ad",
+        "self": "You have not posted an ad. You can do that by clicking the 'CREATE' button"
+      },
+      "create": "CREATE"
+    },
     "calendar": {
       "title": "AVAILABILITY",
       "subheader": {
@@ -181,12 +200,12 @@
       }
     },
     "settings": {
-      "ad": "AD",
+      "traits": "TRAITS",
       "error": {
-        "ad": "Error while updating ad"
+        "traits": "Error while updating traits"
       },
       "success": {
-        "ad": "Successfully updated ad"
+        "traits": "Successfully updated traits"
       }
     }
   }

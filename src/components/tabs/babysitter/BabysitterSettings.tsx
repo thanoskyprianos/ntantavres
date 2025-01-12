@@ -12,25 +12,25 @@ import { DetailsSettings } from '@components/tabs/common/settings/DetailsSetting
 import { AuthSettings } from '@components/tabs/common/settings/AuthSettings.tsx';
 import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
 import { useEffect, useState } from 'react';
-import { BabysitterAd } from '@/types/BabysitterAd.ts';
+import { BabysitterAd } from '@/types/BabysitterTypes.ts';
 import { useBabysitter } from '@hooks/useBabysitter.hook.ts';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { isEmpty } from '@util/util.ts';
 
-const BabysitterAdSettings = () => {
+const BabysitterTraitsSettings = () => {
   const { t } = useTranslation();
   const { uid } = useProfileContext();
   const dispatch = useSnackbarContext();
 
   const [ad, setAd] = useState<BabysitterAd>();
   const [localAd, setLocalAd] = useState<BabysitterAd>();
-  const { getAd, setAd: setAdF, isLoading } = useBabysitter();
+  const { getTraits, setTraits, isLoading } = useBabysitter();
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await getAd(uid);
+      const data = await getTraits(uid);
       setAd(data);
       setLocalAd(data);
     };
@@ -44,12 +44,12 @@ const BabysitterAdSettings = () => {
     }
 
     try {
-      await setAdF(uid, { ...ad, ...localAd });
+      await setTraits(uid, { ...ad, ...localAd });
 
       dispatch!({
         type: 'success',
         payload: {
-          message: `${t('babysitter.settings.success.ad')}. ${t('general.reloading')}`,
+          message: `${t('babysitter.settings.success.traits')}. ${t('general.reloading')}`,
         },
       });
 
@@ -57,7 +57,7 @@ const BabysitterAdSettings = () => {
     } catch {
       dispatch!({
         type: 'error',
-        payload: { message: t('babysitter.settings.error.ad') },
+        payload: { message: t('babysitter.settings.error.traits') },
       });
     }
   };
@@ -68,7 +68,7 @@ const BabysitterAdSettings = () => {
 
   return (
     <Card sx={{ borderRadius: '15px', width: '100%' }}>
-      <CardHeader title={t('babysitter.settings.ad')} />
+      <CardHeader title={t('babysitter.settings.traits')} />
       <CardContent>
         <Stack spacing={1.5}>
           <TextFieldSmall
@@ -167,7 +167,7 @@ export const BabysitterSettings = () => {
       >
         <Stack sx={{ width: '100%' }} spacing={1}>
           <DetailsSettings />
-          <BabysitterAdSettings />
+          <BabysitterTraitsSettings />
         </Stack>
         <AuthSettings />
       </Stack>

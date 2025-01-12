@@ -5,9 +5,19 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
+  FormControlLabel,
   Grid2,
+  IconButton,
+  InputLabel,
+  Radio,
+  RadioGroup,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
@@ -25,9 +35,13 @@ import {
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
-import { BabysitterAd } from '@/types/BabysitterAd.ts';
+import { BabysitterAd, BabysitterTraits } from '@/types/BabysitterTypes.ts';
 import { Switch } from '@components/guard/Switch.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
+import { WorkType } from '@/types/ParentAd.ts';
+import { AddCircleOutline } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
+import { isEmpty, removeEmptyFields } from '@util/util.ts';
 
 const BabysitterCalendar = () => {
   const { t } = useTranslation();
@@ -179,13 +193,13 @@ const Details = () => {
   const { uid, phoneNumber, email, location } = useProfileContext();
   const { setSelectedTab } = useTabSetterContext();
   const { t } = useTranslation();
-  const [ad, setAd] = useState<BabysitterAd>();
+  const [ad, setAd] = useState<BabysitterTraits>();
 
-  const { getAd } = useBabysitter();
+  const { getTraits } = useBabysitter();
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await getAd(uid);
+      const data = await getTraits(uid);
       setAd(data);
     };
 
@@ -267,6 +281,246 @@ const Details = () => {
   );
 };
 
+const BabysitterAdCard = () => {
+  const dispatch = useSnackbarContext();
+  const { firstName, lastName, uid, location } = useProfileContext();
+  const { t } = useTranslation();
+
+  const { getAd, setAd: setAdF, updateAd } = useBabysitter();
+  const [ad, setAd] = useState<BabysitterAd>();
+  const [localAd, setLocalAd] = useState<BabysitterAd>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [editOrCreate, setEditOrCreate] = useState(false);
+
+  // for some reason we get error when directly changing localAd
+  const [locationStr, setLocationStr] = useState('');
+  const [typeStr, setTypeStr] = useState('');
+
+  useEffect(() => {
+    setLocalAd(prev => ({
+      ...prev,
+      location: locationStr === 'parentHome' ? 'parentHome' : location,
+    }));
+  }, [locationStr]);
+
+  useEffect(() => {
+    if (typeStr !== 'PART_TIME' && typeStr !== 'FULL_TIME') {
+      return;
+    }
+
+    setLocalAd(prev => ({ ...prev, type: typeStr }));
+  }, [typeStr]);
+
+  const handleSubmit = async () => {
+    const toSave = removeEmptyFields(localAd);
+    if (isEmpty(toSave)) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (!ad) {
+        await setAdF(uid, localAd || {});
+      } else {
+        await updateAd(uid, localAd || {});
+      }
+      handleClear();
+      dispatch!({
+        type: 'success',
+        payload: {
+          message: `${t('parent.settings.success')}. ${t('general.reloading')}`,
+        },
+      });
+
+      setTimeout(() => window.location.reload(), 2000);
+    } catch {
+      dispatch!({ type: 'error', payload: { message: t('error.generic') } });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setLocalAd(ad);
+  };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await getAd(uid);
+
+      setAd(data);
+      setLocalAd(data);
+      setLocationStr(data?.location !== 'parentHome' ? 'self' : 'parentHome');
+      setTypeStr(data?.type || '');
+    };
+
+    fetch().then();
+  }, []);
+
+  return (
+    <Card sx={{ borderRadius: '15px', width: '100%' }}>
+      <CardHeader title={t('babysitter.ad.title')} />
+      <CardContent>
+        {isLoading && <LoadingSpinner />}
+        {!isLoading && ad && (
+          <Stack sx={{ placeContent: 'center' }}>
+            <Typography variant="h6" sx={{ color: 'text.main' }}>
+              {t('babysitter.ad.location.title')}
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {ad?.location === 'parentHome'
+                ? t('babysitter.ad.location.parentHome')
+                : `${ad.location?.number} ${ad.location?.address} ${ad.location?.city}`}
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'text.main' }}>
+              {t('babysitter.ad.type.title')}
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {t(`babysitter.ad.type.${ad.type}`)}
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'text.main' }}>
+              {t('parent.ad.description')}
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {ad.description || t('parent.info.notSet')}
+            </Typography>
+          </Stack>
+        )}
+        {!isLoading && !ad && (
+          <Switch
+            uid={uid}
+            a={t('babysitter.ad.notFound.self')}
+            b={t('babysitter.ad.notFound.others', { firstName, lastName })}
+          />
+        )}
+      </CardContent>
+      <PrivateComponent uid={uid}>
+        <CardActions>
+          <Stack sx={{ width: '100%', placeItems: 'end' }}>
+            <Button
+              className="edit-button"
+              startIcon={ad ? <EditIcon /> : <AddCircleOutline />}
+              sx={{ color: ad ? 'secondary.contrastText' : 'success.main' }}
+              onClick={() => setEditOrCreate(true)}
+            >
+              {ad ? t('general.edit') : t('parent.ad.create')}
+            </Button>
+          </Stack>
+        </CardActions>
+        <Dialog
+          open={editOrCreate}
+          PaperProps={{ style: { borderRadius: '15px' } }}
+          fullWidth
+        >
+          <Card sx={{ padding: '0 5px 5px 5px', overflow: 'auto' }}>
+            <DialogTitle>
+              <Stack
+                direction="row"
+                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                {ad ? t('general.edit') : t('babysitter.ad.create')}
+                <IconButton edge="end" onClick={() => setEditOrCreate(false)}>
+                  <CloseIcon />
+                </IconButton>
+              </Stack>
+            </DialogTitle>
+            <DialogContent>
+              <Stack spacing={2}>
+                <InputLabel>{t('babysitter.ad.location.title')}</InputLabel>
+                <RadioGroup
+                  value={locationStr}
+                  onChange={(_e, v) => setLocationStr(v)}
+                >
+                  <FormControlLabel
+                    value="self"
+                    control={<Radio />}
+                    label={t('babysitter.ad.location.self')}
+                    disabled={isLoading}
+                  />
+                  <FormControlLabel
+                    value="parentHome"
+                    control={<Radio />}
+                    label={t('babysitter.ad.location.parentHome')}
+                    disabled={isLoading}
+                  />
+                </RadioGroup>
+                <Divider flexItem />
+                <InputLabel>{t('babysitter.ad.type.title')}</InputLabel>
+                <RadioGroup
+                  value={typeStr}
+                  onChange={(_e, v) => setTypeStr(v as WorkType)}
+                >
+                  <FormControlLabel
+                    value="PART_TIME"
+                    control={<Radio />}
+                    label={t('parent.ad.type.PART_TIME')}
+                    disabled={isLoading}
+                  />
+                  <FormControlLabel
+                    value="FULL_TIME"
+                    control={<Radio />}
+                    label={t('parent.ad.type.FULL_TIME')}
+                    disabled={isLoading}
+                  />
+                </RadioGroup>
+                <Divider flexItem />
+                <TextField
+                  disabled={isLoading}
+                  multiline
+                  value={localAd?.description}
+                  onChange={e =>
+                    setLocalAd(prev => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  label={t('parent.ad.description')}
+                  rows={3}
+                />
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                }}
+              >
+                {isLoading ? (
+                  <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+                ) : (
+                  // dummy div to make space-between work
+                  <div></div>
+                )}
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="text"
+                    onClick={handleClear}
+                    disabled={isLoading}
+                  >
+                    {!ad ? t('auth.clear') : t('general.undo')}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleSubmit}
+                    type="submit"
+                    disabled={isLoading}
+                  >
+                    {t('general.save')}
+                  </Button>
+                </Stack>
+              </Stack>
+            </DialogActions>
+          </Card>
+        </Dialog>
+      </PrivateComponent>
+    </Card>
+  );
+};
+
 export const BabysitterInfo = () => {
   const { device } = useDeviceDetect();
 
@@ -276,8 +530,11 @@ export const BabysitterInfo = () => {
       sx={{ width: '100%', alignItems: 'start' }}
       spacing={1}
     >
+      <Stack spacing={1} sx={{ width: '100%' }}>
+        <BabysitterAdCard />
+        <BabysitterCalendar />
+      </Stack>
       <Details />
-      <BabysitterCalendar />
     </Stack>
   );
 };

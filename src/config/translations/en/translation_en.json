@@ -186,7 +186,8 @@
       "title": "AVAILABILITY",
       "subheader": {
         "self": "Click on edit and choose availability for each month",
-        "others": "Choose one of the available months and make an appointment"
+        "others": "Choose one of the available months and make an appointment",
+        "planned": "There is already a planned meeting between the two of you"
       },
       "months": {
         "january": "JANUARY",
@@ -210,6 +211,20 @@
       },
       "clickMonth": {
         "self": "You can't make an appointment with yourself"
+      },
+      "meeting": {
+        "title": "APPOINTMENT",
+        "date": "Appointment date and time",
+        "location": {
+          "place": "Meeting place",
+          "web": "Web",
+          "in-person": "In person"
+        },
+        "interested": {
+          "title": "Interested in starting in"
+        },
+        "success": "Successfully arranged meeting",
+        "error": "Error while arranging meeting"
       }
     },
     "settings": {

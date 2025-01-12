@@ -7,7 +7,7 @@ import { cities } from '@config/i18n.ts';
 import { Location } from '@/types/UserDetails.ts';
 
 interface AddressInputProps {
-  newLocation?: Location;
+  newLocation?: Location | null;
   oldLocation?: Location;
   setExtLocation: Dispatch<Location>;
   isLoading?: boolean;

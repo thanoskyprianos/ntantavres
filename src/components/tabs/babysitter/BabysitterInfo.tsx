@@ -15,8 +15,10 @@ import {
   IconButton,
   InputLabel,
   Link,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -44,6 +46,10 @@ import { WorkType } from '@/types/ParentAd.ts';
 import { AddCircleOutline, WarningAmber } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { isEmpty, removeEmptyFields } from '@util/util.ts';
+import { Meeting, Place } from '@/types/Meeting.ts';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import { AddressInput } from '@components/util/AddressInput.tsx';
+import { useMeeting } from '@hooks/useMeeting.hook.ts';
 
 const BabysitterCalendar = () => {
   const { t } = useTranslation();
@@ -60,6 +66,25 @@ const BabysitterCalendar = () => {
     () => allMonthsUnavailable
   );
 
+  const [scheduleMeeting, setScheduleMeeting] = useState({
+    key: '',
+    value: false,
+  });
+
+  const [meeting, setMeeting] = useState<Meeting>({
+    dateTime: null,
+    location: null,
+    place: null,
+    interestedFor: null,
+  });
+
+  const {
+    isLoading: isLoadingMeeting,
+    setMeeting: setMeetingF,
+    getActiveMeetingsBetweenTwo,
+  } = useMeeting();
+  const [hasActiveMeetings, setHasActiveMeetings] = useState(false);
+
   useEffect(() => {
     const fetch = async () => {
       const avail = await getAvailability(uid);
@@ -67,6 +92,24 @@ const BabysitterCalendar = () => {
 
       setAvailabilityLocal(old => ({ ...old, ...avail }));
       setFinal(data?.final || false);
+    };
+
+    fetch().then();
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    const fetch = async () => {
+      const activeMeetings = await getActiveMeetingsBetweenTwo(uid, user?.uid);
+
+      if (activeMeetings?.length > 0) {
+        setHasActiveMeetings(true);
+      } else {
+        setHasActiveMeetings(false);
+      }
     };
 
     fetch().then();
@@ -103,9 +146,47 @@ const BabysitterCalendar = () => {
           payload: { message: t('babysitter.calendar.clickMonth.self') },
         });
       } else {
-        // goto appointment scheduling
+        setMeeting(prev => ({
+          ...prev,
+          interestedFor: key as keyof MonthAvailability,
+        }));
+        setScheduleMeeting({ key, value: true });
       }
     }
+  };
+
+  const handleMeeting = async () => {
+    if (!user?.uid) {
+      return;
+    }
+
+    meeting.uida = uid;
+    meeting.uidb = user.uid;
+
+    try {
+      await setMeetingF(uid, user.uid, meeting);
+      dispatch!({
+        type: 'success',
+        payload: {
+          message: `${t('babysitter.calendar.meeting.success')}. ${t('general.reloading')}`,
+        },
+      });
+      setTimeout(async () => window.location.reload(), 2000);
+    } catch {
+      dispatch!({
+        type: 'error',
+        payload: { message: t('babysitter.calendar.meeting.error') },
+      });
+    }
+  };
+
+  const handleClear = () => {
+    setMeeting({
+      dateTime: null,
+      location: null,
+      place: null,
+      interestedFor: null,
+    });
   };
 
   return (
@@ -121,7 +202,11 @@ const BabysitterCalendar = () => {
           <Switch
             uid={uid}
             a={!final ? t('babysitter.calendar.subheader.self') : ''}
-            b={t('babysitter.calendar.subheader.others')}
+            b={
+              !hasActiveMeetings
+                ? t('babysitter.calendar.subheader.others')
+                : t('babysitter.calendar.subheader.planned')
+            }
           />
         }
       />
@@ -143,6 +228,7 @@ const BabysitterCalendar = () => {
                   overflow: 'hidden',
                 }}
                 disabled={
+                  hasActiveMeetings ||
                   isLoading ||
                   (!edit && !availabilityLocal[key as keyof MonthAvailability])
                 }
@@ -194,6 +280,132 @@ const BabysitterCalendar = () => {
           </CardActions>
         )}
       </PrivateComponent>
+      <Dialog
+        open={scheduleMeeting.value}
+        PaperProps={{ style: { borderRadius: '15px' } }}
+        fullWidth
+      >
+        <Card sx={{ padding: '0 5px 5px 5px', overflow: 'auto' }}>
+          <DialogTitle>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              {t('babysitter.calendar.meeting.title')}
+              <IconButton
+                edge="end"
+                onClick={() =>
+                  setScheduleMeeting(prev => ({ ...prev, value: false }))
+                }
+              >
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={1.5} sx={{ marginTop: '10px' }}>
+              <DateTimePicker
+                minDateTime={new Date()}
+                label={t('babysitter.calendar.meeting.date')}
+                sx={{ width: '100%' }}
+                closeOnSelect={false}
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear', 'accept'],
+                    sx: { button: { color: 'secondary.contrastText' } },
+                  },
+                }}
+                value={meeting?.dateTime}
+                onAccept={e => setMeeting(prev => ({ ...prev, dateTime: e }))}
+              />
+              <InputLabel>
+                {t('babysitter.calendar.meeting.location.place')}:
+              </InputLabel>
+              <RadioGroup
+                value={meeting?.place}
+                onChange={(_e, v) =>
+                  setMeeting(prev => ({ ...prev, place: v as Place }))
+                }
+              >
+                <Stack direction="row">
+                  <FormControlLabel
+                    value="web"
+                    control={<Radio />}
+                    label={t('babysitter.calendar.meeting.location.web')}
+                  />
+                  <FormControlLabel
+                    value="in-person"
+                    control={<Radio />}
+                    label={t('babysitter.calendar.meeting.location.in-person')}
+                  />
+                </Stack>
+              </RadioGroup>
+              {meeting.place === 'in-person' && (
+                <AddressInput
+                  newLocation={meeting?.location}
+                  setExtLocation={location =>
+                    setMeeting(prev => ({ ...prev, location: location }))
+                  }
+                />
+              )}
+              <InputLabel>
+                {t('babysitter.calendar.meeting.interested.title')}:
+              </InputLabel>
+              <Select
+                variant="outlined"
+                value={meeting?.interestedFor}
+                onChange={e =>
+                  setMeeting(prev => ({
+                    ...prev,
+                    interestedFor: e.target.value as keyof MonthAvailability,
+                  }))
+                }
+                size="small"
+              >
+                {Object.entries(availabilityLocal).map(([key, value]) => (
+                  <MenuItem key={key} value={key} disabled={!value}>
+                    {t(`babysitter.calendar.months.${key}`)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              {isLoading ? (
+                <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+              ) : (
+                // dummy div to make space-between work
+                <div></div>
+              )}
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="text"
+                  onClick={handleClear}
+                  disabled={isLoadingMeeting}
+                >
+                  {t('auth.clear')}
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleMeeting}
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  {t('general.save')}
+                </Button>
+              </Stack>
+            </Stack>
+          </DialogActions>
+        </Card>
+      </Dialog>
     </Card>
   );
 };
@@ -630,7 +842,21 @@ const BabysitterAdCard = () => {
 };
 
 export const BabysitterInfo = () => {
+  const { uid, firstName, lastName } = useProfileContext();
   const { device } = useDeviceDetect();
+  const { t } = useTranslation();
+
+  const [final, setFinal] = useState<boolean>();
+  const { isLoading, getAd } = useBabysitter();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await getAd(uid);
+      setFinal(data?.final);
+    };
+
+    fetch().then();
+  }, []);
 
   return (
     <Stack
@@ -638,10 +864,30 @@ export const BabysitterInfo = () => {
       sx={{ width: '100%', alignItems: 'start' }}
       spacing={1}
     >
-      <Stack spacing={1} sx={{ width: '100%' }}>
-        <BabysitterAdCard />
-        <BabysitterCalendar />
-      </Stack>
+      <Switch
+        uid={uid}
+        a={
+          <Stack spacing={1} sx={{ width: '100%' }}>
+            <BabysitterAdCard />
+            <BabysitterCalendar />
+          </Stack>
+        }
+        b={
+          !isLoading && final === true ? (
+            <Stack spacing={1} sx={{ width: '100%' }}>
+              <BabysitterAdCard />
+              <BabysitterCalendar />
+            </Stack>
+          ) : (
+            <Card sx={{ borderRadius: '15px', width: '100%' }}>
+              <CardHeader title={t('babysitter.ad.title')} />
+              <CardContent>
+                {t('babysitter.ad.notFound.others', { firstName, lastName })}
+              </CardContent>
+            </Card>
+          )
+        }
+      />
       <Details />
     </Stack>
   );

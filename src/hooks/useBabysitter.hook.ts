@@ -25,7 +25,7 @@ const _getAd = (uid: string) => {
 };
 
 const _setAd = (uid: string, ad: BabysitterAd) => {
-  return setDoc(doc(db, 'babysitter_ad', uid), { ...ad });
+  return setDoc(doc(db, 'babysitter_ad', uid), { ...ad, final: false });
 };
 
 const _updateAd = (uid: string, ad: BabysitterAd) => {

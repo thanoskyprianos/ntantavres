@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   IconButton,
   InputLabel,
+  Link,
   MenuItem,
   Radio,
   RadioGroup,
@@ -430,15 +431,25 @@ const Details = () => {
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('parent.info.phoneNumber')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {phoneNumber || t('parent.info.notSet')}
-        </Typography>
+        {phoneNumber ? (
+          <Link href={`tel:${phoneNumber}`} sx={{ display: 'inline-block' }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {phoneNumber || t('babysitter.info.notSet')}
+            </Typography>
+          </Link>
+        ) : (
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {phoneNumber || t('babysitter.info.notSet')}
+          </Typography>
+        )}
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('parent.info.email')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {email}
-        </Typography>
+        <Link href={`mailto:${email}`} sx={{ display: 'inline-block' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {email}
+          </Typography>
+        </Link>
       </CardContent>
 
       <PrivateComponent uid={uid}>

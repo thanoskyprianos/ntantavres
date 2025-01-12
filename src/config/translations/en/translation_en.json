@@ -167,7 +167,14 @@
         "others": "User {{firstName}} {{lastName}} has not posted an ad",
         "self": "You have not posted an ad. You can do that by clicking the 'CREATE' button"
       },
-      "create": "CREATE"
+      "create": "CREATE",
+      "final": {
+        "title": "FINALIZE",
+        "prompt1": "Are you sure you want to finalize your ad? You won't be able to edit it anymore.",
+        "prompt2": "Availability will also become un-editable.",
+        "success": "Successfully finalized ad",
+        "error": "Error while finalizing ad"
+      }
     },
     "calendar": {
       "title": "AVAILABILITY",

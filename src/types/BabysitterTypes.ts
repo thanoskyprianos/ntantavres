@@ -11,4 +11,5 @@ export interface BabysitterAd {
   location?: Location | 'parentHome';
   type?: WorkType;
   description?: string;
+  final?: boolean;
 }

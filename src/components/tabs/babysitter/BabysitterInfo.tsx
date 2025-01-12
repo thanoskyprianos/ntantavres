@@ -14,11 +14,13 @@ import {
   Grid2,
   IconButton,
   InputLabel,
+  Link,
   Radio,
   RadioGroup,
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -39,7 +41,7 @@ import { BabysitterAd, BabysitterTraits } from '@/types/BabysitterTypes.ts';
 import { Switch } from '@components/guard/Switch.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { WorkType } from '@/types/ParentAd.ts';
-import { AddCircleOutline } from '@mui/icons-material';
+import { AddCircleOutline, WarningAmber } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { isEmpty, removeEmptyFields } from '@util/util.ts';
 
@@ -48,8 +50,11 @@ const BabysitterCalendar = () => {
   const { uid } = useProfileContext();
   const { user } = useAuthContext();
   const dispatch = useSnackbarContext();
+  const theme = useTheme().palette.mode;
 
   const [edit, setEdit] = useState(false);
+  const [final, setFinal] = useState<boolean>();
+  const { getAd } = useBabysitter();
   const { getAvailability, setAvailability, isLoading } = useBabysitter();
   const [availabilityLocal, setAvailabilityLocal] = useState<MonthAvailability>(
     () => allMonthsUnavailable
@@ -58,8 +63,10 @@ const BabysitterCalendar = () => {
   useEffect(() => {
     const fetch = async () => {
       const avail = await getAvailability(uid);
+      const data = await getAd(uid);
 
       setAvailabilityLocal(old => ({ ...old, ...avail }));
+      setFinal(data?.final || false);
     };
 
     fetch().then();
@@ -113,7 +120,7 @@ const BabysitterCalendar = () => {
         subheader={
           <Switch
             uid={uid}
-            a={t('babysitter.calendar.subheader.self')}
+            a={!final ? t('babysitter.calendar.subheader.self') : ''}
             b={t('babysitter.calendar.subheader.others')}
           />
         }
@@ -129,7 +136,9 @@ const BabysitterCalendar = () => {
                 sx={{
                   color: availabilityLocal[key as keyof MonthAvailability]
                     ? 'success.main'
-                    : 'dimgrey',
+                    : theme === 'dark'
+                      ? 'dimgrey'
+                      : 'lightgray',
                   width: '100%',
                   overflow: 'hidden',
                 }}
@@ -146,42 +155,44 @@ const BabysitterCalendar = () => {
         </Grid2>
       </CardContent>
       <PrivateComponent uid={uid}>
-        <CardActions>
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              width: '100%',
-            }}
-          >
-            {isLoading ? (
-              <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
-            ) : (
-              // dummy div to make space-between work
-              <div></div>
-            )}
-            {edit ? (
-              <Button
-                startIcon={<DoneAllIcon />}
-                sx={{ color: 'secondary.contrastText' }}
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {t('general.submit')}
-              </Button>
-            ) : (
-              <Button
-                startIcon={<EditIcon />}
-                sx={{ color: 'secondary.contrastText' }}
-                onClick={() => setEdit(edit => !edit)}
-                disabled={isLoading}
-              >
-                {t('general.edit')}
-              </Button>
-            )}
-          </Stack>
-        </CardActions>
+        {final === false && (
+          <CardActions>
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}
+            >
+              {isLoading ? (
+                <LoadingSpinner size="25px" sx={{ paddingLeft: '30px' }} />
+              ) : (
+                // dummy div to make space-between work
+                <div></div>
+              )}
+              {edit ? (
+                <Button
+                  startIcon={<DoneAllIcon />}
+                  sx={{ color: 'secondary.contrastText' }}
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                >
+                  {t('general.submit')}
+                </Button>
+              ) : (
+                <Button
+                  startIcon={<EditIcon />}
+                  sx={{ color: 'secondary.contrastText' }}
+                  onClick={() => setEdit(edit => !edit)}
+                  disabled={isLoading}
+                >
+                  {t('general.edit')}
+                </Button>
+              )}
+            </Stack>
+          </CardActions>
+        )}
       </PrivateComponent>
     </Card>
   );
@@ -193,14 +204,14 @@ const Details = () => {
   const { uid, phoneNumber, email, location } = useProfileContext();
   const { setSelectedTab } = useTabSetterContext();
   const { t } = useTranslation();
-  const [ad, setAd] = useState<BabysitterTraits>();
+  const [traits, setTraits] = useState<BabysitterTraits>();
 
   const { getTraits } = useBabysitter();
 
   useEffect(() => {
     const fetch = async () => {
       const data = await getTraits(uid);
-      setAd(data);
+      setTraits(data);
     };
 
     fetch().then();
@@ -226,15 +237,25 @@ const Details = () => {
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('babysitter.info.phoneNumber')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {phoneNumber || t('babysitter.info.notSet')}
-        </Typography>
+        {phoneNumber ? (
+          <Link href={`tel:${phoneNumber}`} sx={{ display: 'inline-block' }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {phoneNumber || t('babysitter.info.notSet')}
+            </Typography>
+          </Link>
+        ) : (
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {phoneNumber || t('babysitter.info.notSet')}
+          </Typography>
+        )}
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('babysitter.info.email')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {email}
-        </Typography>
+        <Link href={`mailto:${email}`} sx={{ display: 'inline-block' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {email}
+          </Typography>
+        </Link>
 
         <Divider flexItem sx={{ margin: '5px 0' }} />
 
@@ -242,19 +263,19 @@ const Details = () => {
           {t('babysitter.info.experience')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {ad?.experience || t('babysitter.info.notSet')}
+          {traits?.experience || t('babysitter.info.notSet')}
         </Typography>
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('babysitter.info.studies')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {ad?.studies || t('babysitter.info.notSet')}
+          {traits?.studies || t('babysitter.info.notSet')}
         </Typography>
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('babysitter.info.about')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {ad?.about || t('babysitter.info.notSet')}
+          {traits?.about || t('babysitter.info.notSet')}
         </Typography>
       </CardContent>
 
@@ -291,6 +312,7 @@ const BabysitterAdCard = () => {
   const [localAd, setLocalAd] = useState<BabysitterAd>();
   const [isLoading, setIsLoading] = useState(false);
   const [editOrCreate, setEditOrCreate] = useState(false);
+  const [finalizeDialog, setFinalizeDialog] = useState(false);
 
   // for some reason we get error when directly changing localAd
   const [locationStr, setLocationStr] = useState('');
@@ -345,14 +367,39 @@ const BabysitterAdCard = () => {
     setLocalAd(ad);
   };
 
+  const handleFinalize = async () => {
+    setIsLoading(true);
+
+    try {
+      await updateAd(uid, { final: true });
+      dispatch!({
+        type: 'success',
+        payload: {
+          message: `${t('babysitter.ad.final.success')}. ${t('general.reloading')}`,
+        },
+      });
+      setTimeout(() => window.location.reload(), 2000);
+    } catch {
+      dispatch!({
+        type: 'error',
+        payload: { message: t('babysitter.ad.final.error') },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetch = async () => {
+      setIsLoading(true);
       const data = await getAd(uid);
 
       setAd(data);
       setLocalAd(data);
       setLocationStr(data?.location !== 'parentHome' ? 'self' : 'parentHome');
       setTypeStr(data?.type || '');
+
+      setIsLoading(false);
     };
 
     fetch().then();
@@ -396,18 +443,32 @@ const BabysitterAdCard = () => {
         )}
       </CardContent>
       <PrivateComponent uid={uid}>
-        <CardActions>
-          <Stack sx={{ width: '100%', placeItems: 'end' }}>
-            <Button
-              className="edit-button"
-              startIcon={ad ? <EditIcon /> : <AddCircleOutline />}
-              sx={{ color: ad ? 'secondary.contrastText' : 'success.main' }}
-              onClick={() => setEditOrCreate(true)}
+        {ad && !ad.final && (
+          <CardActions>
+            <Stack
+              sx={{ width: '100%', placeContent: 'end' }}
+              direction="row"
+              spacing={1}
             >
-              {ad ? t('general.edit') : t('parent.ad.create')}
-            </Button>
-          </Stack>
-        </CardActions>
+              {ad && (
+                <Button
+                  startIcon={<DoneAllIcon />}
+                  sx={{ color: 'success.main' }}
+                  onClick={() => setFinalizeDialog(true)}
+                >
+                  {t('babysitter.ad.final.title')}
+                </Button>
+              )}
+              <Button
+                startIcon={ad ? <EditIcon /> : <AddCircleOutline />}
+                sx={{ color: ad ? 'secondary.contrastText' : 'success.main' }}
+                onClick={() => setEditOrCreate(true)}
+              >
+                {ad ? t('general.edit') : t('parent.ad.create')}
+              </Button>
+            </Stack>
+          </CardActions>
+        )}
         <Dialog
           open={editOrCreate}
           PaperProps={{ style: { borderRadius: '15px' } }}
@@ -513,6 +574,45 @@ const BabysitterAdCard = () => {
                   </Button>
                 </Stack>
               </Stack>
+            </DialogActions>
+          </Card>
+        </Dialog>
+        <Dialog
+          open={finalizeDialog}
+          PaperProps={{ style: { borderRadius: '15px' } }}
+          fullWidth
+        >
+          <Card sx={{ padding: '0 5px 5px 5px', overflow: 'auto' }}>
+            <DialogTitle>
+              <Stack
+                direction="row"
+                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <Stack
+                  direction="row"
+                  sx={{ alignItems: 'center' }}
+                  spacing={1}
+                >
+                  <WarningAmber />
+                  <Typography variant="h6">
+                    {t('babysitter.ad.final.title')}
+                  </Typography>
+                </Stack>
+                <IconButton edge="end" onClick={() => setFinalizeDialog(false)}>
+                  <CloseIcon />
+                </IconButton>
+              </Stack>
+            </DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                {t('babysitter.ad.final.prompt1')} <br /> <br />
+                {t('babysitter.ad.final.prompt2')}
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button sx={{ color: 'success.main' }} onClick={handleFinalize}>
+                {t('general.submit')}
+              </Button>
             </DialogActions>
           </Card>
         </Dialog>

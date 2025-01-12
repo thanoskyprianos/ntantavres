@@ -83,7 +83,7 @@ const BabysitterCalendar = () => {
     setMeeting: setMeetingF,
     getActiveMeetingsBetweenTwo,
   } = useMeeting();
-  const [hasActiveMeetings, setHasActiveMeetings] = useState(false);
+  const [hasActiveMeetings, setHasActiveMeetings] = useState<boolean>();
 
   useEffect(() => {
     const fetch = async () => {
@@ -199,15 +199,19 @@ const BabysitterCalendar = () => {
       <CardHeader
         title={t('babysitter.calendar.title')}
         subheader={
-          <Switch
-            uid={uid}
-            a={!final ? t('babysitter.calendar.subheader.self') : ''}
-            b={
-              !hasActiveMeetings
-                ? t('babysitter.calendar.subheader.others')
-                : t('babysitter.calendar.subheader.planned')
-            }
-          />
+          final && hasActiveMeetings !== undefined ? (
+            <Switch
+              uid={uid}
+              a={!final ? t('babysitter.calendar.subheader.self') : ''}
+              b={
+                !hasActiveMeetings
+                  ? t('babysitter.calendar.subheader.others')
+                  : t('babysitter.calendar.subheader.planned')
+              }
+            />
+          ) : (
+            ''
+          )
         }
       />
       <CardContent>
@@ -282,7 +286,11 @@ const BabysitterCalendar = () => {
       </PrivateComponent>
       <Dialog
         open={scheduleMeeting.value}
-        PaperProps={{ style: { borderRadius: '15px' } }}
+        PaperProps={{ style: { borderRadius: '15px' }, component: 'form' }}
+        onSubmit={async e => {
+          e.preventDefault();
+          await handleMeeting();
+        }}
         fullWidth
       >
         <Card sx={{ padding: '0 5px 5px 5px', overflow: 'auto' }}>
@@ -314,6 +322,9 @@ const BabysitterCalendar = () => {
                     actions: ['clear', 'accept'],
                     sx: { button: { color: 'secondary.contrastText' } },
                   },
+                  textField: {
+                    required: true,
+                  },
                 }}
                 value={meeting?.dateTime}
                 onAccept={e => setMeeting(prev => ({ ...prev, dateTime: e }))}
@@ -330,18 +341,19 @@ const BabysitterCalendar = () => {
                 <Stack direction="row">
                   <FormControlLabel
                     value="web"
-                    control={<Radio />}
+                    control={<Radio required />}
                     label={t('babysitter.calendar.meeting.location.web')}
                   />
                   <FormControlLabel
                     value="in-person"
-                    control={<Radio />}
+                    control={<Radio required />}
                     label={t('babysitter.calendar.meeting.location.in-person')}
                   />
                 </Stack>
               </RadioGroup>
               {meeting.place === 'in-person' && (
                 <AddressInput
+                  required={meeting.place === 'in-person'}
                   newLocation={meeting?.location}
                   setExtLocation={location =>
                     setMeeting(prev => ({ ...prev, location: location }))
@@ -361,6 +373,7 @@ const BabysitterCalendar = () => {
                   }))
                 }
                 size="small"
+                required
               >
                 {Object.entries(availabilityLocal).map(([key, value]) => (
                   <MenuItem key={key} value={key} disabled={!value}>
@@ -393,12 +406,7 @@ const BabysitterCalendar = () => {
                 >
                   {t('auth.clear')}
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleMeeting}
-                  type="submit"
-                  disabled={isLoading}
-                >
+                <Button variant="contained" type="submit" disabled={isLoading}>
                   {t('general.save')}
                 </Button>
               </Stack>

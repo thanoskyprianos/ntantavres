@@ -75,7 +75,12 @@
     "save": "SAVE",
     "undo": "UNDO",
     "edit": "EDIT",
-    "submit": "SUBMIT"
+    "submit": "SUBMIT",
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    }
   },
   "tooltip": {
     "password": {
@@ -148,7 +153,8 @@
       "notSet": "(Not set)",
       "experience": "Experience",
       "studies": "Education level",
-      "about": "Get to know me"
+      "about": "Get to know me",
+      "gender": "Gender"
     },
     "ad": {
       "title": "AD",
@@ -207,12 +213,12 @@
       }
     },
     "settings": {
-      "traits": "TRAITS",
+      "traits": "ADDITIONAL",
       "error": {
-        "traits": "Error while updating traits"
+        "traits": "Error while updating additional details"
       },
       "success": {
-        "traits": "Successfully updated traits"
+        "traits": "Successfully updated additional details"
       }
     }
   }

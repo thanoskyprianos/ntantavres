@@ -6,13 +6,16 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
 } from '@mui/material';
 import { DetailsSettings } from '@components/tabs/common/settings/DetailsSettings.tsx';
 import { AuthSettings } from '@components/tabs/common/settings/AuthSettings.tsx';
 import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
 import { useEffect, useState } from 'react';
-import { BabysitterAd } from '@/types/BabysitterTypes.ts';
+import { BabysitterTraits, Gender } from '@/types/BabysitterTypes.ts';
 import { useBabysitter } from '@hooks/useBabysitter.hook.ts';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
@@ -24,27 +27,33 @@ const BabysitterTraitsSettings = () => {
   const { uid } = useProfileContext();
   const dispatch = useSnackbarContext();
 
-  const [ad, setAd] = useState<BabysitterAd>();
-  const [localAd, setLocalAd] = useState<BabysitterAd>();
-  const { getTraits, setTraits, isLoading } = useBabysitter();
+  const [traits, setTraits] = useState<BabysitterTraits>();
+  const [localTraits, setLocalTraits] = useState<BabysitterTraits>();
+  const { getTraits, setTraits: setTraitsF, isLoading } = useBabysitter();
+  const [gender, setGender] = useState('');
+
+  useEffect(() => {
+    setLocalTraits(prev => ({ ...prev, gender: gender as Gender }));
+  }, [gender]);
 
   useEffect(() => {
     const fetch = async () => {
       const data = await getTraits(uid);
-      setAd(data);
-      setLocalAd(data);
+      setTraits(data);
+      setLocalTraits(data);
+      setGender(data?.gender || '');
     };
 
     fetch().then();
   }, []);
 
   const handleSubmit = async () => {
-    if (!localAd || isEmpty(localAd)) {
+    if (!localTraits || isEmpty(localTraits)) {
       return;
     }
 
     try {
-      await setTraits(uid, { ...ad, ...localAd });
+      await setTraitsF(uid, { ...traits, ...localTraits });
 
       dispatch!({
         type: 'success',
@@ -63,7 +72,7 @@ const BabysitterTraitsSettings = () => {
   };
 
   const handleClear = () => {
-    setLocalAd(ad);
+    setLocalTraits(traits);
   };
 
   return (
@@ -71,14 +80,31 @@ const BabysitterTraitsSettings = () => {
       <CardHeader title={t('babysitter.settings.traits')} />
       <CardContent>
         <Stack spacing={1.5}>
+          <InputLabel>{t('babysitter.info.gender')}</InputLabel>
+          <Select
+            value={gender}
+            onChange={e => setGender(e.target.value as Gender)}
+            variant="outlined"
+          >
+            {Object.entries(t('general.gender', { returnObjects: true })).map(
+              ([key, value]) => (
+                <MenuItem key={key} value={key}>
+                  {value}
+                </MenuItem>
+              )
+            )}
+            <MenuItem sx={{ display: 'none' }} />
+          </Select>
           <TextFieldSmall
             label={t('babysitter.info.experience')}
             slotProps={{
-              inputLabel: { shrink: !!localAd?.experience || !!ad?.experience },
+              inputLabel: {
+                shrink: !!localTraits?.experience || !!traits?.experience,
+              },
             }}
-            value={localAd?.experience}
+            value={localTraits?.experience}
             onChange={e =>
-              setLocalAd(prev => ({ ...prev, experience: e.target.value }))
+              setLocalTraits(prev => ({ ...prev, experience: e.target.value }))
             }
             disabled={isLoading}
             multiline
@@ -87,11 +113,13 @@ const BabysitterTraitsSettings = () => {
           <TextFieldSmall
             label={t('babysitter.info.studies')}
             slotProps={{
-              inputLabel: { shrink: !!localAd?.studies || !!ad?.studies },
+              inputLabel: {
+                shrink: !!localTraits?.studies || !!traits?.studies,
+              },
             }}
-            value={localAd?.studies}
+            value={localTraits?.studies}
             onChange={e =>
-              setLocalAd(prev => ({ ...prev, studies: e.target.value }))
+              setLocalTraits(prev => ({ ...prev, studies: e.target.value }))
             }
             disabled={isLoading}
             multiline
@@ -100,11 +128,11 @@ const BabysitterTraitsSettings = () => {
           <TextFieldSmall
             label={t('babysitter.info.about')}
             slotProps={{
-              inputLabel: { shrink: !!localAd?.about || !!ad?.about },
+              inputLabel: { shrink: !!localTraits?.about || !!traits?.about },
             }}
-            value={localAd?.about}
+            value={localTraits?.about}
             onChange={e =>
-              setLocalAd(prev => ({ ...prev, about: e.target.value }))
+              setLocalTraits(prev => ({ ...prev, about: e.target.value }))
             }
             disabled={isLoading}
             multiline

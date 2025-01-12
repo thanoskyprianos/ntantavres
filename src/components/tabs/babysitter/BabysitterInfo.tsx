@@ -260,6 +260,14 @@ const Details = () => {
         <Divider flexItem sx={{ margin: '5px 0' }} />
 
         <Typography variant="h6" sx={{ color: 'text.main' }}>
+          {t('babysitter.info.gender')}
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {traits?.gender
+            ? t(`general.gender.${traits.gender}`)
+            : t('babysitter.info.notSet')}
+        </Typography>
+        <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('babysitter.info.experience')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>

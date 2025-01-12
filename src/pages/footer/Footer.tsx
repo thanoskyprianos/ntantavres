@@ -13,8 +13,8 @@ export const Footer = (props: any) => {
         backgroundColor: theme.palette.mode === 'dark' ? '#3a3a3a' : '#1976d2',
       }}
     >
-      <Typography variant="body2" color="text.secondary" align="center">
-        © {2024} Network Team (Team 58)
+      <Typography variant="body2" color="primary.contrastText" align="center">
+        © {new Date().getFullYear()} Network Team (Team 58)
       </Typography>
     </Box>
   );

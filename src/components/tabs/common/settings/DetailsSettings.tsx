@@ -17,7 +17,7 @@ import { AddressInput } from '@components/util/AddressInput.tsx';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
 import { useTranslation } from 'react-i18next';
-import { Location, UserDetails } from '@/types/UserDetails';
+import { Location, UserDetails } from '@/types/UserDetails.ts';
 import { isEmpty, removeEmptyFields } from '@util/util.ts';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
@@ -53,7 +53,7 @@ const reducer = (state: DetailsStateType, action: DetailsActionType) => {
   }
 };
 
-export const ParentDetailsSettings = () => {
+export const DetailsSettings = () => {
   const { t } = useTranslation();
   const { width } = useDeviceDetect();
   const { avatar, firstName, lastName, location, phoneNumber } =

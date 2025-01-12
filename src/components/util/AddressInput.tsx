@@ -7,10 +7,11 @@ import { cities } from '@config/i18n.ts';
 import { Location } from '@/types/UserDetails.ts';
 
 interface AddressInputProps {
-  newLocation?: Location;
+  newLocation?: Location | null;
   oldLocation?: Location;
   setExtLocation: Dispatch<Location>;
   isLoading?: boolean;
+  required?: boolean;
 }
 
 export const AddressInput = ({
@@ -18,6 +19,7 @@ export const AddressInput = ({
   newLocation,
   setExtLocation,
   isLoading = false,
+  required = false,
 }: AddressInputProps) => {
   const { width } = useDeviceDetect();
   const { t, i18n } = useTranslation();
@@ -36,6 +38,7 @@ export const AddressInput = ({
       >
         <Stack direction="row" sx={{ width: '100%' }} spacing={1}>
           <TextFieldSmall
+            required={required}
             id="number"
             label="#"
             placeholder={oldLocation?.number?.toString() || ''}
@@ -58,6 +61,7 @@ export const AddressInput = ({
             disabled={isLoading}
           />
           <TextFieldSmall
+            required={required}
             id="address"
             label={t('parent.settings.address')}
             placeholder={oldLocation?.address || ''}
@@ -79,6 +83,7 @@ export const AddressInput = ({
           size="small"
           renderInput={params => (
             <TextFieldSmall
+              required={required}
               {...params}
               label={
                 t('parent.settings.city') +

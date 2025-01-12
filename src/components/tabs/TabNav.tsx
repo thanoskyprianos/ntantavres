@@ -10,6 +10,7 @@ export interface NavTab {
   icon?: ReactElement;
   content?: ReactNode;
   privateTab?: boolean;
+  requiresAuth?: boolean;
   role: Role | 'BOTH';
 }
 

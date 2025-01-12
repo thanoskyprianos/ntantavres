@@ -16,7 +16,7 @@ const _updateAd = (uuid: string, ad: ParentAd) => {
   return updateDoc(doc(db, 'parent_ad', uuid), { ...ad });
 };
 
-export const useParentAds = () => {
+export const useParent = () => {
   const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
 

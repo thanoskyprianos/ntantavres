@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   IconButton,
   InputLabel,
+  Link,
   MenuItem,
   Radio,
   RadioGroup,
@@ -25,7 +26,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import { AddCircleOutline } from '@mui/icons-material';
-import { useParentAds } from '@hooks/useParentAds.hook.ts';
+import { useParent } from '@hooks/useParent.hook.ts';
 import { useEffect, useState } from 'react';
 import { ParentAd, WorkDuration, WorkType } from '@/types/ParentAd.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
@@ -39,9 +40,10 @@ import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { useTranslation } from 'react-i18next';
 import { useTabSetterContext } from '@/context/TabSetterProvider.tsx';
+
 const ParentAdCard = () => {
   const dispatch = useSnackbarContext();
-  const { isLoading, getAd, setAd: setAdF, updateAd } = useParentAds();
+  const { isLoading, getAd, setAd: setAdF, updateAd } = useParent();
   const { firstName, lastName, uid, location } = useProfileContext();
   const { t } = useTranslation();
 
@@ -54,7 +56,9 @@ const ParentAdCard = () => {
   const [description, setDescription] = useState('');
   const [editOrCreate, setEditOrCreate] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>({});
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   const handleSubmit = async () => {
     const errors: { [key: string]: string } = {};
@@ -190,7 +194,7 @@ const ParentAdCard = () => {
               sx={{ color: ad ? 'secondary.contrastText' : 'success.main' }}
               onClick={() => setEditOrCreate(true)}
             >
-              {ad ? t('parent.ad.edit') : t('parent.ad.create')}
+              {ad ? t('general.edit') : t('parent.ad.create')}
             </Button>
           </Stack>
         </CardActions>
@@ -205,7 +209,7 @@ const ParentAdCard = () => {
                 direction="row"
                 sx={{ justifyContent: 'space-between', alignItems: 'center' }}
               >
-                {ad ? t('parent.ad.edit') : t('parent.ad.create')}
+                {ad ? t('general.edit') : t('parent.ad.create')}
                 <IconButton edge="end" onClick={() => setEditOrCreate(false)}>
                   <CloseIcon />
                 </IconButton>
@@ -232,14 +236,24 @@ const ParentAdCard = () => {
                   sx={errorMessages.duration ? { border: '1px solid red' } : {}}
                 />
                 {errorMessages.duration && (
-                  <Typography color="error">{errorMessages.duration}</Typography>
+                  <Typography color="error">
+                    {errorMessages.duration}
+                  </Typography>
                 )}
                 <Divider flexItem sx={{ paddingTop: '15px' }} />
                 <InputLabel>{t('parent.ad.type.title')}</InputLabel>
                 <RadioGroup
                   value={type}
                   onChange={(_e, v) => setType(v as WorkType)}
-                  sx={errorMessages.type ? { border: '1px solid red', borderRadius: '5px', padding: '5px' } : {}}
+                  sx={
+                    errorMessages.type
+                      ? {
+                          border: '1px solid red',
+                          borderRadius: '5px',
+                          padding: '5px',
+                        }
+                      : {}
+                  }
                 >
                   <FormControlLabel
                     value="PART_TIME"
@@ -261,7 +275,13 @@ const ParentAdCard = () => {
                 <InputLabel>{t('parent.ad.children.title')}</InputLabel>
                 <Stack
                   spacing={1}
-                  sx={{ maxHeight: '150px', overflow: 'auto', border: errorMessages.children ? '1px solid red' : 'none', borderRadius: '5px', padding: '5px' }}
+                  sx={{
+                    maxHeight: '150px',
+                    overflow: 'auto',
+                    border: errorMessages.children ? '1px solid red' : 'none',
+                    borderRadius: '5px',
+                    padding: '5px',
+                  }}
                 >
                   {children.map(child => (
                     <Stack
@@ -287,7 +307,9 @@ const ParentAdCard = () => {
                   ))}
                 </Stack>
                 {errorMessages.children && (
-                  <Typography color="error">{errorMessages.children}</Typography>
+                  <Typography color="error">
+                    {errorMessages.children}
+                  </Typography>
                 )}
                 <Stack direction="row" spacing={1}>
                   <Select
@@ -409,15 +431,25 @@ const Details = () => {
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('parent.info.phoneNumber')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {phoneNumber || t('parent.info.notSet')}
-        </Typography>
+        {phoneNumber ? (
+          <Link href={`tel:${phoneNumber}`} sx={{ display: 'inline-block' }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {phoneNumber || t('babysitter.info.notSet')}
+            </Typography>
+          </Link>
+        ) : (
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {phoneNumber || t('babysitter.info.notSet')}
+          </Typography>
+        )}
         <Typography variant="h6" sx={{ color: 'text.main' }}>
           {t('parent.info.email')}
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          {email}
-        </Typography>
+        <Link href={`mailto:${email}`} sx={{ display: 'inline-block' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            {email}
+          </Typography>
+        </Link>
       </CardContent>
 
       <PrivateComponent uid={uid}>
@@ -434,7 +466,7 @@ const Details = () => {
                 });
               }}
             >
-              {t('parent.ad.edit')}
+              {t('general.edit')}
             </Button>
           </Stack>
         </CardActions>

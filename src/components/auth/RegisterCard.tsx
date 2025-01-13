@@ -12,11 +12,14 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Checkbox,
+  FormControlLabel,
+  DialogContent
 } from '@mui/material';
 import { TextFieldSmall } from '../util/TextFieldSmall.tsx';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState, useRef } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ClearIcon, DatePicker } from '@mui/x-date-pickers';
@@ -247,8 +250,31 @@ const BabysitterDocuments = ({
   isDialogOpen,
   setIsDialogOpen,
 }: BabysitterDocumentsProps) => {
-  const handleOnSubmit = () => {
-    setIsDialogOpen(false);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]); // To store uploaded file names
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
+
+  // Handle file upload
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Add the file name to the uploaded files state
+      setUploadedFiles(prevFiles => {
+        const newFiles = [...prevFiles];
+        newFiles[index] = file.name; // Store file name at the correct index
+        return newFiles;
+      });
+    }
+  };
+
+  const handleClearFiles = () => {
+    setUploadedFiles([]); // Clear the uploaded files
+  };
+
+  // Handle submit button (to submit files to Firebase later)
+  const handleSubmit = () => {
+    // Logic for submitting files to Firebase will go here
+    console.log("Submitting files:", uploadedFiles);
+    setIsDialogOpen(false); // Close dialog after submitting
   };
 
   return (
@@ -256,7 +282,7 @@ const BabysitterDocuments = ({
       open={isDialogOpen}
       onClose={() => setIsDialogOpen(false)}
       maxWidth="xs"
-      fullWidth={true}
+      fullWidth
     >
       <DialogTitle>
         <Stack
@@ -269,17 +295,62 @@ const BabysitterDocuments = ({
           </IconButton>
         </Stack>
       </DialogTitle>
+      <DialogContent>
+        {/* File Upload Buttons */}
+        <Stack spacing={2} sx={{ alignItems: 'center' }}>
+          {[...Array(3)].map((_, index) => (
+            <Button
+              key={index}
+              variant="outlined"
+              component="label"
+              sx={{ width: '100%' }}
+            >
+              {t(`auth.uploadFile${index + 1}`)} {/* e.g., "Upload File 1", "Upload File 2", etc. */}
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={(e) => handleFileChange(e, index)}
+              />
+            </Button>
+          ))}
+        </Stack>
+
+        {/* Display Uploaded File Names */}
+        {uploadedFiles.length > 0 && (
+          <Stack spacing={1} sx={{ marginTop: '20px' }}>
+            <Typography variant="body2">{t('auth.uploadedFiles')}</Typography>
+            {uploadedFiles.map((fileName, index) => (
+              <Typography key={index} variant="body2" sx={{ color: 'text.secondary' }}>
+                {fileName}
+              </Typography>
+            ))}
+          </Stack>
+        )}
+      </DialogContent>
+
       <DialogActions>
-        <Button variant="text" sx={{ color: 'primary.light' }}>
+      <Button
+          variant="text"
+          onClick={handleClearFiles} // Clear the uploaded files
+          sx={{ color: 'primary.light' }}
+        >
           {t('auth.clear')}
         </Button>
-        <Button variant="contained" onClick={handleOnSubmit}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit} // Submit the uploaded files
+          disabled={uploadedFiles.length === 0} // Disable if no files are uploaded
+        >
           {t('auth.babysitterDialog.submit')}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
+
 
 export const RegisterCard = () => {
   const { t } = useTranslation();
@@ -493,19 +564,22 @@ export const RegisterCard = () => {
           passwordsMatch={passwordsMatch}
           disabled={isLoading || isRegistering}
         />
-        {/*<FormControlLabel*/}
-        {/*  control={*/}
-        {/*    <Checkbox*/}
-        {/*      edge={'start'}*/}
-        {/*      onClick={handleActiveCheckbox}*/}
-        {/*      checked={optBabysitter}*/}
-        {/*      color="success"*/}
-        {/*      size="small"*/}
-        {/*    />*/}
-        {/*  }*/}
-        {/*  label={t('auth.isBabysitter')}*/}
-        {/*  sx={{ alignSelf: 'start' }}*/}
-        {/*/>*/}
+        <FormControlLabel
+          control={
+            <Checkbox
+              edge={'start'}
+              onChange={(event) => {
+                if (event.target.checked) {
+                  setDialogOpen(true);
+                }
+              }}
+              color="success"
+              size="small"
+            />
+          }
+          label={t('auth.isBabysitter')}
+          sx={{ alignSelf: 'start' }}
+        />
       </Stack>
 
       <Stack

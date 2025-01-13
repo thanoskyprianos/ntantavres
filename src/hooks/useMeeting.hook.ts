@@ -16,26 +16,21 @@ import { useState } from 'react';
 const meetingsOf = (uid: string) =>
   query(
     collection(db, 'meeting'),
-    or(where('uida', '==', uid), where('uidb', '==', uid))
+    or(where('puid', '==', uid), where('buid', '==', uid))
   );
 
-const meetingsBetweenTwo = (uida: string, uidb: string) =>
+const meetingsBetweenTwo = (puid: string, buid: string) =>
   query(
     collection(db, 'meeting'),
-    or(
-      and(where('uida', '==', uida), where('uidb', '==', uidb)),
-      and(where('uida', '==', uidb), where('uidb', '==', uida))
-    )
+    and(where('puid', '==', puid), where('buid', '==', buid))
   );
 
-const meetingsBetweenTwoPlanned = (uida: string, uidb: string) =>
+const meetingsBetweenTwoPlanned = (puid: string, buid: string) =>
   query(
     collection(db, 'meeting'),
     and(
-      or(
-        and(where('uida', '==', uida), where('uidb', '==', uidb)),
-        and(where('uida', '==', uidb), where('uidb', '==', uida))
-      ),
+      where('puid', '==', puid),
+      where('buid', '==', buid),
       where('state', '==', State.PLANNED)
     )
   );
@@ -44,24 +39,24 @@ const _getMeetingsOf = (uid: string) => {
   return getDocs(meetingsOf(uid));
 };
 
-const _getMeetingsBetweenTwo = (uida: string, uidb: string) => {
-  return getDocs(meetingsBetweenTwo(uida, uidb));
+const _getMeetingsBetweenTwo = (puid: string, buid: string) => {
+  return getDocs(meetingsBetweenTwo(puid, buid));
 };
 
-const _getActiveMeetingsBetweenTwo = (uida: string, uidb: string) => {
-  return getDocs(meetingsBetweenTwoPlanned(uida, uidb));
+const _getActiveMeetingsBetweenTwo = (puid: string, buid: string) => {
+  return getDocs(meetingsBetweenTwoPlanned(puid, buid));
 };
 
 const _setMeeting = (meeting: Meeting) => {
   return addDoc(collection(db, 'meeting'), { ...meeting });
 };
 
-const _deleteMeeting = (meetingId: string) => {
-  return deleteDoc(doc(db, 'meeting', meetingId));
+const _updateMeeting = (meetingId: string, meeting: Meeting) => {
+  return updateDoc(doc(db, 'meeting', meetingId), { ...meeting });
 };
 
-const _setInactive = (meetingId: string) => {
-  return updateDoc(doc(db, 'meeting', meetingId), { active: false });
+const _deleteMeeting = (meetingId: string) => {
+  return deleteDoc(doc(db, 'meeting', meetingId));
 };
 
 export const useMeeting = () => {
@@ -88,13 +83,13 @@ export const useMeeting = () => {
     return data;
   };
 
-  const getMeetingsBetweenTwo = async (uida: string, uidb: string) => {
+  const getMeetingsBetweenTwo = async (puid: string, buid: string) => {
     setIsLoading(true);
 
     let data: Meeting[] | undefined;
 
     try {
-      data = (await _getMeetingsBetweenTwo(uida, uidb)).docs.map(doc => {
+      data = (await _getMeetingsBetweenTwo(puid, buid)).docs.map(doc => {
         const meeting = doc.data() as Meeting;
         meeting.meetingId = doc.id;
 
@@ -109,13 +104,13 @@ export const useMeeting = () => {
     return data;
   };
 
-  const getActiveMeetingsBetweenTwo = async (uida: string, uidb: string) => {
+  const getActiveMeetingsBetweenTwo = async (puid: string, buid: string) => {
     setIsLoading(true);
 
     let data: Meeting[] | undefined;
 
     try {
-      data = (await _getActiveMeetingsBetweenTwo(uida, uidb)).docs.map(doc => {
+      data = (await _getActiveMeetingsBetweenTwo(puid, buid)).docs.map(doc => {
         const meeting = doc.data() as Meeting;
         meeting.meetingId = doc.id;
 
@@ -131,13 +126,8 @@ export const useMeeting = () => {
     return data;
   };
 
-  const setMeeting = async (uida: string, uidb: string, meeting: Meeting) => {
-    if (
-      !(
-        (meeting.uida === uida && meeting.uidb === uidb) ||
-        (meeting.uida === uidb && meeting.uidb === uida)
-      )
-    ) {
+  const setMeeting = async (puid: string, buid: string, meeting: Meeting) => {
+    if (!(meeting.puid === puid && meeting.buid === buid)) {
       throw new Error('uids not set');
     }
 
@@ -148,9 +138,21 @@ export const useMeeting = () => {
 
     try {
       await _setMeeting(meeting);
+    } catch {
+      throw new Error('set error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateMeeting = async (meetingId: string, meeting: Meeting) => {
+    setIsLoading(true);
+
+    try {
+      await _updateMeeting(meetingId, meeting);
     } catch (err) {
       console.log(err);
-      throw new Error('set error');
+      throw new Error();
     } finally {
       setIsLoading(false);
     }
@@ -168,18 +170,6 @@ export const useMeeting = () => {
     }
   };
 
-  const setInactive = async (meetingId: string) => {
-    setIsLoading(true);
-
-    try {
-      await _setInactive(meetingId);
-    } catch {
-      throw new Error();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return {
     isLoading,
     getMeetingsOf,
@@ -187,6 +177,6 @@ export const useMeeting = () => {
     getActiveMeetingsBetweenTwo,
     setMeeting,
     deleteMeeting,
-    setInactive,
+    updateMeeting,
   };
 };

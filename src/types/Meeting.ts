@@ -7,16 +7,17 @@ export enum State {
   PLANNED,
   FINISHED,
   CLOSED,
+  APPROVED,
 }
 
 export interface Meeting {
   place?: Place | null;
   location?: Location | null;
   dateTime?: Date | null;
-  interestedFor: keyof MonthAvailability | null;
+  interestedFor?: keyof MonthAvailability | null;
 
-  uida?: string;
-  uidb?: string;
+  puid?: string;
+  buid?: string;
   state?: State;
 
   creation?: Date | null;

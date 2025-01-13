@@ -109,7 +109,7 @@ export const useUserDetails = () => {
   const getUserDetails = async (uid: string) => {
     setIsRequesting(true);
 
-    const doc = (await _getUserDetails(uid)).data();
+    const doc = (await _getUserDetails(uid)).data() as UserDetails;
 
     setIsRequesting(false);
 

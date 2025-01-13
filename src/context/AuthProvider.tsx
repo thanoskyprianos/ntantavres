@@ -25,6 +25,7 @@ import { UserDetails } from '@/types/UserDetails.ts';
 
 export interface AuthProps {
   user: User | null;
+  details: UserDetails | null;
   onLogIn: ({ email, password }: Credentials) => Promise<User>;
   onLogOut: () => void;
   onRegister: ({ email, password }: Credentials) => Promise<User>;
@@ -36,10 +37,11 @@ export interface AuthProps {
 const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [details, setDetails] = useState<UserDetails | null>(null);
   const dispatch = useSnackbarContext();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { updateUserDetails } = useUserDetails();
+  const { updateUserDetails, getUserDetails } = useUserDetails();
 
   useEffect(() => {
     setIsLoading(true);
@@ -47,6 +49,10 @@ const useAuth = () => {
     const unsubscribe = onAuthStateChanged(auth, localUser => {
       if (localUser !== null) {
         setUser(localUser);
+
+        getUserDetails(localUser.uid).then(data => {
+          setDetails(data);
+        });
       } else {
         if (user !== null) {
           dispatch!({
@@ -173,6 +179,7 @@ const useAuth = () => {
 
   return {
     user,
+    details,
     onLogIn,
     onLogOut,
     onRegister,

@@ -54,7 +54,7 @@ import { useMeeting } from '@hooks/useMeeting.hook.ts';
 const BabysitterCalendar = () => {
   const { t } = useTranslation();
   const { uid } = useProfileContext();
-  const { user } = useAuthContext();
+  const { user, details } = useAuthContext();
   const dispatch = useSnackbarContext();
   const theme = useTheme().palette.mode;
 
@@ -98,12 +98,12 @@ const BabysitterCalendar = () => {
   }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || (details && details.role === 'BABYSITTER')) {
       return;
     }
 
     const fetch = async () => {
-      const activeMeetings = await getActiveMeetingsBetweenTwo(uid, user?.uid);
+      const activeMeetings = await getActiveMeetingsBetweenTwo(user?.uid, uid);
 
       if (activeMeetings?.length > 0) {
         setHasActiveMeetings(true);
@@ -113,7 +113,7 @@ const BabysitterCalendar = () => {
     };
 
     fetch().then();
-  }, []);
+  }, [user, details]);
 
   const handleSubmit = async () => {
     try {
@@ -145,6 +145,13 @@ const BabysitterCalendar = () => {
           type: 'info',
           payload: { message: t('babysitter.calendar.clickMonth.self') },
         });
+      } else if (details?.role === 'BABYSITTER') {
+        dispatch!({
+          type: 'info',
+          payload: {
+            message: t('babysitter.calendar.clickMonth.otherBabysitter'),
+          },
+        });
       } else {
         setMeeting(prev => ({
           ...prev,
@@ -160,11 +167,11 @@ const BabysitterCalendar = () => {
       return;
     }
 
-    meeting.uida = uid;
-    meeting.uidb = user.uid;
+    meeting.puid = user.uid;
+    meeting.buid = uid;
 
     try {
-      await setMeetingF(uid, user.uid, meeting);
+      await setMeetingF(user.uid, uid, meeting);
       dispatch!({
         type: 'success',
         payload: {
@@ -652,7 +659,9 @@ const BabysitterAdCard = () => {
               {t('babysitter.ad.type.title')}
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-              {t(`babysitter.ad.type.${ad.type}`)}
+              {ad.type
+                ? t(`babysitter.ad.type.${ad.type}`)
+                : t('babysitter.info.notSet')}
             </Typography>
             <Typography variant="h6" sx={{ color: 'text.main' }}>
               {t('parent.ad.description')}
@@ -671,7 +680,7 @@ const BabysitterAdCard = () => {
         )}
       </CardContent>
       <PrivateComponent uid={uid}>
-        {ad && !ad.final && (
+        {!ad?.final && (
           <CardActions>
             <Stack
               sx={{ width: '100%', placeContent: 'end' }}
@@ -838,7 +847,7 @@ const BabysitterAdCard = () => {
               </Typography>
             </DialogContent>
             <DialogActions>
-              <Button sx={{ color: 'success.main' }} onClick={handleFinalize}>
+              <Button sx={{ color: 'warning.main' }} onClick={handleFinalize}>
                 {t('general.submit')}
               </Button>
             </DialogActions>

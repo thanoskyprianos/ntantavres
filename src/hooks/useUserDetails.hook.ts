@@ -14,6 +14,36 @@ import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useTranslation } from 'react-i18next';
 import { Base64String } from '@/types/Avatar.ts';
 
+const _setUserDocumentation = async (user : User, documentation?: Base64String) => {
+  if (!documentation) {
+    return Promise.resolve();
+  }
+
+  const chunks = chunk(documentation);
+
+  if (!chunks || chunks.length > CHUNK_LIMIT) {
+    return Promise.reject();
+  }
+
+  return runTransaction(db, async transaction => {
+//    const size = (
+//      await transaction.get(doc(db, 'user', user.uid, 'documentation', 'size'))
+ //   ).get('data') as number;
+
+    // save new chunks
+    chunks.forEach((chunk, i) => {
+      transaction.set(doc(db, 'user', user.uid, 'documentation', i.toString()), {
+        data: chunk,
+      });
+    });
+
+    // set new size
+    transaction.set(doc(db, 'user', user.uid, 'documentation', 'size'), {
+      data: chunks.length,
+    });
+  });
+}
+
 const _setUserAvatar = async (user: User, avatar?: Base64String) => {
   if (!avatar) {
     return Promise.resolve();
@@ -56,11 +86,13 @@ const _setUserDetails = (user: User, details: UserDetails) => {
 const _registerUser = (
   user: User,
   details: UserDetails,
-  avatar?: Base64String
+  avatar?: Base64String,
+  documentation?: Base64String
 ) => {
   return Promise.all([
     _setUserDetails(user, details),
     _setUserAvatar(user, avatar),
+    _setUserDocumentation(user, documentation)
   ]);
 };
 
@@ -163,6 +195,18 @@ export const useUserDetails = () => {
     }
   };
 
+  const setUserDocumentation = async (user: User, documentation: Base64String) => {
+    setIsRequesting(true);
+
+    try {
+      await _setUserDocumentation(user, documentation);
+    } catch {
+      dispatch!({ type: 'error', payload: { message: t('error.documentationSet') } });
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
   const updateUserDetails = async (user: User, details: UserDetails) => {
     setIsRequesting(true);
 
@@ -182,12 +226,13 @@ export const useUserDetails = () => {
   const registerUser = async (
     user: User,
     details: UserDetails,
-    avatar?: Base64String
+    avatar?: Base64String,
+    documentation?: Base64String
   ) => {
     setIsRequesting(true);
 
     try {
-      await _registerUser(user, details, avatar);
+      await _registerUser(user, details, avatar, documentation);
     } catch (err) {
       if (!(err instanceof Error)) {
         throw new Error();
@@ -211,5 +256,6 @@ export const useUserDetails = () => {
     setUserAvatar,
     registerUser,
     updateUserDetails,
+    setUserDocumentation
   };
 };

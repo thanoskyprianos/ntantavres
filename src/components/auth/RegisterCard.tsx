@@ -26,12 +26,14 @@ import { ClearIcon, DatePicker } from '@mui/x-date-pickers';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../LoadingSpinner.tsx';
 import InfoIcon from '@mui/icons-material/Info';
+import { ONE_MB, toBase64 } from '@util/imageManipulation.util.ts';
 import {
   ageValidation,
   emailValidation,
   passwordValidation,
 } from '@util/authValidation.util.ts';
 import { AvatarInput } from '@components/util/AvatarInput.tsx';
+//import { DocumentationInput } from '@components/util/uploadDocumentation.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
@@ -250,17 +252,15 @@ const BabysitterDocuments = ({
   isDialogOpen,
   setIsDialogOpen,
 }: BabysitterDocumentsProps) => {
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]); // To store uploaded file names
-  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle file upload
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Add the file name to the uploaded files state
       setUploadedFiles(prevFiles => {
         const newFiles = [...prevFiles];
-        newFiles[index] = file.name; // Store file name at the correct index
+        newFiles[index] = file.name;
         return newFiles;
       });
     }
@@ -270,11 +270,11 @@ const BabysitterDocuments = ({
     setUploadedFiles([]); // Clear the uploaded files
   };
 
-  // Handle submit button (to submit files to Firebase later)
-  const handleSubmit = () => {
-    // Logic for submitting files to Firebase will go here
+  
+  const handleSubmit = async () => {
     console.log("Submitting files:", uploadedFiles);
-    setIsDialogOpen(false); // Close dialog after submitting
+   // const b64 
+    setIsDialogOpen(false);
   };
 
   return (
@@ -333,15 +333,15 @@ const BabysitterDocuments = ({
       <DialogActions>
       <Button
           variant="text"
-          onClick={handleClearFiles} // Clear the uploaded files
+          onClick={handleClearFiles}
           sx={{ color: 'primary.light' }}
         >
           {t('auth.clear')}
         </Button>
         <Button
           variant="contained"
-          onClick={handleSubmit} // Submit the uploaded files
-          disabled={uploadedFiles.length === 0} // Disable if no files are uploaded
+          onClick={handleSubmit}
+          disabled={uploadedFiles.length === 0}
         >
           {t('auth.babysitterDialog.submit')}
         </Button>
@@ -368,11 +368,12 @@ export const RegisterCard = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState('');
+  const [documentation, setDocumentation] = useState('');
   // const [optBabysitter, setOptBabysitter] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [incToClear, setIncToClear] = useState(0);
-
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const isValidEmail = emailValidation(email);
 
   const passwordsMatch = password === confirmPassword;
@@ -433,7 +434,7 @@ export const RegisterCard = () => {
           birthdate,
         };
 
-        await registerUser(user, details, avatar);
+        await registerUser(user, details, avatar, documentation);
       } catch (err) {
         if (!(err instanceof Error)) {
           throw new Error();
@@ -501,6 +502,8 @@ export const RegisterCard = () => {
             </Typography>
           )}
         </AvatarInput>
+
+        
 
         <Stack direction="row" spacing={1}>
           <Names

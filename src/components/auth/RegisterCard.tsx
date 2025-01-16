@@ -350,8 +350,6 @@ const BabysitterDocuments = ({
   );
 };
 
-
-
 export const RegisterCard = () => {
   const { t } = useTranslation();
   const { onRegister, isLoading } = useAuthContext();
@@ -371,6 +369,7 @@ export const RegisterCard = () => {
   const [documentation, setDocumentation] = useState('');
   // const [optBabysitter, setOptBabysitter] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [incToClear, setIncToClear] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
@@ -430,7 +429,7 @@ export const RegisterCard = () => {
           firstName,
           lastName,
           email,
-          role: 'PARENT',
+          role: isCheckboxChecked ? 'BABYSITTER' : 'PARENT',
           birthdate,
         };
 
@@ -573,6 +572,7 @@ export const RegisterCard = () => {
               edge={'start'}
               onChange={(event) => {
                 if (event.target.checked) {
+                  setIsCheckboxChecked(true);
                   setDialogOpen(true);
                 }
               }}

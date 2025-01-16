@@ -13,6 +13,7 @@ import {
   ParentSettings,
 } from '@/routing/lazy.tabs.ts';
 import { TabBox } from './TabBox.tsx';
+import { Meetings } from '@components/tabs/common/Meetings.tsx';
 
 export const ProfileTabs: NavTab[] = [
   {
@@ -30,11 +31,15 @@ export const ProfileTabs: NavTab[] = [
     content: <BabysitterInfo />,
   },
   {
-    title: 'parent.actions.plannedMeetings',
+    title: 'parent.actions.appointments',
     icon: <CalendarMonthIcon />,
-    paramRoute: 'meetings',
+    paramRoute: 'appointments',
     role: 'BOTH',
-    content: <TabBox variant="meetings" />,
+    content: (
+      <TabBox variant="meetings">
+        <Meetings />
+      </TabBox>
+    ),
     requiresAuth: true,
   },
   {

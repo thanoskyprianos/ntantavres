@@ -76,6 +76,8 @@
     "undo": "UNDO",
     "edit": "EDIT",
     "submit": "SUBMIT",
+    "yes": "YES",
+    "redirect": "Redirecting...",
     "gender": {
       "male": "Male",
       "female": "Female",
@@ -93,7 +95,7 @@
   },
   "parent": {
     "actions": {
-      "plannedMeetings": "PLANNED MEETINGS",
+      "appointments": "APPOINTMENTS",
       "activeCollaborations": "ACTIVE COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
@@ -210,7 +212,8 @@
         "set": "Successfully updated availability"
       },
       "clickMonth": {
-        "self": "You can't make an appointment with yourself"
+        "self": "You can't make an appointment with yourself",
+        "otherBabysitter": "You can't make an appointment while being a babysitter"
       },
       "meeting": {
         "title": "APPOINTMENT",
@@ -224,7 +227,13 @@
           "title": "Interested in starting in"
         },
         "success": "Successfully arranged meeting",
-        "error": "Error while arranging meeting"
+        "error": "Error while arranging meeting",
+        "state": {
+          "PLANNED": "PLANNED",
+          "FINISHED": "FINISHED",
+          "CLOSED": "CANCELED",
+          "APPROVED": "APPROVED"
+        }
       }
     },
     "settings": {
@@ -235,6 +244,41 @@
       "success": {
         "traits": "Successfully updated additional details"
       }
+    }
+  },
+  "meeting": {
+    "close": {
+      "title": "CANCEL",
+      "header": "CANCEL APPOINTMENT",
+      "success": "Successfully canceled appointment",
+      "error": "Error while canceled appointment",
+      "prompt": "Are you sure you want to cancel the appointment?"
+    },
+    "plan": {
+      "title": "COLLAB"
+    },
+    "approve": {
+      "title": "APPROVE",
+      "header": "APPROVE APPOINTMENT",
+      "success": "Successfully approved appointment",
+      "error": "Error while approved appointment",
+      "prompt": "Are you sure you want to approve the appointment?"
+    }
+  },
+  "collaboration": {
+    "create": {
+      "success": "Successfully created temporary collaboration",
+      "error": "Error while creating temporary collaboration"
+    },
+    "edit": {
+      "signed": "Signed",
+      "notSigned": "Not signed"
+    },
+    "sign": {
+      "do": "Sign",
+      "done": "Signed",
+      "success": "Successfully signed collaboration",
+      "error": "Error while signing collaboration"
     }
   }
 }

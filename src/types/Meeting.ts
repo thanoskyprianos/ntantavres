@@ -3,10 +3,10 @@ import { MonthAvailability } from '@/types/MonthAvailability.ts';
 
 export type Place = 'web' | 'in-person';
 
-export enum State {
-  PLANNED,
-  FINISHED,
+export enum MeetingState {
   CLOSED,
+  FINISHED,
+  PLANNED,
   APPROVED,
 }
 
@@ -18,7 +18,7 @@ export interface Meeting {
 
   puid?: string;
   buid?: string;
-  state?: State;
+  state?: MeetingState;
 
   creation?: Date | null;
 

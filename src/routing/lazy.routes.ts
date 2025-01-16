@@ -19,10 +19,6 @@ export const QuestionsPage = lazyRoute(
 );
 export const AuthPage = lazyRoute('@pages/auth/AuthPage.tsx', 'AuthPage');
 export const Ratings = lazyRoute('@pages/ratings/Ratings.tsx', 'Ratings');
-export const ActiveCollabs = lazyRoute(
-  '@pages/parent/ActiveCollabs.tsx',
-  'ActiveCollabs'
-);
 export const TempRequests = lazyRoute(
   '@pages/parent/TempRequests.tsx',
   'TempRequests'
@@ -39,10 +35,6 @@ export const ScheduledMeetings = lazyRoute(
   '@pages/parent/ScheduledMeetings.tsx',
   'ScheduledMeetings'
 );
-export const EditActiveCollab = lazyRoute(
-  '@pages/parent/EditActiveCollab.tsx',
-  'EditActiveCollab'
-);
 export const PaymentPage = lazyRoute(
   '@pages/parent/PaymentPage.tsx',
   'PaymentPage'
@@ -51,4 +43,9 @@ export const PaymentPage = lazyRoute(
 export const ProfilePage = lazyRoute(
   '@pages/profile/ProfilePage.tsx',
   'ProfilePage'
+);
+
+export const CollaborationPage = lazyRoute(
+  '@pages/collaboration/CollaborationPage.tsx',
+  'CollaborationPage'
 );

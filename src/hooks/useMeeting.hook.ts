@@ -9,7 +9,7 @@ import {
   where,
 } from '@firebase/firestore';
 import { db } from '@config/firebase.ts';
-import { Meeting, State } from '@/types/Meeting.ts';
+import { Meeting, MeetingState } from '@/types/Meeting.ts';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 
@@ -25,13 +25,17 @@ const meetingsBetweenTwo = (puid: string, buid: string) =>
     and(where('puid', '==', puid), where('buid', '==', buid))
   );
 
-const meetingsBetweenTwoPlanned = (puid: string, buid: string) =>
+const meetingsBetweenTwoActive = (puid: string, buid: string) =>
   query(
     collection(db, 'meeting'),
     and(
       where('puid', '==', puid),
       where('buid', '==', buid),
-      where('state', '==', State.PLANNED)
+      where('state', 'in', [
+        MeetingState.PLANNED,
+        MeetingState.APPROVED,
+        MeetingState.FINISHED,
+      ])
     )
   );
 
@@ -44,7 +48,7 @@ const _getMeetingsBetweenTwo = (puid: string, buid: string) => {
 };
 
 const _getActiveMeetingsBetweenTwo = (puid: string, buid: string) => {
-  return getDocs(meetingsBetweenTwoPlanned(puid, buid));
+  return getDocs(meetingsBetweenTwoActive(puid, buid));
 };
 
 const _setMeeting = (meeting: Meeting) => {
@@ -132,7 +136,7 @@ export const useMeeting = () => {
     }
 
     meeting.creation = new Date();
-    meeting.state = State.PLANNED;
+    meeting.state = MeetingState.PLANNED;
 
     setIsLoading(true);
 

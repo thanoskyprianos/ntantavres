@@ -1,11 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from './Layout.tsx';
 import {
-  ActiveCollabs,
   AuthPage,
   BabysitterPage,
   CardDetailPage,
-  EditActiveCollab,
+  CollaborationPage,
   HomePage,
   ParentPage,
   PaymentPage,
@@ -39,20 +38,12 @@ const router = createBrowserRouter([
             lazy: ParentPage,
           },
           {
-            path: 'activeCollabs',
-            lazy: ActiveCollabs,
-          },
-          {
             path: 'tempRequest',
             lazy: TempRequests,
           },
           {
             path: 'scheduledMeetings',
             lazy: ScheduledMeetings,
-          },
-          {
-            path: 'editCollab',
-            lazy: EditActiveCollab,
           },
           {
             path: 'tempRequestCompletion',
@@ -92,6 +83,10 @@ const router = createBrowserRouter([
       {
         path: '/profile/:uid',
         lazy: ProfilePage,
+      },
+      {
+        path: '/collaboration/:cid',
+        lazy: CollaborationPage,
       },
     ],
   },

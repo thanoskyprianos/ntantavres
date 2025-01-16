@@ -1,4 +1,4 @@
-import { Meeting, State } from '@/types/Meeting.ts';
+import { Meeting, MeetingState } from '@/types/Meeting.ts';
 import {
   Button,
   Card,
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { Dispatch, useEffect, useState } from 'react';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
+import { useCollaboration } from '@hooks/useCollaboration.hook.ts';
 import { UserDetails } from '@/types/UserDetails.ts';
 import { Base64String } from '@/types/Avatar.ts';
 import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
@@ -25,12 +26,17 @@ import { firestoreTimestampToDate } from '@util/util.ts';
 import { format } from 'date-fns';
 import { localeTextMap } from '@config/i18n.ts';
 import i18n from 'i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import CloseIcon from '@mui/icons-material/Close';
 import { AddCircleOutline, Cancel, WarningAmber } from '@mui/icons-material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { Collaboration, CollaborationState } from '@/types/Collaboration.ts';
+import { useParent } from '@hooks/useParent.hook.ts';
+import { useBabysitter } from '@hooks/useBabysitter.hook.ts';
+import { ParentAd } from '@/types/ParentAd.ts';
+import { BabysitterAd } from '@/types/BabysitterTypes.ts';
 
 interface MeetingTabProps {
   meeting?: Meeting;
@@ -64,7 +70,7 @@ const CancelMeetingDialog = ({
 
     try {
       await updateMeeting(meeting.meetingId, {
-        state: State.CLOSED,
+        state: MeetingState.CLOSED,
       });
       dispatch!({
         type: 'success',
@@ -137,7 +143,7 @@ const ApproveMeetingDialog = ({
 
     try {
       await updateMeeting(meeting.meetingId, {
-        state: State.APPROVED,
+        state: MeetingState.APPROVED,
       });
       dispatch!({
         type: 'success',
@@ -195,12 +201,20 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
   const { t } = useTranslation();
   const { user, details: uDetails } = useAuthContext();
   const { isRequesting, getUserAvatar, getUserDetails } = useUserDetails();
+  const { getCollaboration, setCollaboration } = useCollaboration();
+  const { getAd: getAdP } = useParent();
+  const { getAd: getAdB } = useBabysitter();
+
+  const dispatch = useSnackbarContext();
+  const navigate = useNavigate();
 
   const [details, setDetails] = useState<UserDetails>();
   const [avatar, setAvatar] = useState<Base64String>();
 
   const [cancelMeeting, setCancelMeeting] = useState(false);
   const [approveMeeting, setApproveMeeting] = useState(false);
+
+  const [isCreatingCollab, setIsCreatingCollab] = useState(false);
 
   // const handlePlanMeeting = async () => {};
 
@@ -228,6 +242,61 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
     fetch().then();
   }, [meeting, user]);
 
+  const handleCollab = async () => {
+    if (!meeting || !meeting.meetingId || !meeting.puid || !meeting.buid) {
+      return;
+    }
+
+    setIsCreatingCollab(true);
+
+    const collab = await getCollaboration(meeting.meetingId);
+    if (!collab) {
+      let parentAd: ParentAd | undefined;
+      let babysitterAd: BabysitterAd | undefined;
+
+      try {
+        parentAd = await getAdP(meeting.puid);
+        babysitterAd = await getAdB(meeting.buid);
+      } catch {
+        parentAd = undefined;
+      }
+
+      const newCollab: Collaboration = {
+        parentAd,
+        babysitterAd,
+        appointment: meeting,
+        currentMonth: meeting.interestedFor,
+        state: CollaborationState.TEMPORARY,
+        parentSignature: false,
+        babysitterSignature: false,
+        puid: meeting.puid,
+        buid: meeting.buid,
+
+        collaborationId: meeting.meetingId,
+      };
+
+      try {
+        await setCollaboration(meeting.meetingId, newCollab);
+        dispatch!({
+          type: 'success',
+          payload: {
+            message: `${t('collaboration.create.success')}. ${t('general.redirect')}`,
+          },
+        });
+        setTimeout(() => navigate(`/collaboration/${meeting.meetingId}`), 2000);
+      } catch {
+        dispatch!({
+          type: 'error',
+          payload: { message: t('collaboration.create.error') },
+        });
+      } finally {
+        setIsCreatingCollab(false);
+      }
+    } else {
+      navigate(`/collaboration/${meeting.meetingId}`);
+    }
+  };
+
   return isRequesting || !meeting || !user || !details ? (
     <Skeleton height={400} variant="rounded" sx={{ borderRadius: '15px' }} />
   ) : (
@@ -249,7 +318,7 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
               </Typography>
             </Link>
           }
-          subheader={`${t(`babysitter.calendar.meeting.state.${State[meeting.state?.valueOf() || 0]}`)} ${t('babysitter.calendar.meeting.title')}`}
+          subheader={`${t(`babysitter.calendar.meeting.state.${MeetingState[meeting.state?.valueOf() || 0]}`)} ${t('babysitter.calendar.meeting.title')}`}
           avatar={
             <AvatarDisplay
               avatar={avatar}
@@ -297,9 +366,9 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
             {t(`babysitter.calendar.months.${meeting?.interestedFor}`)}
           </Typography>
         </CardContent>
-        {meeting.state !== State.CLOSED && (
+        {meeting.state !== MeetingState.CLOSED && (
           <CardActions sx={{ float: 'right', bottom: '0' }}>
-            {meeting.state === State.PLANNED && (
+            {meeting.state === MeetingState.PLANNED && (
               <Button
                 startIcon={<Cancel />}
                 onClick={() => setCancelMeeting(true)}
@@ -308,7 +377,7 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
                 {t('meeting.close.title')}
               </Button>
             )}
-            {meeting.state === State.PLANNED &&
+            {meeting.state === MeetingState.PLANNED &&
               uDetails?.role === 'BABYSITTER' && (
                 <Button
                   startIcon={<DoneAllIcon />}
@@ -318,17 +387,17 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
                   {t('meeting.approve.title')}
                 </Button>
               )}
-            {meeting.state === State.APPROVED &&
+            {meeting.state === MeetingState.APPROVED &&
               uDetails?.role === 'PARENT' && (
                 <Button
                   sx={{ color: 'success.main' }}
                   startIcon={<AddCircleOutline />}
-                  // onClick={handleCollab}
+                  onClick={handleCollab}
                 >
                   {t('meeting.plan.title')}
                 </Button>
               )}
-            {meeting.state === State.FINISHED && (
+            {meeting.state === MeetingState.FINISHED && (
               <Button onClick={handleViewPlan} sx={{ color: 'warning.main' }}>
                 {t('meeting.plan.title')}
               </Button>

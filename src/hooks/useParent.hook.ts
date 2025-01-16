@@ -23,7 +23,7 @@ export const useParent = () => {
   const getAd = async (uuid: string) => {
     setIsLoading(true);
 
-    const data = (await _getAd(uuid)).data();
+    const data = (await _getAd(uuid)).data() as ParentAd;
 
     setIsLoading(false);
 

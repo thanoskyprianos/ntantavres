@@ -1,6 +1,7 @@
 import React from 'react';
 import { Divider, Button, useTheme, Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
 import { SearchBar } from '../SearchBar';
+import AdSearchComponent from './SearchParent';
 
 
 export const BabysitterPage = () => {
@@ -10,7 +11,7 @@ export const BabysitterPage = () => {
     <Typography variant="h4" gutterBottom>
       Εύρεση αγγελίας
     </Typography>
-    <SearchBar></SearchBar>
+    <AdSearchComponent />
   </Box>
   );
 };

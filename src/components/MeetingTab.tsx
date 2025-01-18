@@ -268,10 +268,10 @@ export const MeetingTab = ({
       let babysitterAd: BabysitterAd | undefined;
 
       try {
-        parentAd = await getAdP(meeting.puid);
         babysitterAd = await getAdB(meeting.buid);
+        parentAd = await getAdP(meeting.puid);
       } catch {
-        parentAd = undefined;
+        parentAd = { location: uDetails?.location } as unknown as ParentAd;
       }
 
       const newCollab: Collaboration = {
@@ -301,7 +301,8 @@ export const MeetingTab = ({
         });
 
         setTimeout(() => navigate(`/collaboration/${meeting.meetingId}`), 2000);
-      } catch {
+      } catch (err) {
+        console.log(err);
         dispatch!({
           type: 'error',
           payload: { message: t('collaboration.create.error') },

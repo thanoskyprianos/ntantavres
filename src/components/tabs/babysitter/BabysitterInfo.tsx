@@ -24,7 +24,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import { PrivateComponent } from '@components/guard/PrivateComponent.tsx';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
@@ -57,6 +57,7 @@ const BabysitterCalendar = () => {
   const { user, details } = useAuthContext();
   const dispatch = useSnackbarContext();
   const theme = useTheme().palette.mode;
+  const navigate = useNavigate();
 
   const [edit, setEdit] = useState(false);
   const [final, setFinal] = useState<boolean>();
@@ -152,7 +153,26 @@ const BabysitterCalendar = () => {
             message: t('babysitter.calendar.clickMonth.otherBabysitter'),
           },
         });
+      } else if (!user) {
+        dispatch!({
+          type: 'info',
+          payload: { message: t('error.requiresLogin') },
+        });
+        navigate('/auth', { state: { from: location.pathname } });
       } else {
+        if (
+          details &&
+          (!details.location?.number ||
+            !details.location.address ||
+            !details.location.city)
+        ) {
+          dispatch!({
+            type: 'warning',
+            payload: { message: t('error.locationRequiredExt') },
+          });
+          return;
+        }
+
         setMeeting(prev => ({
           ...prev,
           interestedFor: key as keyof MonthAvailability,
@@ -175,10 +195,13 @@ const BabysitterCalendar = () => {
       dispatch!({
         type: 'success',
         payload: {
-          message: `${t('babysitter.calendar.meeting.success')}. ${t('general.reloading')}`,
+          message: `${t('babysitter.calendar.meeting.success')}. ${t('general.redirect')}`,
         },
       });
-      setTimeout(async () => window.location.reload(), 2000);
+      setTimeout(
+        async () => navigate(`/profile/${user.uid}?tab=appointments`),
+        2000
+      );
     } catch {
       dispatch!({
         type: 'error',
@@ -890,6 +913,21 @@ export const BabysitterInfo = () => {
           </Stack>
         }
         b={
+          !isLoading && final === true ? (
+            <Stack spacing={1} sx={{ width: '100%' }}>
+              <BabysitterAdCard />
+              <BabysitterCalendar />
+            </Stack>
+          ) : (
+            <Card sx={{ borderRadius: '15px', width: '100%' }}>
+              <CardHeader title={t('babysitter.ad.title')} />
+              <CardContent>
+                {t('babysitter.ad.notFound.others', { firstName, lastName })}
+              </CardContent>
+            </Card>
+          )
+        }
+        c={
           !isLoading && final === true ? (
             <Stack spacing={1} sx={{ width: '100%' }}>
               <BabysitterAdCard />

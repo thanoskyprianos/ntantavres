@@ -2,7 +2,15 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@config/firebase.ts';
 import { Collaboration } from '@/types/Collaboration.ts';
 import { useState } from 'react';
-import { collection, getDocs, or, query, where } from '@firebase/firestore';
+import {
+  addDoc,
+  collection,
+  getDocs,
+  or,
+  query,
+  where,
+} from '@firebase/firestore';
+import { Payment } from '@/types/Payment.ts';
 
 const collaborationsOf = (uid: string) =>
   query(
@@ -24,6 +32,10 @@ const _setCollaboration = (collabId: string, collab: Collaboration) => {
 
 const _updateCollaboration = (collabId: string, collab: Collaboration) => {
   return updateDoc(doc(db, 'collab', collabId), { ...collab });
+};
+
+const _doPayment = (payment: Payment) => {
+  return addDoc(collection(db, 'payment'), { ...payment });
 };
 
 export const useCollaboration = () => {
@@ -77,6 +89,18 @@ export const useCollaboration = () => {
     }
   };
 
+  const doPayment = async (payment: Payment) => {
+    setIsLoading(true);
+
+    try {
+      await _doPayment(payment);
+    } catch {
+      throw new Error();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const updateCollaboration = async (
     collabId: string,
     collab: Collaboration
@@ -99,5 +123,6 @@ export const useCollaboration = () => {
     getCollaboration,
     setCollaboration,
     updateCollaboration,
+    doPayment,
   };
 };

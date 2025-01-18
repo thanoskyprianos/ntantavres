@@ -47,15 +47,17 @@ export const Meetings = () => {
     <LoadingSpinner />
   ) : (
     <Grid2 container spacing={1} columns={{ sm: 1, md: 2, lg: 3 }}>
-      {meetings.map(meeting => (
-        <Grid2
-          key={meeting.meetingId}
-          size={{ sm: 1, md: 1, lg: 1 }}
-          sx={{ width: '100%' }}
-        >
-          <MeetingTab meeting={meeting} canCreateCollab={canCreateCollab} />
-        </Grid2>
-      ))}
+      {meetings
+        .sort((a, b) => (a?.state || 0) - (b?.state || 0))
+        .map(meeting => (
+          <Grid2
+            key={meeting.meetingId}
+            size={{ sm: 1, md: 1, lg: 1 }}
+            sx={{ width: '100%' }}
+          >
+            <MeetingTab meeting={meeting} canCreateCollab={canCreateCollab} />
+          </Grid2>
+        ))}
     </Grid2>
   );
 };

@@ -14,6 +14,7 @@ import {
 } from '@/routing/lazy.tabs.ts';
 import { TabBox } from './TabBox.tsx';
 import { Meetings } from '@components/tabs/common/Meetings.tsx';
+import { Collaborations } from '@components/tabs/common/Collaborations.tsx';
 
 export const ProfileTabs: NavTab[] = [
   {
@@ -47,7 +48,11 @@ export const ProfileTabs: NavTab[] = [
     icon: <ChecklistIcon />,
     paramRoute: 'collaborations',
     role: 'BOTH',
-    content: <TabBox variant="collaborations" />,
+    content: (
+      <TabBox variant="collaborations">
+        <Collaborations />
+      </TabBox>
+    ),
     requiresAuth: true,
   },
   {

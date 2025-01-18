@@ -40,15 +40,24 @@ import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { useTranslation } from 'react-i18next';
 import { useTabSetterContext } from '@/context/TabSetterProvider.tsx';
+import { AddressInput } from '@components/util/AddressInput.tsx';
+import { Location, UserDetails } from '@/types/UserDetails.ts';
+import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
+import { useAuthContext } from '@/context/AuthProvider.tsx';
 
 const ParentAdCard = () => {
+  const { user } = useAuthContext();
   const dispatch = useSnackbarContext();
   const { isLoading, getAd, setAd: setAdF, updateAd } = useParent();
-  const { firstName, lastName, uid, location } = useProfileContext();
+  const { firstName, lastName, uid, location: locationS } = useProfileContext();
   const { t } = useTranslation();
+  const { updateUserDetails } = useUserDetails();
 
   const [ad, setAd] = useState<ParentAd>();
 
+  const [location, setLocation] = useState<Location | undefined>(
+    () => locationS
+  );
   const [duration, setDuration] = useState<WorkDuration>(1);
   const [type, setType] = useState<WorkType | null>(null);
   const [children, setChildren] = useState<Child[]>([]);
@@ -63,10 +72,13 @@ const ParentAdCard = () => {
   const handleSubmit = async () => {
     const errors: { [key: string]: string } = {};
 
+    if (!user) return;
+
     if (!duration) errors.duration = t('error.durationRequired');
     if (!type) errors.type = t('error.typeRequired');
     if (children.length === 0) errors.children = t('error.childrenRequired');
-    if (!description) errors.description = t('error.descriptionRequired');
+    if (!location?.address || !location.number || !location.city)
+      errors.location = t('error.locationRequired');
 
     if (Object.keys(errors).length > 0) {
       setErrorMessages(errors);
@@ -93,6 +105,7 @@ const ParentAdCard = () => {
       } else {
         await updateAd(toSave);
       }
+      await updateUserDetails(user, { location } as unknown as UserDetails);
       handleClear();
       dispatch!({
         type: 'success',
@@ -217,6 +230,15 @@ const ParentAdCard = () => {
             </DialogTitle>
             <DialogContent>
               <Stack spacing={2}>
+                <AddressInput
+                  setExtLocation={setLocation}
+                  newLocation={location}
+                />
+                {errorMessages.location && (
+                  <Typography color="error">
+                    {errorMessages.location}
+                  </Typography>
+                )}
                 <InputLabel>
                   {t('parent.ad.duration.title')} (
                   {t('parent.ad.duration.months')})

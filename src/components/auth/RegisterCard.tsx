@@ -296,39 +296,48 @@ const BabysitterDocuments = ({
         </Stack>
       </DialogTitle>
       <DialogContent>
-        {/* File Upload Buttons */}
-        <Stack spacing={2} sx={{ alignItems: 'center' }}>
-          {[...Array(3)].map((_, index) => (
-            <Button
-              key={index}
-              variant="outlined"
-              component="label"
-              sx={{ width: '100%' }}
-            >
-              {t(`auth.uploadFile${index + 1}`)} {/* e.g., "Upload File 1", "Upload File 2", etc. */}
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={(e) => handleFileChange(e, index)}
-              />
-            </Button>
-          ))}
-        </Stack>
+  {/* File Upload Buttons */}
+  <Stack spacing={2} sx={{ alignItems: 'center' }}>
+    {[...Array(3)].map((_, index) => (
+      <Button
+        key={index}
+        variant="outlined"
+        component="label"
+        sx={{
+          width: '100%',
+          borderColor: theme => theme.palette.mode === 'dark' ? 'grey.500' : 'inherit',
+          color: theme => theme.palette.mode === 'dark' ? 'grey.300' : 'inherit',
+          backgroundColor: theme => theme.palette.mode === 'dark' ? 'grey.800' : 'inherit',
+          '&:hover': {
+            backgroundColor: theme => theme.palette.mode === 'dark' ? 'grey.700' : 'action.hover',
+          },
+        }}
+      >
+        {t(`auth.babysitterDialog.uploadFile${index + 1}`)} {/* e.g., "Upload File 1", "Upload File 2", etc. */}
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={(e) => handleFileChange(e, index)}
+        />
+      </Button>
+    ))}
+  </Stack>
 
-        {/* Display Uploaded File Names */}
-        {uploadedFiles.length > 0 && (
-          <Stack spacing={1} sx={{ marginTop: '20px' }}>
-            <Typography variant="body2">{t('auth.uploadedFiles')}</Typography>
-            {uploadedFiles.map((fileName, index) => (
-              <Typography key={index} variant="body2" sx={{ color: 'text.secondary' }}>
-                {fileName}
-              </Typography>
-            ))}
-          </Stack>
-        )}
-      </DialogContent>
+  {/* Display Uploaded File Names */}
+  {uploadedFiles.length > 0 && (
+    <Stack spacing={1} sx={{ marginTop: '20px' }}>
+      <Typography variant="body2">{t('auth.uploadedFiles')}</Typography>
+      {uploadedFiles.map((fileName, index) => (
+        <Typography key={index} variant="body2" sx={{ color: 'text.secondary' }}>
+          {fileName}
+        </Typography>
+      ))}
+    </Stack>
+  )}
+</DialogContent>
+
 
       <DialogActions>
       <Button

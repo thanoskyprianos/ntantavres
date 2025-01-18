@@ -65,7 +65,10 @@
     "isBabysitter": "Θέλω να γίνω νταντά",
     "babysitterDialog": {
       "title": "Υποβολή εγγράφων νταντάς",
-      "submit": "ΥΠΟΒΟΛΗ"
+      "submit": "ΥΠΟΒΟΛΗ",
+      "uploadFile1": "ΒΙΟΓΡΑΦΙΚΟ",
+      "uploadFile2": "ΣΥΣΤΑΤΙΚΗ ΕΠΙΣΤΟΛΗ",
+      "uploadFile3": "ΑΛΛΟ"
     }
   },
   "general": {

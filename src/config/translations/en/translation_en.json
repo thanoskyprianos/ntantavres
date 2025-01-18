@@ -65,7 +65,10 @@
     "isBabysitter": "I want to babysit",
     "babysitterDialog": {
       "title": "Submit babysitter documents",
-      "submit": "SUBMIT"
+      "submit": "SUBMIT",
+      "uploadFile1": "CV",
+      "uploadFile2": "REFERENCE LETTER",
+      "uploadFile3": "EXTRA"
     }
   },
   "general": {

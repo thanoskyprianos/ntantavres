@@ -10,4 +10,5 @@ export interface ParentAd {
   type: WorkType;
   children: Child[];
   description?: string;
+  uid?: string;
 }

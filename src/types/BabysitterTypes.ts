@@ -15,4 +15,5 @@ export interface BabysitterAd {
   type?: WorkType;
   description?: string;
   final?: boolean;
+  uid?: string;
 }

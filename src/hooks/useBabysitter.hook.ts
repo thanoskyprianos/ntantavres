@@ -121,6 +121,8 @@ export const useBabysitter = () => {
   const setAd = async (uid: string, ad: BabysitterAd) => {
     setIsLoading(true);
 
+    ad.uid = uid;
+
     try {
       await _setAd(uid, ad);
     } catch {

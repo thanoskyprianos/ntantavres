@@ -1,6 +1,15 @@
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useState } from 'react';
-import { doc, getDoc, setDoc, updateDoc,collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { db } from '@config/firebase.ts';
 import { ParentAd } from '@/types/ParentAd.ts';
 
@@ -16,9 +25,11 @@ const _updateAd = (uuid: string, ad: ParentAd) => {
   return updateDoc(doc(db, 'parent_ad', uuid), { ...ad });
 };
 
-const _queryAds = async (criteria: { field: string, operator?: string, value: any }[]) => {
+const _queryAds = async (
+  criteria: { field: string; operator?: string; value: any }[]
+) => {
   const collectionRef = collection(db, 'parent_ad'); // Adjust the collection name based on your project
-  let queryConstraints = criteria.map(({ field, operator, value }) => 
+  let queryConstraints = criteria.map(({ field, operator, value }) =>
     where(field, (operator || '==') as any, value)
   );
 
@@ -49,6 +60,8 @@ export const useParent = () => {
       throw new Error();
     }
 
+    ad.uid = user.uid;
+
     setIsLoading(true);
 
     await _setAd(user.uid, ad);
@@ -68,11 +81,14 @@ export const useParent = () => {
     setIsLoading(false);
   };
 
-  const queryAds = async (criteria: { field: string, value: any }[]) => {
+  const queryAds = async (criteria: { field: string; value: any }[]) => {
     setIsLoading(true);
 
     const adsSnapshot = await _queryAds(criteria);
-    const adsList = adsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const adsList = adsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
     setIsLoading(false);
 

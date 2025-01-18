@@ -5,6 +5,8 @@ import { firestoreTimestampToDate } from '@util/util.ts';
 import { format } from 'date-fns';
 import PaymentIcon from '@mui/icons-material/Payment';
 import { useNavigate } from 'react-router-dom';
+import { localeTextMap } from '@config/i18n.ts';
+import { useTranslation } from 'react-i18next';
 
 interface PaymentTabProps {
   payment: Payment;
@@ -12,6 +14,7 @@ interface PaymentTabProps {
 
 export const PaymentTab = ({ payment }: PaymentTabProps) => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   return (
     <Card
@@ -25,7 +28,9 @@ export const PaymentTab = ({ payment }: PaymentTabProps) => {
       <CardHeader
         title={
           payment.time
-            ? format(firestoreTimestampToDate(payment.time), 'PP p')
+            ? format(firestoreTimestampToDate(payment.time), 'PP p', {
+                locale: localeTextMap.get(i18n.language),
+              })
             : ''
         }
         avatar={<PaymentIcon />}

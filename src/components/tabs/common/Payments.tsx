@@ -36,8 +36,8 @@ export const Payments = () => {
     payments
       .sort(
         (a, b) =>
-          firestoreTimestampToDate(a.time || new Date()).getTime() -
-          firestoreTimestampToDate(b.time || new Date()).getTime()
+          firestoreTimestampToDate(b.time || new Date()).getTime() -
+          firestoreTimestampToDate(a.time || new Date()).getTime()
       )
       .map(payment => <PaymentTab key={payment.paymentId} payment={payment} />)
   );

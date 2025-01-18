@@ -15,16 +15,16 @@ import {
   TempRequestCompletion,
   TempRequests,
 } from './lazy.routes.ts';
+import { ErrorPage } from '@pages/ErrorPage.tsx';
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
-    // TODO: re-add this
-    // errorElement: (
-    //   <Layout>
-    //     <ErrorPage />
-    //   </Layout>
-    // ),
+    errorElement: (
+      <Layout>
+        <ErrorPage />
+      </Layout>
+    ),
     children: [
       {
         path: '/',

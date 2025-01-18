@@ -13,6 +13,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@config/theme.config.ts';
 import { SnackbarProvider } from '@/context/SnackbarProvider.tsx';
 import { useTranslation } from 'react-i18next';
+import { TitleSetter } from '@components/TitleSetter.tsx';
 
 export const Layout = ({ children }: { children?: ReactElement }) => {
   const { state } = useNavigation();
@@ -29,6 +30,7 @@ export const Layout = ({ children }: { children?: ReactElement }) => {
             <CssBaseline />
             <Stack sx={{ minHeight: '100vh', justifyContent: 'space-between' }}>
               <Box>
+                <TitleSetter />
                 <Header />
                 {state !== 'loading' && <Breadcrumbs sx={{ margin: '15px' }} />}
                 {state === 'loading' ? (

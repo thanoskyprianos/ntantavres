@@ -15,13 +15,16 @@
     "babysitter": "Babysitter",
     "questions": "Questions",
     "auth": "Auth",
-    "profile": "Profile"
+    "profile": "Profile",
+    "collaboration": "Collaboration"
   },
   "title": {
     "parent": "Parent",
     "babysitter": "Babysitter",
     "questions": "Questions",
-    "auth": "Auth"
+    "auth": "Auth",
+    "profile": "Profile",
+    "collaboration": "Collaboration"
   },
   "error": {
     "generic": "There was an error, please try again later",

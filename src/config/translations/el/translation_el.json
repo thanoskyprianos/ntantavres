@@ -15,13 +15,16 @@
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις",
     "auth": "Είσοδος",
-    "profile": "Προφίλ"
+    "profile": "Προφίλ",
+    "collaboration": "Συνεργασία"
   },
   "title": {
     "parent": "Γονέας",
     "babysitter": "Νταντά",
     "questions": "Ερωτήσεις",
-    "auth": "Είσοδος"
+    "auth": "Είσοδος",
+    "profile": "Προφίλ",
+    "collaboration": "Συνεργασία"
   },
   "error": {
     "generic": "Υπήρξε σφάλμα, παρακαλώ δοκιμάστε αργότερα",

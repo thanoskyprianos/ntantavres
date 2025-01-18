@@ -10,6 +10,7 @@ export enum State {
 }
 
 export interface Meeting {
+  name?: string;
   place?: Place | null;
   location?: Location | null;
   dateTime?: Date | null;

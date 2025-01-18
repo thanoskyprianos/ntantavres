@@ -106,7 +106,7 @@
       "activeCollaborations": "COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
-      "payment": "PAYMENT",
+      "payments": "PAYMENTS",
       "settings": "SETTINGS"
     },
     "info": {
@@ -255,6 +255,7 @@
     }
   },
   "meeting": {
+    "notFound": "No meetings found",
     "close": {
       "title": "CANCEL",
       "header": "CANCEL APPOINTMENT",
@@ -274,6 +275,7 @@
     }
   },
   "collaboration": {
+    "notFound": "No collaborations found",
     "create": {
       "success": "Successfully created temporary collaboration",
       "error": "Error while creating temporary collaboration"
@@ -337,5 +339,13 @@
       "error": "Error while advancing to next month",
       "payment": "The collaboration will continue after this month's payment"
     }
+  },
+  "payments": {
+    "notFound": "No payments found"
+  },
+  "tabBox": {
+    "meetings": "Appointments",
+    "collaborations": "Collaborations",
+    "payment": "Payments"
   }
 }

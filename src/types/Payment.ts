@@ -5,4 +5,8 @@ export interface Payment {
 
   puid?: string;
   buid?: string;
+
+  time?: Date;
+
+  paymentId?: string;
 }

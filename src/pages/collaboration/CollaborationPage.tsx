@@ -311,6 +311,7 @@ export const CollaborationPage = () => {
         collaboration,
         puid: collaboration.puid,
         buid: collaboration.buid,
+        time: new Date(),
       });
 
       if (collaboration.canceled) {

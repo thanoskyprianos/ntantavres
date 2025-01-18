@@ -18,8 +18,25 @@ const collaborationsOf = (uid: string) =>
     or(where('puid', '==', uid), where('buid', '==', uid))
   );
 
+const collaborationsBetweenTwo = (puid: string, buid: string) =>
+  query(
+    collection(db, 'collab'),
+    where('puid', '==', puid),
+    where('buid', '==', buid)
+  );
+
+const paymentsOf = (uid: string) =>
+  query(
+    collection(db, 'payment'),
+    or(where('puid', '==', uid), where('buid', '==', uid))
+  );
+
 const _getCollaborationsOf = (uid: string) => {
   return getDocs(collaborationsOf(uid));
+};
+
+const _getCollaborationsBetweenTwo = (puid: string, buid: string) => {
+  return getDocs(collaborationsBetweenTwo(puid, buid));
 };
 
 const _getCollaboration = (collabId: string) => {
@@ -38,6 +55,10 @@ const _doPayment = (payment: Payment) => {
   return addDoc(collection(db, 'payment'), { ...payment });
 };
 
+const _getPayments = (uid: string) => {
+  return getDocs(paymentsOf(uid));
+};
+
 export const useCollaboration = () => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +68,25 @@ export const useCollaboration = () => {
     let data: Collaboration[] | undefined;
     try {
       data = (await _getCollaborationsOf(uid)).docs.map(doc => {
+        const data = doc.data() as Collaboration;
+        data.collaborationId = doc.id;
+        return data;
+      });
+    } catch {
+      data = undefined;
+    } finally {
+      setIsLoading(false);
+    }
+
+    return data;
+  };
+
+  const getCollaborationsBetweenTwo = async (puid: string, buid: string) => {
+    setIsLoading(true);
+
+    let data: Collaboration[] | undefined;
+    try {
+      data = (await _getCollaborationsBetweenTwo(puid, buid)).docs.map(doc => {
         const data = doc.data() as Collaboration;
         data.collaborationId = doc.id;
         return data;
@@ -89,6 +129,28 @@ export const useCollaboration = () => {
     }
   };
 
+  const getPayments = async (uid: string) => {
+    setIsLoading(true);
+
+    console.log(uid);
+
+    let data: Payment[] | undefined;
+    try {
+      data = (await _getPayments(uid)).docs.map(doc => {
+        const data = doc.data() as Payment;
+        data.paymentId = doc.id;
+        return data;
+      });
+    } catch (err) {
+      console.log(err);
+      data = [];
+    } finally {
+      setIsLoading(false);
+    }
+
+    return data;
+  };
+
   const doPayment = async (payment: Payment) => {
     setIsLoading(true);
 
@@ -120,9 +182,11 @@ export const useCollaboration = () => {
   return {
     isLoading,
     getCollaborationsOf,
+    getCollaborationsBetweenTwo,
     getCollaboration,
     setCollaboration,
     updateCollaboration,
     doPayment,
+    getPayments,
   };
 };

@@ -1,7 +1,6 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { NavTab } from '@components/tabs/TabNav.tsx';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import ContactsIcon from '@mui/icons-material/Contacts';
 import HistoryIcon from '@mui/icons-material/History';
 import { Payment } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
@@ -15,6 +14,7 @@ import {
 import { TabBox } from './TabBox.tsx';
 import { Meetings } from '@components/tabs/common/Meetings.tsx';
 import { Collaborations } from '@components/tabs/common/Collaborations.tsx';
+import { Payments } from '@components/tabs/common/Payments.tsx';
 
 export const ProfileTabs: NavTab[] = [
   {
@@ -56,12 +56,16 @@ export const ProfileTabs: NavTab[] = [
     requiresAuth: true,
   },
   {
-    title: 'parent.actions.temporaryApplications',
-    icon: <ContactsIcon />,
-    paramRoute: 'applications',
+    title: 'parent.actions.payments',
+    icon: <Payment />,
+    paramRoute: 'payments',
     privateTab: true,
-    role: 'PARENT',
-    content: <TabBox variant="applications" />,
+    role: 'BOTH',
+    content: (
+      <TabBox variant="payment">
+        <Payments />
+      </TabBox>
+    ),
   },
   {
     title: 'parent.actions.history',
@@ -70,14 +74,6 @@ export const ProfileTabs: NavTab[] = [
     role: 'BOTH',
     content: <TabBox variant="history" />,
     requiresAuth: true,
-  },
-  {
-    title: 'parent.actions.payment',
-    icon: <Payment />,
-    paramRoute: 'payment',
-    privateTab: true,
-    role: 'BOTH',
-    content: <TabBox variant="payment" />,
   },
   {
     title: 'parent.actions.settings',

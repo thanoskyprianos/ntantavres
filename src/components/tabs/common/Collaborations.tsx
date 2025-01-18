@@ -5,25 +5,38 @@ import { Collaboration } from '@/types/Collaboration.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { CollaborationTab } from '@components/CollaborationTab.tsx';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
+import { Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export const Collaborations = () => {
+  const { t } = useTranslation();
   const [collaborations, setCollaborations] = useState<Collaboration[]>([]);
-  const { isLoading, getCollaborationsOf } = useCollaboration();
-  const { user } = useAuthContext();
+  const { isLoading, getCollaborationsOf, getCollaborationsBetweenTwo } =
+    useCollaboration();
+  const { user, details } = useAuthContext();
   const { uid } = useProfileContext();
 
   useEffect(() => {
-    if (!user || !uid) {
+    if (!user || !uid || !details) {
       return;
     }
 
     const fetch = async () => {
-      const data = await getCollaborationsOf(uid);
+      let data: Collaboration[] | undefined;
+
+      if (user.uid === uid) {
+        data = await getCollaborationsOf(uid);
+      } else {
+        const puid = details?.role === 'PARENT' ? user.uid : uid;
+        const buid = details?.role === 'BABYSITTER' ? user.uid : uid;
+        data = await getCollaborationsBetweenTwo(puid, buid);
+      }
+
       setCollaborations(data || []);
     };
 
     fetch().then();
-  }, [user, uid]);
+  }, [user, uid, details]);
 
   return isLoading ? (
     <LoadingSpinner />
@@ -31,9 +44,9 @@ export const Collaborations = () => {
     collaborations
       .sort((a, b) => (a?.state || 0) - (b?.state || 0))
       .map((collab: Collaboration) => (
-        <CollaborationTab collaboration={collab} />
+        <CollaborationTab key={collab.collaborationId} collaboration={collab} />
       ))
   ) : (
-    <p>bruh</p>
+    <Typography variant="h5">{t('collaboration.notFound')}</Typography>
   );
 };

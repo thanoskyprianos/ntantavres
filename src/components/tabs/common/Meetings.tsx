@@ -1,17 +1,22 @@
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useEffect, useState } from 'react';
-import { Meeting } from '@/types/Meeting.ts';
+import { Meeting, MeetingState } from '@/types/Meeting.ts';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { MeetingTab } from '@components/MeetingTab.tsx';
-import { Grid2 } from '@mui/material';
+import { Grid2, Typography } from '@mui/material';
 import { useProfileContext } from '@/context/ProfileProvider.tsx';
+import { useTranslation } from 'react-i18next';
 
 export const Meetings = () => {
+  const { t } = useTranslation();
   const { user, details } = useAuthContext();
   const { uid } = useProfileContext();
   const { getMeetingsOf, getMeetingsBetweenTwo } = useMeeting();
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>();
+  const canCreateCollab =
+    meetings?.findIndex(meeting => meeting.state === MeetingState.FINISHED) ===
+    -1;
 
   useEffect(() => {
     if (!user || !details) {
@@ -42,17 +47,21 @@ export const Meetings = () => {
 
   return !meetings ? (
     <LoadingSpinner />
-  ) : (
+  ) : meetings.length > 0 ? (
     <Grid2 container spacing={1} columns={{ sm: 1, md: 2, lg: 3 }}>
-      {meetings.map(meeting => (
-        <Grid2
-          key={meeting.meetingId}
-          size={{ sm: 1, md: 1, lg: 1 }}
-          sx={{ width: '100%' }}
-        >
-          <MeetingTab meeting={meeting} />
-        </Grid2>
-      ))}
+      {meetings
+        .sort((a, b) => (a?.state || 0) - (b?.state || 0))
+        .map(meeting => (
+          <Grid2
+            key={meeting.meetingId}
+            size={{ sm: 1, md: 1, lg: 1 }}
+            sx={{ width: '100%' }}
+          >
+            <MeetingTab meeting={meeting} canCreateCollab={canCreateCollab} />
+          </Grid2>
+        ))}
     </Grid2>
+  ) : (
+    <Typography variant="h5">{t('meeting.notFound')}</Typography>
   );
 };

@@ -5,10 +5,11 @@ import { MonthAvailability } from '@/types/MonthAvailability.ts';
 import { Location } from '@/types/UserDetails.ts';
 
 export enum CollaborationState {
-  TEMPORARY,
-  ONGOING,
   AWAITING_PAYMENT,
+  ONGOING,
+  TEMPORARY,
   FINISHED,
+  CANCELED,
 }
 
 export interface Collaboration {
@@ -30,4 +31,7 @@ export interface Collaboration {
   buid?: string;
 
   collaborationId?: string;
+
+  canceled?: boolean;
+  nextMonth?: keyof MonthAvailability | null;
 }

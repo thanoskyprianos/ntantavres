@@ -35,7 +35,14 @@
     "avatarSet": "Error while setting new avatar",
     "updateEmail": "Error while updating email",
     "updatePassword": "Error while updating password",
-    "loginAgain": "This actions requires new login"
+    "loginAgain": "This actions requires new login",
+    "durationRequired": "Duration is required",
+    "typeRequired": "Type is required",
+    "childrenRequired": "Children are required",
+    "locationRequired": "Location is required",
+    "locationRequiredExt": "Please set your home address in the settings",
+    "requiresLogin": "This action requires you to be logged in",
+    "monthRequired": "Please choose the month to continue"
   },
   "textField": {
     "firstName": "First Name",
@@ -99,10 +106,10 @@
   "parent": {
     "actions": {
       "appointments": "APPOINTMENTS",
-      "activeCollaborations": "ACTIVE COLLABORATIONS",
+      "activeCollaborations": "COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
-      "payment": "PAYMENT",
+      "payments": "PAYMENTS",
       "settings": "SETTINGS"
     },
     "info": {
@@ -235,7 +242,8 @@
           "PLANNED": "PLANNED",
           "FINISHED": "FINISHED",
           "CLOSED": "CANCELED",
-          "APPROVED": "APPROVED"
+          "APPROVED": "APPROVED",
+          "ENDED": "ENDED"
         }
       }
     },
@@ -250,6 +258,7 @@
     }
   },
   "meeting": {
+    "notFound": "No meetings found",
     "close": {
       "title": "CANCEL",
       "header": "CANCEL APPOINTMENT",
@@ -269,6 +278,7 @@
     }
   },
   "collaboration": {
+    "notFound": "No collaborations found",
     "create": {
       "success": "Successfully created temporary collaboration",
       "error": "Error while creating temporary collaboration"
@@ -278,10 +288,67 @@
       "notSigned": "Not signed"
     },
     "sign": {
-      "do": "Sign",
-      "done": "Signed",
+      "do": "SIGN",
+      "done": "SIGNED",
       "success": "Successfully signed collaboration",
-      "error": "Error while signing collaboration"
+      "error": "Error while signing collaboration",
+      "required": "Please fill out all fields",
+      "header": "SIGN COLLABORATION",
+      "prompt1": "Are you sure you want to sign the collaboration?",
+      "prompt2": "You won't be able to edit it again",
+      "prompt3": "After both of you have signed, you can finalize the submission and start collaborating"
+    },
+    "submit": {
+      "title": "SUBMIT",
+      "success": "Successfully submitted collaboration. You are both ready to start working together",
+      "error": "Error while submitting collaboration"
+    },
+    "temporary": {
+      "title": "SAVE",
+      "success": "Successfully saved collaboration",
+      "error": "Error while saving collaboration",
+      "cancel": "CANCEL"
+    },
+    "state": {
+      "TEMPORARY": "EDITING PHASE",
+      "ONGOING": "ONGOING COLLABORATION",
+      "AWAITING_PAYMENT": "AWAITING PAYMENT",
+      "FINISHED": "FINISHED COLLABORATION",
+      "CANCELED": "CANCELED COLLABORATION"
+    },
+    "ongoing": {
+      "currentMonth": "Collaboration period",
+      "advanceMonth": "MONTH DONE",
+      "end": "END COLLABORATION"
+    },
+    "finished": {
+      "awaitingPayment": "The collaboration will end after the final payment",
+      "canceled": "The collaboration was canceled",
+      "error": "Error while cancelling collaboration",
+      "header": "END COLLABORATION",
+      "prompt1": "Are you sure you want to end the collaboration?",
+      "prompt2": "Τhe final month of the collaboration needs to be paid off in order for the collaboration to be considered finished"
+    },
+    "payment": {
+      "pay": "PAYMENT",
+      "final": "FINAL PAYMENT",
+      "success": "Successful payment",
+      "error": "Payment error",
+      "nowCancel": "You collaboration ended successfully"
+    },
+    "advance": {
+      "nextMonth": "I want to continue the collaboration in:",
+      "success": "Successfully advanced to next month chosen",
+      "error": "Error while advancing to next month",
+      "payment": "The collaboration will continue after this month's payment"
     }
+  },
+  "payments": {
+    "notFound": "No payments found"
+  },
+  "tabBox": {
+    "meetings": "Appointments",
+    "collaborations": "Collaborations",
+    "payment": "Payments"
   }
 }

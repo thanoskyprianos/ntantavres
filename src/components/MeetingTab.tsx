@@ -30,16 +30,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import CloseIcon from '@mui/icons-material/Close';
-import { AddCircleOutline, Cancel, WarningAmber } from '@mui/icons-material';
+import {
+  AddCircleOutline,
+  Cancel,
+  Preview,
+  WarningAmber,
+} from '@mui/icons-material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Collaboration, CollaborationState } from '@/types/Collaboration.ts';
 import { useParent } from '@hooks/useParent.hook.ts';
 import { useBabysitter } from '@hooks/useBabysitter.hook.ts';
 import { ParentAd } from '@/types/ParentAd.ts';
 import { BabysitterAd } from '@/types/BabysitterTypes.ts';
+import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 
 interface MeetingTabProps {
   meeting?: Meeting;
+  canCreateCollab?: boolean;
 }
 
 interface CancelMeetingDialogProps {
@@ -197,11 +204,15 @@ const ApproveMeetingDialog = ({
   );
 };
 
-export const MeetingTab = ({ meeting }: MeetingTabProps) => {
+export const MeetingTab = ({
+  meeting,
+  canCreateCollab = false,
+}: MeetingTabProps) => {
   const { t } = useTranslation();
   const { user, details: uDetails } = useAuthContext();
   const { isRequesting, getUserAvatar, getUserDetails } = useUserDetails();
   const { getCollaboration, setCollaboration } = useCollaboration();
+  const { updateMeeting } = useMeeting();
   const { getAd: getAdP } = useParent();
   const { getAd: getAdB } = useBabysitter();
 
@@ -214,11 +225,8 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
   const [cancelMeeting, setCancelMeeting] = useState(false);
   const [approveMeeting, setApproveMeeting] = useState(false);
 
+  const [collab, setCollab] = useState<Collaboration>();
   const [isCreatingCollab, setIsCreatingCollab] = useState(false);
-
-  // const handlePlanMeeting = async () => {};
-
-  const handleViewPlan = async () => {};
 
   useEffect(() => {
     if (!meeting || !user) {
@@ -232,11 +240,17 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
     }
 
     const fetch = async () => {
+      if (!meeting.meetingId) {
+        return;
+      }
+
       const details = await getUserDetails(uid);
       const avatar = await getUserAvatar(uid);
+      const collab = await getCollaboration(meeting.meetingId);
 
       setDetails(details);
       setAvatar(avatar);
+      setCollab(collab);
     };
 
     fetch().then();
@@ -249,16 +263,15 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
 
     setIsCreatingCollab(true);
 
-    const collab = await getCollaboration(meeting.meetingId);
     if (!collab) {
       let parentAd: ParentAd | undefined;
       let babysitterAd: BabysitterAd | undefined;
 
       try {
-        parentAd = await getAdP(meeting.puid);
         babysitterAd = await getAdB(meeting.buid);
+        parentAd = await getAdP(meeting.puid);
       } catch {
-        parentAd = undefined;
+        parentAd = { location: uDetails?.location } as unknown as ParentAd;
       }
 
       const newCollab: Collaboration = {
@@ -277,14 +290,19 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
 
       try {
         await setCollaboration(meeting.meetingId, newCollab);
+        await updateMeeting(meeting.meetingId, {
+          state: MeetingState.FINISHED,
+        });
         dispatch!({
           type: 'success',
           payload: {
             message: `${t('collaboration.create.success')}. ${t('general.redirect')}`,
           },
         });
+
         setTimeout(() => navigate(`/collaboration/${meeting.meetingId}`), 2000);
-      } catch {
+      } catch (err) {
+        console.log(err);
         dispatch!({
           type: 'error',
           payload: { message: t('collaboration.create.error') },
@@ -368,6 +386,7 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
         </CardContent>
         {meeting.state !== MeetingState.CLOSED && (
           <CardActions sx={{ float: 'right', bottom: '0' }}>
+            {isCreatingCollab && <LoadingSpinner size={25} />}
             {meeting.state === MeetingState.PLANNED && (
               <Button
                 startIcon={<Cancel />}
@@ -388,7 +407,9 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
                 </Button>
               )}
             {meeting.state === MeetingState.APPROVED &&
-              uDetails?.role === 'PARENT' && (
+              !collab &&
+              uDetails?.role === 'PARENT' &&
+              canCreateCollab && (
                 <Button
                   sx={{ color: 'success.main' }}
                   startIcon={<AddCircleOutline />}
@@ -397,8 +418,12 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
                   {t('meeting.plan.title')}
                 </Button>
               )}
-            {meeting.state === MeetingState.FINISHED && (
-              <Button onClick={handleViewPlan} sx={{ color: 'warning.main' }}>
+            {!!collab && (
+              <Button
+                startIcon={<Preview />}
+                onClick={handleCollab}
+                sx={{ color: 'warning.main' }}
+              >
                 {t('meeting.plan.title')}
               </Button>
             )}

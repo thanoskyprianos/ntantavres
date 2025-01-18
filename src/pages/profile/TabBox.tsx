@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const styles = {
   meetings: {
@@ -16,20 +17,6 @@ const styles = {
     padding: '20px',
     color: 'text.main',
   },
-  applications: {
-    position: 'relative',
-    background: 'linear-gradient(135deg, #2196F3,rgb(81, 164, 202))',
-    borderRadius: '15px',
-    padding: '20px',
-    color: 'text.main',
-  },
-  history: {
-    position: 'relative',
-    background: 'linear-gradient(135deg, #E91E63, #F06292)',
-    borderRadius: '15px',
-    padding: '20px',
-    color: 'text.main',
-  },
   payment: {
     position: 'relative',
     borderRadius: '15px',
@@ -39,12 +26,7 @@ const styles = {
   },
 };
 
-type Variant =
-  | 'meetings'
-  | 'collaborations'
-  | 'applications'
-  | 'history'
-  | 'payment';
+type Variant = 'meetings' | 'collaborations' | 'payment';
 
 interface TabBoxProps {
   variant: Variant;
@@ -52,10 +34,12 @@ interface TabBoxProps {
 }
 
 export const TabBox: React.FC<TabBoxProps> = ({ variant, children }) => {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={1}>
       <Box sx={styles[variant]}>
-        <Typography variant="h6">{`${variant.charAt(0).toUpperCase() + variant.slice(1)} Box`}</Typography>
+        <Typography variant="h6">{`${t(`tabBox.${variant}`)}`}</Typography>
       </Box>
       {children}
     </Stack>

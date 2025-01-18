@@ -2,7 +2,7 @@ import { CircularProgress, Stack, SxProps, Theme } from '@mui/material';
 
 interface LoadingSpinnerProps {
   sx?: SxProps<Theme>;
-  size?: string;
+  size?: string | number;
 }
 
 export const LoadingSpinner = ({ sx, size }: LoadingSpinnerProps) => {

@@ -5,9 +5,10 @@ interface SwitchProps {
   uid: string;
   a: ReactNode;
   b?: ReactNode;
+  c?: ReactNode;
 }
 
-export const Switch = ({ uid, a, b }: SwitchProps) => {
+export const Switch = ({ uid, a, b, c }: SwitchProps) => {
   const { user } = useAuthContext();
 
   if (user) {
@@ -16,5 +17,7 @@ export const Switch = ({ uid, a, b }: SwitchProps) => {
     } else {
       return b;
     }
+  } else {
+    return c;
   }
 };

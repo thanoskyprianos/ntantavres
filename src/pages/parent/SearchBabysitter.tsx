@@ -5,6 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import Search from '@mui/icons-material/Search';
 import { UserCard } from '@components/UserCard.tsx';
 import { Clear } from '@mui/icons-material';
+import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
+import { useNavigate } from 'react-router-dom';
 
 const BabysitterSearchComponent: React.FC = () => {
   const theme = useTheme();
@@ -15,6 +17,13 @@ const BabysitterSearchComponent: React.FC = () => {
   const [services, setServices] = useState<string[]>([]);
   const [duration, setDuration] = useState<number | null>(null);
   const [childrenCount, setChildrenCount] = useState<number | null>(null);
+  const { getUserDetails, getUserAvatar } = useUserDetails();
+
+  const navigate = useNavigate();
+
+  const handleAdClick = (userId: string) => {
+    navigate(`/profile/${userId}`);
+  };
 
   const serviceOptions = [
     'Μαγείρεμα', 'Παιχνίδι', 'Μαθηματικά', 'Πιάνο', 'Γλώσσα',
@@ -45,16 +54,35 @@ const BabysitterSearchComponent: React.FC = () => {
     if (duration !== null && duration > 0) criteria.push({ field: 'duration', value: duration });
     if (childrenCount !== null && childrenCount > 0) criteria.push({ field: 'children', value: childrenCount });
     if (services.length > 0) criteria.push({ field: 'services', value: services });
-
+  
     console.log('Search Criteria:', criteria);
-
+  
     try {
       const babysitterList = await queryAds(criteria);
-      setBabysitters(babysitterList);
+  
+      const updatedBabysitters = await Promise.all(
+        babysitterList.map(async (ad) => {
+          try {
+            const userDetails = await getUserDetails(ad.id); // Use ad.id directly
+            const userAvatar = await getUserAvatar(ad.id);  // Use ad.id directly
+            return {
+              ...ad,
+              name: `${userDetails.firstName} ${userDetails.lastName}`,
+              photoUrl: userAvatar || '',
+            };
+          } catch (err) {
+            console.error('Error fetching user details:', err);
+            return { ...ad, name: 'Unknown', photoUrl: '' };
+          }
+        })
+      );
+  
+      setBabysitters(updatedBabysitters);
     } catch (error) {
       console.error('Error fetching babysitters:', error);
     }
   };
+  
 
   const clearFilters = () => {
     setType('');
@@ -327,27 +355,28 @@ const BabysitterSearchComponent: React.FC = () => {
         >
           {babysitters.map(babysitter => (
             <Box
-              key={babysitter.id}
-              sx={{
-                width: '300px',
-                flex: 'none',
-                backgroundColor: 'white',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                borderRadius: '8px',
-              }}
-            >
-              <UserCard
-                name={babysitter.name}
-                description={babysitter.description}
-                photo={babysitter.photoUrl}
-                showButton={false}
-              >
-                <Typography variant="body2">
-                  Type: {babysitter.type} <br />
-                  Duration: {babysitter.duration} months <br />
-                </Typography>
-              </UserCard>
-            </Box>
+                key={babysitter.id}
+                onClick={() => handleAdClick(babysitter.id)}
+                sx={{
+                    width: '300px',
+                    flex: 'none',
+                    backgroundColor: 'white',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    borderRadius: '8px',
+                }}
+                >
+                <UserCard
+                    name={babysitter.name}
+                    description={babysitter.description}
+                    photo={babysitter.photoUrl}
+                    showButton={false}
+                >
+                    <Typography variant="body2">
+                    Type: {babysitter.type} <br />
+                    Duration: {babysitter.duration} months <br />
+                    </Typography>
+                </UserCard>
+                </Box>
           ))}
         </Box>
       )}

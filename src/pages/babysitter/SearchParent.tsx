@@ -5,6 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import Search from '@mui/icons-material/Search';
 import { UserCard } from '@components/UserCard.tsx';
 import { Clear } from '@mui/icons-material';
+import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
+import { useNavigate } from 'react-router-dom';
 
 const AdSearchComponent: React.FC = () => {
   const theme = useTheme();
@@ -16,6 +18,13 @@ const AdSearchComponent: React.FC = () => {
   const [childrenCount, setChildrenCount] = useState<number | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ title: string }[]>([]);
   const [description, setDescription] = useState<string>('');
+  const { getUserDetails, getUserAvatar } = useUserDetails();
+
+  const navigate = useNavigate();
+
+  const handleAdClick = (userId: string) => {
+    navigate(`/profile/${userId}`);
+  };
 
   const typeKeywords: { [key: string]: string } = {
     'πλήρης': 'FULL_TIME',
@@ -41,10 +50,25 @@ const AdSearchComponent: React.FC = () => {
     if (childrenCount !== null && childrenCount > 0) criteria.push({ field: 'children', value: childrenCount });
 
     console.log('Search Criteria:', criteria); // Log the criteria
-  
+
     try {
       const adsList = await queryAds(criteria);
-      setAds(adsList);
+
+      // Fetch user details and avatars for each ad
+      const adsWithUserDetails = await Promise.all(
+        adsList.map(async (ad: any) => {
+          const userDetails = await getUserDetails(ad.id);
+          const userAvatar = await getUserAvatar(ad.id);
+
+          return {
+            ...ad,
+            userName: `${userDetails.firstName} ${userDetails.lastName}`,
+            userAvatar,
+          };
+        })
+      );
+
+      setAds(adsWithUserDetails);
     } catch (error) {
       console.error('Error fetching ads:', error);
     }
@@ -59,262 +83,265 @@ const AdSearchComponent: React.FC = () => {
 
   return (
     <Stack spacing={2}>
-    <Box 
-      sx={{ 
-        width: '1090px',
-        padding: '20px 30px',
-        backgroundColor: isDarkMode ? 'rgba(58, 58, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-        borderRadius: '16px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      }}
-    >  
-
-      <Stack 
-        direction="row" 
-        spacing={2} 
-        alignItems="center"
+      <Box 
         sx={{ 
-          height: '60px',
+          width: '1090px',
+          padding: '20px 30px',
+          backgroundColor: isDarkMode ? 'rgba(58, 58, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '16px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
         }}
-      >
+      >  
 
-        <Button
-          startIcon={< Clear />}
-          onClick={clearFilters}
-          sx={{
-            height: '45px',
-            minWidth: '120px',
-            borderRadius: '10px',
-            fontWeight: 500,
-            color: 'rgb(255, 88, 88)',
-            background: 'rgba(255, 107, 107, 0.31)',
-            transition: 'all 0.3s ease',
-            textTransform: 'none',
-            fontSize: '0.9rem',
-            '&:hover': {
-              background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
-              transform: 'translateY(-2px)',
-            }
+        <Stack 
+          direction="row" 
+          spacing={2} 
+          alignItems="center"
+          sx={{ 
+            height: '60px',
           }}
         >
-          ΚΑΘΑΡΙΣΜΟΣ
-        </Button>
 
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            margin: '0 16px',
-            opacity: isDarkMode ? 0.2 : 0.15,
-            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-          }}
-        />
-
-        <Stack direction="row" spacing={1}>
           <Button
-            onClick={() => setType('FULL_TIME')}
+            startIcon={<Clear />}
+            onClick={clearFilters}
             sx={{
-              minWidth: '120px',
               height: '45px',
-              color: type === 'FULL_TIME' ? 'white' : 'black',
-              background: type === 'FULL_TIME' 
-                ? 'linear-gradient(45deg, #00b09b, #96c93d)'
-                : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-              transition: 'all 0.3s ease',
+              minWidth: '120px',
               borderRadius: '10px',
+              fontWeight: 500,
+              color: 'rgb(255, 88, 88)',
+              background: 'rgba(255, 107, 107, 0.31)',
+              transition: 'all 0.3s ease',
+              textTransform: 'none',
+              fontSize: '0.9rem',
               '&:hover': {
+                background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
                 transform: 'translateY(-2px)',
-                boxShadow: type === 'FULL_TIME' ? '0 5px 15px rgba(0,176,155,0.4)' : 'none',
               }
             }}
           >
-            ΠΛΗΡΗΣ
+            ΚΑΘΑΡΙΣΜΟΣ
           </Button>
-          <Button
-            onClick={() => setType('PART_TIME')}
+
+          <Divider
+            orientation="vertical"
+            flexItem
             sx={{
-              minWidth: '120px',
-              height: '45px',
-              color: type === 'PART_TIME' ? 'white' : 'black',
-              background: type === 'PART_TIME' 
-                ? 'linear-gradient(45deg, #FF8B42, #F54E5E)'
-                : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-              transition: 'all 0.3s ease',
-              borderRadius: '10px',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: type === 'PART_TIME' ? '0 5px 15px rgba(245,78,94,0.4)' : 'none',
-              }
-            }}
-          >
-            ΜΕΡΙΚΗ
-          </Button>
-        </Stack>
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            margin: '0 16px',
-            opacity: isDarkMode ? 0.2 : 0.15,
-            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-          }}
-        />
-    
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: '200px' }}>
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
-            ΔΙΑΡΚΕΙΑ
-          </Typography>
-          <Slider
-            value={duration !== null ? duration : 0}
-            onChange={(event, newValue) => {
-              if (typeof newValue === 'number') {
-                setDuration(newValue);
-              }
-            }}
-            step={1}
-            min={0}
-            max={12}
-            valueLabelDisplay="auto"
-            sx={{
-              width: '120px',
-              color: isDarkMode ? '#5361ff' : '#6496c8',
-              '& .MuiSlider-thumb': {
-                width: 14,
-                height: 14,
-                transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
-                '&:hover': {
-                  boxShadow: '0 0 0 8px rgba(83, 97, 255, 0.16)',
-                }
-              },
-              '& .MuiSlider-rail': {
-                opacity: 0.3,
-              }
+              margin: '0 16px',
+              opacity: isDarkMode ? 0.2 : 0.15,
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
             }}
           />
-        </Stack>
 
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            margin: '0 16px',
-            opacity: isDarkMode ? 0.2 : 0.15,
-            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-          }}
-        />
-    
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: '200px' }}>
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
-            #ΠΑΙΔΙΩΝ
-          </Typography>
-          <Slider
-            value={childrenCount !== null ? childrenCount : 0}
-            onChange={(event, newValue) => {
-              if (typeof newValue === 'number') {
-                setChildrenCount(newValue);
-              }
-            }}
-            step={1}
-            min={0}
-            max={24}
-            valueLabelDisplay="auto"
-            sx={{
-              width: '120px',
-              color: isDarkMode ? '#5361ff' : '#6496c8',
-              '& .MuiSlider-thumb': {
-                width: 14,
-                height: 14,
-                transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+          <Stack direction="row" spacing={1}>
+            <Button
+              onClick={() => setType('FULL_TIME')}
+              sx={{
+                minWidth: '120px',
+                height: '45px',
+                color: type === 'FULL_TIME' ? 'white' : 'black',
+                background: type === 'FULL_TIME' 
+                  ? 'linear-gradient(45deg, #00b09b, #96c93d)'
+                  : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                transition: 'all 0.3s ease',
+                borderRadius: '10px',
                 '&:hover': {
-                  boxShadow: '0 0 0 8px rgba(83, 97, 255, 0.16)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: type === 'FULL_TIME' ? '0 5px 15px rgba(0,176,155,0.4)' : 'none',
                 }
-              },
-              '& .MuiSlider-rail': {
-                opacity: 0.3,
-              }
-            }}
-          />
-        </Stack>
-
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            margin: '0 16px',
-            opacity: isDarkMode ? 0.2 : 0.15,
-            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-          }}
-        />
-    
-        <Button
-          startIcon={<Search />}
-          onClick={handleSearch}
-          sx={{
-            height: '45px',
-            minWidth: '130px',
-            borderRadius: '10px',
-            fontWeight: 600,
-            color: 'white',
-            background: 'linear-gradient(45deg, #5361ff 20%, #3f51b5 90%)',
-            transition: 'all 0.3s ease',
-            textTransform: 'none',
-            fontSize: '0.95rem',
-            '&:hover': {
-              transform: 'translateY(-2px)',
-              boxShadow: '0 5px 15px rgba(83, 97, 255, 0.4)',
-            }
-          }}
-        >
-          ΑΝΑΖΗΤΗΣΗ
-        </Button>
-
-
-      </Stack>
-    </Box>
-
-    {isLoading ? (
-      <CircularProgress />
-      ) : (
-        <Box
-        sx={{
-          width: '100%',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '16px',
-          justifyContent: 'start',
-        }}
-      >
-          {ads.map(ad => (
-            <Box
-            key={ad.id}
-            sx={{
-              width: '300px',
-              flex: 'none',
-              backgroundColor: 'white',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-            }}
-          >
-            <UserCard
-              name={ad.parentName}
-              description={ad.description}
-              photo={ad.photoUrl}
-              showButton={false}
+              }}
             >
-              <Typography variant="body2">
-                Type: {ad.type} <br />
-                Duration: {ad.duration} months <br />
-                Children: {ad.children.map((child: any) => `Age: ${child.age}`).join(', ')}
-              </Typography>
-            </UserCard>
+              ΠΛΗΡΗΣ
+            </Button>
+            <Button
+              onClick={() => setType('PART_TIME')}
+              sx={{
+                minWidth: '120px',
+                height: '45px',
+                color: type === 'PART_TIME' ? 'white' : 'black',
+                background: type === 'PART_TIME' 
+                  ? 'linear-gradient(45deg, #FF8B42, #F54E5E)'
+                  : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                transition: 'all 0.3s ease',
+                borderRadius: '10px',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: type === 'PART_TIME' ? '0 5px 15px rgba(245,78,94,0.4)' : 'none',
+                }
+              }}
+            >
+              ΜΕΡΙΚΗ
+            </Button>
+          </Stack>
+
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              margin: '0 16px',
+              opacity: isDarkMode ? 0.2 : 0.15,
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+            }}
+          />
+
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: '200px' }}>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              ΔΙΑΡΚΕΙΑ
+            </Typography>
+            <Slider
+              value={duration !== null ? duration : 0}
+              onChange={(event, newValue) => {
+                if (typeof newValue === 'number') {
+                  setDuration(newValue);
+                }
+              }}
+              step={1}
+              min={0}
+              max={12}
+              valueLabelDisplay="auto"
+              sx={{
+                width: '120px',
+                color: isDarkMode ? '#5361ff' : '#6496c8',
+                '& .MuiSlider-thumb': {
+                  width: 14,
+                  height: 14,
+                  transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                  '&:hover': {
+                    boxShadow: '0 0 0 8px rgba(83, 97, 255, 0.16)',
+                  }
+                },
+                '& .MuiSlider-rail': {
+                  opacity: 0.3,
+                }
+              }}
+            />
+          </Stack>
+
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              margin: '0 16px',
+              opacity: isDarkMode ? 0.2 : 0.15,
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+            }}
+          />
+
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: '200px' }}>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+              #ΠΑΙΔΙΩΝ
+            </Typography>
+            <Slider
+              value={childrenCount !== null ? childrenCount : 0}
+              onChange={(event, newValue) => {
+                if (typeof newValue === 'number') {
+                  setChildrenCount(newValue);
+                }
+              }}
+              step={1}
+              min={0}
+              max={24}
+              valueLabelDisplay="auto"
+              sx={{
+                width: '120px',
+                color: isDarkMode ? '#5361ff' : '#6496c8',
+                '& .MuiSlider-thumb': {
+                  width: 14,
+                  height: 14,
+                  transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                  '&:hover': {
+                    boxShadow: '0 0 0 8px rgba(83, 97, 255, 0.16)',
+                  }
+                },
+                '& .MuiSlider-rail': {
+                  opacity: 0.3,
+                }
+              }}
+            />
+          </Stack>
+
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              margin: '0 16px',
+              opacity: isDarkMode ? 0.2 : 0.15,
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+            }}
+          />
+
+          <Button
+            startIcon={<Search />}
+            onClick={handleSearch}
+            sx={{
+              height: '45px',
+              minWidth: '130px',
+              borderRadius: '10px',
+              fontWeight: 600,
+              color: 'white',
+              background: 'linear-gradient(45deg, #5361ff 20%, #3f51b5 90%)',
+              transition: 'all 0.3s ease',
+              textTransform: 'none',
+              fontSize: '0.95rem',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 5px 15px rgba(83, 97, 255, 0.4)',
+              }
+            }}
+          >
+            ΑΝΑΖΗΤΗΣΗ
+          </Button>
+
+
+        </Stack>
+      </Box>
+
+      {isLoading ? (
+        <CircularProgress />
+        ) : (
+          <Box
+          sx={{
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '16px',
+            justifyContent: 'start',
+          }}
+        >
+            {ads.map(ad => (
+              <Box
+              key={ad.id}
+              sx={{
+                width: '300px',
+                flex: 'none',
+                backgroundColor: 'white',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                borderRadius: '8px',
+                cursor: 'pointer',
+              }}
+              onClick={() => handleAdClick(ad.id)}
+            >
+              <UserCard
+                name={ad.userName}
+                description={ad.description}
+                photo={ad.userAvatar}
+                showButton={false}
+              >
+                <Typography variant="body2">
+                  Type: {ad.type} <br />
+                  Duration: {ad.duration} months <br />
+                  Children: {ad.children.map((child: any) => `Age: ${child.age}`).join(', ')}
+                </Typography>
+              </UserCard>
+            </Box>
+            ))}
           </Box>
-          ))}
-        </Box>
-      )}
+        )}
     </Stack>
   );
 };

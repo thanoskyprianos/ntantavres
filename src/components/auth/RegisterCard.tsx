@@ -37,6 +37,7 @@ import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useUserDetails } from '@hooks/useUserDetails.hook.ts';
 import { UserDetails } from '@/types/UserDetails.ts';
 
+
 interface NamesProps {
   t: TFunction;
   firstName: string;
@@ -368,7 +369,7 @@ export const RegisterCard = () => {
   const { registerUser } = useUserDetails();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [birthdate, setBirthdate] = useState<Date | null>(null);
@@ -438,7 +439,7 @@ export const RegisterCard = () => {
           firstName,
           lastName,
           email,
-          role: 'PARENT',
+          role: isCheckboxChecked ? 'BABYSITTER' : 'PARENT',
           birthdate,
         };
 
@@ -579,6 +580,7 @@ export const RegisterCard = () => {
               edge={'start'}
               onChange={(event) => {
                 if (event.target.checked) {
+                  setIsCheckboxChecked(true);
                   setDialogOpen(true);
                 }
               }}

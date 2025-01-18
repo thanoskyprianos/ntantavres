@@ -1,6 +1,6 @@
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useEffect, useState } from 'react';
-import { Meeting } from '@/types/Meeting.ts';
+import { Meeting, MeetingState } from '@/types/Meeting.ts';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { MeetingTab } from '@components/MeetingTab.tsx';
@@ -12,6 +12,9 @@ export const Meetings = () => {
   const { uid } = useProfileContext();
   const { getMeetingsOf, getMeetingsBetweenTwo } = useMeeting();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const canCreateCollab =
+    meetings.findIndex(meeting => meeting.state === MeetingState.FINISHED) ===
+    -1;
 
   useEffect(() => {
     if (!user || !details) {
@@ -50,7 +53,7 @@ export const Meetings = () => {
           size={{ sm: 1, md: 1, lg: 1 }}
           sx={{ width: '100%' }}
         >
-          <MeetingTab meeting={meeting} />
+          <MeetingTab meeting={meeting} canCreateCollab={canCreateCollab} />
         </Grid2>
       ))}
     </Grid2>

@@ -6,8 +6,15 @@ import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import {
   Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -28,7 +35,9 @@ import { WorkType } from '@/types/ParentAd.ts';
 import { monthSort } from '@util/util.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
-import { MeetingState } from '@/types/Meeting.ts';
+import { Draw, Save, WarningAmber } from '@mui/icons-material';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const CollaborationPage = () => {
   const { t } = useTranslation();
@@ -40,6 +49,8 @@ export const CollaborationPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [collaboration, setCollaboration] = useState<Collaboration>();
+
+  const [isAboutToSign, setIsAboutToSign] = useState(false);
 
   const [parent, setParent] = useState<UserDetails | null>(null);
   const [babysitter, setBabysitter] = useState<UserDetails | null>(null);
@@ -81,7 +92,7 @@ export const CollaborationPage = () => {
     getCollaboration,
     updateCollaboration,
   } = useCollaboration();
-  const { isLoading: isUpdatingMeeting, updateMeeting } = useMeeting();
+  const { isLoading: isUpdatingMeeting } = useMeeting();
   const { getAvailability } = useBabysitter();
 
   const handleSubmit = async () => {
@@ -92,9 +103,6 @@ export const CollaborationPage = () => {
     try {
       await updateCollaboration(collaboration.collaborationId, {
         state: CollaborationState.ONGOING,
-      });
-      await updateMeeting(collaboration.collaborationId, {
-        state: MeetingState.FINISHED,
       });
       dispatch!({
         type: 'success',
@@ -112,16 +120,43 @@ export const CollaborationPage = () => {
     }
   };
 
-  const handleSignParent = async () => {
+  const handleTempSave = async () => {
     if (!collaboration || !collaboration.collaborationId) {
       return;
     }
 
+    try {
+      await updateCollaboration(collaboration.collaborationId, {
+        location,
+        type,
+        currentMonth: month,
+      });
+      dispatch!({
+        type: 'info',
+        payload: { message: t('collaboration.temporary.success') },
+      });
+    } catch {
+      dispatch!({
+        type: 'info',
+        payload: { message: t('collaboration.error.success') },
+      });
+    }
+  };
+
+  const handleIsAboutToSign = () => {
     if (!location || !type || !month) {
       dispatch!({
         type: 'warning',
         payload: { message: t('collaboration.sign.required') },
       });
+      return;
+    }
+
+    setIsAboutToSign(true);
+  };
+
+  const handleSignParent = async () => {
+    if (!collaboration || !collaboration.collaborationId) {
       return;
     }
 
@@ -243,209 +278,253 @@ export const CollaborationPage = () => {
     !availability ? (
     <LoadingSpinner />
   ) : (
-    <Stack sx={{ width: '100%' }} spacing={12}>
-      <Stack sx={{ placeItems: 'center' }} spacing={1}>
-        <Card sx={{ borderRadius: '15px', width: '95%', maxWidth: '500px' }}>
-          <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
-            <CardHeader
-              avatar={
-                <AvatarDisplay
-                  avatar={parentAvatar || undefined}
-                  sx={{ width: '50px', height: '50px' }}
-                >
-                  <Typography variant="h3">
-                    {parent.firstName &&
-                      parent.lastName &&
-                      parent.firstName.charAt(0).toUpperCase() +
-                        parent.lastName.charAt(0).toUpperCase()}
-                  </Typography>
-                </AvatarDisplay>
-              }
-              title={`${parent.firstName} ${parent.lastName}`}
-              subheader={
-                collaboration.parentSignature
-                  ? t('collaboration.edit.signed')
-                  : t('collaboration.edit.notSigned')
-              }
-            />
-            <CardHeader
-              avatar={
-                <AvatarDisplay
-                  avatar={babysitterAvatar || undefined}
-                  sx={{ width: '50px', height: '50px' }}
-                >
-                  <Typography variant="h3">
-                    {babysitter.firstName &&
-                      babysitter.lastName &&
-                      babysitter.firstName.charAt(0).toUpperCase() +
-                        babysitter.lastName.charAt(0).toUpperCase()}
-                  </Typography>
-                </AvatarDisplay>
-              }
-              title={`${babysitter.firstName} ${babysitter.lastName}`}
-              subheader={
-                collaboration.babysitterSignature
-                  ? t('collaboration.edit.signed')
-                  : t('collaboration.edit.notSigned')
-              }
-            />
-          </Stack>
-          <CardContent>
-            {collaboration.state === CollaborationState.TEMPORARY && (
-              <Stack sx={{ placeItems: 'center' }} spacing={1}>
-                <InputLabel>{t('babysitter.ad.location.title')}*</InputLabel>
-                <ToggleButtonGroup
-                  exclusive
-                  value={locationStr}
-                  onChange={(_e, v) => v !== null && setLocationStr(v)}
-                  sx={{ width: '100%' }}
-                  disabled={
-                    (details?.role === 'PARENT' &&
-                      collaboration.parentSignature === true) ||
-                    (details?.role === 'BABYSITTER' &&
-                      collaboration.babysitterSignature === true)
-                  }
-                >
-                  <ToggleButton
-                    value="parent"
-                    sx={{ textTransform: 'none', width: '100%' }}
-                  >
-                    {collaboration.parentAd?.location.number}{' '}
-                    {collaboration.parentAd?.location.address}{' '}
-                    {collaboration.parentAd?.location.city}
-                  </ToggleButton>
-                  {collaboration.babysitterAd?.location !== 'parentHome' && (
-                    <ToggleButton
-                      value="babysitter"
-                      sx={{ textTransform: 'none', width: '100%' }}
-                    >
-                      {collaboration.babysitterAd?.location!.number}{' '}
-                      {collaboration.babysitterAd?.location!.address}{' '}
-                      {collaboration.babysitterAd?.location!.city}
-                    </ToggleButton>
-                  )}
-                </ToggleButtonGroup>
-
-                <InputLabel>{t('babysitter.ad.type.title')}*</InputLabel>
-                <ToggleButtonGroup
-                  exclusive
-                  value={type}
-                  onChange={(_e, v) => v !== null && setType(v)}
-                  sx={{ width: '100%' }}
-                  disabled={
-                    (details?.role === 'PARENT' &&
-                      collaboration.parentSignature === true) ||
-                    (details?.role === 'BABYSITTER' &&
-                      collaboration.babysitterSignature === true)
-                  }
-                >
-                  <ToggleButton
-                    value="PART_TIME"
-                    sx={{ textTransform: 'none', width: '100%' }}
-                  >
-                    {t('babysitter.ad.type.PART_TIME')}
-                  </ToggleButton>
-                  {collaboration.babysitterAd?.location !== 'parentHome' && (
-                    <ToggleButton
-                      value="FULL_TIME"
-                      sx={{ textTransform: 'none', width: '100%' }}
-                    >
-                      {t('babysitter.ad.type.FULL_TIME')}
-                    </ToggleButton>
-                  )}
-                </ToggleButtonGroup>
-
-                <InputLabel>
-                  {t('babysitter.calendar.meeting.interested.title')}*
-                </InputLabel>
-                <Select
-                  variant="outlined"
-                  value={month}
-                  onChange={e =>
-                    setMonth(e.target.value as keyof MonthAvailability)
-                  }
-                  sx={{ width: '100%' }}
-                  size="small"
-                  disabled={
-                    (details?.role === 'PARENT' &&
-                      collaboration.parentSignature === true) ||
-                    (details?.role === 'BABYSITTER' &&
-                      collaboration.babysitterSignature === true)
-                  }
-                >
-                  {Object.entries(availability)
-                    .sort(
-                      (a, b) =>
-                        monthSort(a[0] as keyof MonthAvailability) -
-                        monthSort(b[0] as keyof MonthAvailability)
-                    )
-                    .map(([key, value]) => (
-                      <MenuItem key={key} value={key} disabled={!value}>
-                        {t(`babysitter.calendar.months.${key}`)}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </Stack>
-            )}
-          </CardContent>
-        </Card>
-        <Stack
-          direction="row"
-          sx={{
-            justifyContent: 'space-between',
-            width: '95%',
-            maxWidth: '500px',
-          }}
-        >
-          {collaboration.state === CollaborationState.TEMPORARY && (
-            <Button
-              variant="contained"
-              disabled={
-                isUpdating ||
-                details?.role !== 'PARENT' ||
-                collaboration.parentSignature === true
-              }
-              sx={{ borderRadius: '15px' }}
-              size="large"
-              onClick={handleSignParent}
-            >
-              {collaboration.parentSignature
-                ? t('collaboration.sign.done')
-                : t('collaboration.sign.do')}
-            </Button>
-          )}
-          {collaboration.state === CollaborationState.TEMPORARY &&
-            collaboration.parentSignature === true &&
-            collaboration.babysitterSignature === true && (
-              <Button
-                variant="contained"
-                sx={{ borderRadius: '15px' }}
-                size="large"
-                onClick={handleSubmit}
+    <Stack sx={{ width: '100%', placeItems: 'center' }} spacing={12}>
+      <Card sx={{ borderRadius: '15px', width: '95%', maxWidth: '500px' }}>
+        <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
+          <CardHeader
+            avatar={
+              <AvatarDisplay
+                avatar={parentAvatar || undefined}
+                sx={{ width: '50px', height: '50px' }}
               >
-                {t('collaboration.submit.title')}
+                <Typography variant="h3">
+                  {parent.firstName &&
+                    parent.lastName &&
+                    parent.firstName.charAt(0).toUpperCase() +
+                      parent.lastName.charAt(0).toUpperCase()}
+                </Typography>
+              </AvatarDisplay>
+            }
+            title={`${parent.firstName} ${parent.lastName}`}
+            subheader={
+              collaboration.parentSignature
+                ? t('collaboration.edit.signed')
+                : t('collaboration.edit.notSigned')
+            }
+          />
+          <CardHeader
+            avatar={
+              <AvatarDisplay
+                avatar={babysitterAvatar || undefined}
+                sx={{ width: '50px', height: '50px' }}
+              >
+                <Typography variant="h3">
+                  {babysitter.firstName &&
+                    babysitter.lastName &&
+                    babysitter.firstName.charAt(0).toUpperCase() +
+                      babysitter.lastName.charAt(0).toUpperCase()}
+                </Typography>
+              </AvatarDisplay>
+            }
+            title={`${babysitter.firstName} ${babysitter.lastName}`}
+            subheader={
+              collaboration.babysitterSignature
+                ? t('collaboration.edit.signed')
+                : t('collaboration.edit.notSigned')
+            }
+          />
+        </Stack>
+        <CardContent>
+          {collaboration.state === CollaborationState.TEMPORARY && (
+            <Stack sx={{ placeItems: 'center' }} spacing={1}>
+              <InputLabel>{t('babysitter.ad.location.title')}*</InputLabel>
+              <ToggleButtonGroup
+                exclusive
+                value={locationStr}
+                onChange={(_e, v) => v !== null && setLocationStr(v)}
+                sx={{ width: '100%' }}
+                disabled={
+                  (details?.role === 'PARENT' &&
+                    collaboration.parentSignature === true) ||
+                  (details?.role === 'BABYSITTER' &&
+                    collaboration.babysitterSignature === true)
+                }
+              >
+                <ToggleButton
+                  value="parent"
+                  sx={{ textTransform: 'none', width: '100%' }}
+                >
+                  {collaboration.parentAd?.location.number}{' '}
+                  {collaboration.parentAd?.location.address}{' '}
+                  {collaboration.parentAd?.location.city}
+                </ToggleButton>
+                {collaboration.babysitterAd?.location !== 'parentHome' && (
+                  <ToggleButton
+                    value="babysitter"
+                    sx={{ textTransform: 'none', width: '100%' }}
+                  >
+                    {collaboration.babysitterAd?.location!.number}{' '}
+                    {collaboration.babysitterAd?.location!.address}{' '}
+                    {collaboration.babysitterAd?.location!.city}
+                  </ToggleButton>
+                )}
+              </ToggleButtonGroup>
+
+              <InputLabel>{t('babysitter.ad.type.title')}*</InputLabel>
+              <ToggleButtonGroup
+                exclusive
+                value={type}
+                onChange={(_e, v) => v !== null && setType(v)}
+                sx={{ width: '100%' }}
+                disabled={
+                  (details?.role === 'PARENT' &&
+                    collaboration.parentSignature === true) ||
+                  (details?.role === 'BABYSITTER' &&
+                    collaboration.babysitterSignature === true)
+                }
+              >
+                <ToggleButton
+                  value="PART_TIME"
+                  sx={{ textTransform: 'none', width: '100%' }}
+                >
+                  {t('babysitter.ad.type.PART_TIME')}
+                </ToggleButton>
+                <ToggleButton
+                  value="FULL_TIME"
+                  sx={{ textTransform: 'none', width: '100%' }}
+                >
+                  {t('babysitter.ad.type.FULL_TIME')}
+                </ToggleButton>
+              </ToggleButtonGroup>
+
+              <InputLabel>
+                {t('babysitter.calendar.meeting.interested.title')}*
+              </InputLabel>
+              <Select
+                variant="outlined"
+                value={month}
+                onChange={e =>
+                  setMonth(e.target.value as keyof MonthAvailability)
+                }
+                sx={{ width: '100%' }}
+                size="small"
+                disabled={
+                  (details?.role === 'PARENT' &&
+                    collaboration.parentSignature === true) ||
+                  (details?.role === 'BABYSITTER' &&
+                    collaboration.babysitterSignature === true)
+                }
+              >
+                {Object.entries(availability)
+                  .sort(
+                    (a, b) =>
+                      monthSort(a[0] as keyof MonthAvailability) -
+                      monthSort(b[0] as keyof MonthAvailability)
+                  )
+                  .map(([key, value]) => (
+                    <MenuItem key={key} value={key} disabled={!value}>
+                      {t(`babysitter.calendar.months.${key}`)}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Stack>
+          )}
+        </CardContent>
+        <CardActions sx={{ float: 'right' }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            divider={<Divider orientation="vertical" flexItem />}
+          >
+            {collaboration.state === CollaborationState.TEMPORARY && (
+              <Button
+                sx={{ color: 'warning.main' }}
+                startIcon={<Draw />}
+                disabled={
+                  isUpdating ||
+                  (details?.role === 'BABYSITTER' &&
+                    collaboration.babysitterSignature === true) ||
+                  (details?.role === 'PARENT' &&
+                    collaboration.parentSignature === true)
+                }
+                onClick={handleIsAboutToSign}
+              >
+                {details?.role === 'PARENT'
+                  ? collaboration.parentSignature === true
+                    ? t('collaboration.sign.done')
+                    : t('collaboration.sign.do')
+                  : ''}
+                {details?.role === 'BABYSITTER'
+                  ? collaboration.babysitterSignature === true
+                    ? t('collaboration.sign.done')
+                    : t('collaboration.sign.do')
+                  : ''}
               </Button>
             )}
-          {collaboration.state === CollaborationState.TEMPORARY && (
-            <Button
-              variant="contained"
-              disabled={
-                isUpdating ||
-                details?.role !== 'BABYSITTER' ||
-                collaboration.babysitterSignature === true
-              }
-              sx={{ borderRadius: '15px' }}
-              size="large"
-              onClick={handleSignBabysitter}
-            >
-              {collaboration.babysitterSignature
-                ? t('collaboration.sign.done')
-                : t('collaboration.sign.do')}
-            </Button>
-          )}
-        </Stack>
-      </Stack>
+            {collaboration.state === CollaborationState.TEMPORARY &&
+              ((details?.role === 'BABYSITTER' &&
+                collaboration.babysitterSignature === false) ||
+                (details?.role === 'PARENT' &&
+                  collaboration.parentSignature === false)) && (
+                <Button
+                  startIcon={<Save />}
+                  sx={{ color: 'info.main' }}
+                  onClick={handleTempSave}
+                  disabled={isUpdating}
+                >
+                  {t('collaboration.temporary.title')}
+                </Button>
+              )}
+            {collaboration.state === CollaborationState.TEMPORARY &&
+              collaboration.parentSignature === true &&
+              collaboration.babysitterSignature === true && (
+                <Button
+                  onClick={handleSubmit}
+                  startIcon={<DoneAllIcon />}
+                  sx={{ color: 'success.main' }}
+                >
+                  {t('collaboration.submit.title')}
+                </Button>
+              )}
+          </Stack>
+        </CardActions>
+      </Card>
       {(isUpdating || isUpdatingMeeting) && <LoadingSpinner />}
+
+      <Dialog open={isAboutToSign}>
+        <DialogTitle>
+          <Stack
+            direction="row"
+            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+          >
+            <Stack direction="row" sx={{ alignItems: 'center' }} spacing={1}>
+              <WarningAmber />
+              <Typography variant="h6">
+                {t('collaboration.sign.header')}
+              </Typography>
+            </Stack>
+            <IconButton edge="end" onClick={() => setIsAboutToSign(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: 'text.secondary' }}>
+            {t('collaboration.sign.prompt1')}
+          </Typography>{' '}
+          <br />
+          <Typography sx={{ color: 'text.secondary' }}>
+            {t('collaboration.sign.prompt2')}
+          </Typography>{' '}
+          <br />
+          <Typography sx={{ color: 'text.secondary' }}>
+            {t('collaboration.sign.prompt3')}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={
+              details?.role === 'BABYSITTER'
+                ? handleSignBabysitter
+                : handleSignParent
+            }
+            sx={{ color: 'warning.main' }}
+            disabled={isUpdating}
+          >
+            {t('general.yes')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 };

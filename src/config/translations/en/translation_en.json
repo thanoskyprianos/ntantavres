@@ -96,7 +96,7 @@
   "parent": {
     "actions": {
       "appointments": "APPOINTMENTS",
-      "activeCollaborations": "ACTIVE COLLABORATIONS",
+      "activeCollaborations": "COLLABORATIONS",
       "temporaryApplications": "TEMPORARY APPLICATIONS",
       "history": "HISTORY",
       "payment": "PAYMENT",
@@ -279,12 +279,21 @@
       "done": "SIGNED",
       "success": "Successfully signed collaboration",
       "error": "Error while signing collaboration",
-      "required": "Please fill out all fields"
+      "required": "Please fill out all fields",
+      "header": "SIGN COLLABORATION",
+      "prompt1": "Are you sure you want to sign the collaboration?",
+      "prompt2": "You won't be able to edit it again",
+      "prompt3": "After both of you have signed, you can finalize the submission and start collaborating"
     },
     "submit": {
       "title": "SUBMIT",
       "success": "Successfully submitted collaboration. You are both ready to start working together",
       "error": "Error while submitting collaboration"
+    },
+    "temporary": {
+      "title": "SAVE",
+      "success": "Successfully saved collaboration",
+      "error": "Error while saving collaboration"
     }
   }
 }

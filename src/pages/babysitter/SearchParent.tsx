@@ -274,13 +274,32 @@ const AdSearchComponent: React.FC = () => {
       </Stack>
     </Box>
 
-      {isLoading ? (
-        <CircularProgress />
+    {isLoading ? (
+      <CircularProgress />
       ) : (
-        <Stack direction='row' spacing={2} sx={{ placeItems: 'center', width: '150px' }}>
+        <Box
+        sx={{
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '16px',
+          justifyContent: 'start',
+        }}
+      >
           {ads.map(ad => (
+            <Box
+            key={ad.id}
+            sx={{
+              width: '300px',
+              flex: 'none',
+              backgroundColor: 'white',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              borderRadius: '8px',
+            }}
+          >
             <UserCard
-              key={ad.id}
               name={ad.parentName}
               description={ad.description}
               photo={ad.photoUrl}
@@ -292,10 +311,11 @@ const AdSearchComponent: React.FC = () => {
                 Children: {ad.children.map((child: any) => `Age: ${child.age}`).join(', ')}
               </Typography>
             </UserCard>
+          </Box>
           ))}
-        </Stack>
+        </Box>
       )}
-      </Stack>
+    </Stack>
   );
 };
 

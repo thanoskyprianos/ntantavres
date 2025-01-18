@@ -30,13 +30,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMeeting } from '@hooks/useMeeting.hook.ts';
 import { useSnackbarContext } from '@/context/SnackbarProvider.tsx';
 import CloseIcon from '@mui/icons-material/Close';
-import { AddCircleOutline, Cancel, WarningAmber } from '@mui/icons-material';
+import {
+  AddCircleOutline,
+  Cancel,
+  Preview,
+  WarningAmber,
+} from '@mui/icons-material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Collaboration, CollaborationState } from '@/types/Collaboration.ts';
 import { useParent } from '@hooks/useParent.hook.ts';
 import { useBabysitter } from '@hooks/useBabysitter.hook.ts';
 import { ParentAd } from '@/types/ParentAd.ts';
 import { BabysitterAd } from '@/types/BabysitterTypes.ts';
+import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 
 interface MeetingTabProps {
   meeting?: Meeting;
@@ -216,10 +222,6 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
 
   const [isCreatingCollab, setIsCreatingCollab] = useState(false);
 
-  // const handlePlanMeeting = async () => {};
-
-  const handleViewPlan = async () => {};
-
   useEffect(() => {
     if (!meeting || !user) {
       return;
@@ -368,6 +370,7 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
         </CardContent>
         {meeting.state !== MeetingState.CLOSED && (
           <CardActions sx={{ float: 'right', bottom: '0' }}>
+            {isCreatingCollab && <LoadingSpinner size={25} />}
             {meeting.state === MeetingState.PLANNED && (
               <Button
                 startIcon={<Cancel />}
@@ -398,7 +401,11 @@ export const MeetingTab = ({ meeting }: MeetingTabProps) => {
                 </Button>
               )}
             {meeting.state === MeetingState.FINISHED && (
-              <Button onClick={handleViewPlan} sx={{ color: 'warning.main' }}>
+              <Button
+                startIcon={<Preview />}
+                onClick={handleCollab}
+                sx={{ color: 'warning.main' }}
+              >
                 {t('meeting.plan.title')}
               </Button>
             )}

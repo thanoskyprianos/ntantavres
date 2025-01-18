@@ -275,10 +275,16 @@
       "notSigned": "Not signed"
     },
     "sign": {
-      "do": "Sign",
-      "done": "Signed",
+      "do": "SIGN",
+      "done": "SIGNED",
       "success": "Successfully signed collaboration",
-      "error": "Error while signing collaboration"
+      "error": "Error while signing collaboration",
+      "required": "Please fill out all fields"
+    },
+    "submit": {
+      "title": "SUBMIT",
+      "success": "Successfully submitted collaboration. You are both ready to start working together",
+      "error": "Error while submitting collaboration"
     }
   }
 }

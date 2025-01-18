@@ -249,6 +249,10 @@ export const CollaborationPage = () => {
         });
         setTimeout(() => window.location.reload(), 2000);
       } else if (nextState === CollaborationState.CANCELED) {
+        await updateMeeting(collaboration.collaborationId, {
+          state: MeetingState.ENDED,
+        });
+
         dispatch!({
           type: 'warning',
           payload: {

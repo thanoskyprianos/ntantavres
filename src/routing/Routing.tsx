@@ -3,17 +3,12 @@ import { Layout } from './Layout.tsx';
 import {
   AuthPage,
   BabysitterPage,
-  CardDetailPage,
   CollaborationPage,
   HomePage,
   ParentPage,
-  PaymentPage,
   ProfilePage,
   QuestionsPage,
   Ratings,
-  ScheduledMeetings,
-  TempRequestCompletion,
-  TempRequests,
 } from './lazy.routes.ts';
 import { ErrorPage } from '@pages/ErrorPage.tsx';
 
@@ -37,22 +32,6 @@ const router = createBrowserRouter([
             index: true,
             lazy: ParentPage,
           },
-          {
-            path: 'tempRequest',
-            lazy: TempRequests,
-          },
-          {
-            path: 'scheduledMeetings',
-            lazy: ScheduledMeetings,
-          },
-          {
-            path: 'tempRequestCompletion',
-            lazy: TempRequestCompletion,
-          },
-          {
-            path: 'paymentPage',
-            lazy: PaymentPage,
-          },
         ],
       },
       {
@@ -75,10 +54,6 @@ const router = createBrowserRouter([
       {
         path: '/ratings',
         lazy: Ratings,
-      },
-      {
-        path: '/interested',
-        lazy: CardDetailPage,
       },
       {
         path: '/profile/:uid',

@@ -1,7 +1,6 @@
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { NavTab } from '@components/tabs/TabNav.tsx';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import HistoryIcon from '@mui/icons-material/History';
 import { Payment } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -66,14 +65,6 @@ export const ProfileTabs: NavTab[] = [
         <Payments />
       </TabBox>
     ),
-  },
-  {
-    title: 'parent.actions.history',
-    icon: <HistoryIcon />,
-    paramRoute: 'history',
-    role: 'BOTH',
-    content: <TabBox variant="history" />,
-    requiresAuth: true,
   },
   {
     title: 'parent.actions.settings',

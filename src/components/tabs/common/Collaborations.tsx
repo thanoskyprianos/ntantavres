@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 
 export const Collaborations = () => {
   const { t } = useTranslation();
-  const [collaborations, setCollaborations] = useState<Collaboration[]>([]);
-  const { isLoading, getCollaborationsOf, getCollaborationsBetweenTwo } =
+  const [collaborations, setCollaborations] = useState<Collaboration[]>();
+  const { getCollaborationsOf, getCollaborationsBetweenTwo } =
     useCollaboration();
   const { user, details } = useAuthContext();
   const { uid } = useProfileContext();
@@ -38,7 +38,7 @@ export const Collaborations = () => {
     fetch().then();
   }, [user, uid, details]);
 
-  return isLoading ? (
+  return !collaborations ? (
     <LoadingSpinner />
   ) : collaborations.length > 0 ? (
     collaborations

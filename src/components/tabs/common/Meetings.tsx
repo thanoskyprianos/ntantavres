@@ -13,9 +13,9 @@ export const Meetings = () => {
   const { user, details } = useAuthContext();
   const { uid } = useProfileContext();
   const { getMeetingsOf, getMeetingsBetweenTwo } = useMeeting();
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>();
   const canCreateCollab =
-    meetings.findIndex(meeting => meeting.state === MeetingState.FINISHED) ===
+    meetings?.findIndex(meeting => meeting.state === MeetingState.FINISHED) ===
     -1;
 
   useEffect(() => {

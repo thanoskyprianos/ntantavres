@@ -144,7 +144,6 @@ const GradientButton = ({
       color="primary"
       sx={{
         height: '40px',
-        width: '249px',
         fontSize: '25px',
         fontWeight: 600,
         color: isDarkMode ? '#fff' : '#000',
@@ -221,7 +220,7 @@ function TopButtonsSection({
           handleClick={toggleQuickSearch}
           isActive={activeButton === 'search'}
         >
-          ΓΡΗΓΟΡΗ ΑΝΑΖΗΤΗΣΗ
+          ΑΝΑΖΗΤΗΣΗ
         </GradientButton>
       </Stack>
 

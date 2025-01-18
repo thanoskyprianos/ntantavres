@@ -11,6 +11,8 @@ export const TitleSetter = () => {
     ['babysitter', t('title.babysitter')],
     ['questions', t('title.questions')],
     ['auth', t('title.auth')],
+    ['profile', t('title.profile')],
+    ['collaboration', t('title.collaboration')],
   ]);
 
   useEffect(() => {

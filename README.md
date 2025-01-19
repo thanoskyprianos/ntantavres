@@ -43,4 +43,80 @@ To run do: `yarn install` and then `yarn run dev`
 
 # TODO
 
-* Add firestore security rules here
+```rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /user/{uuid} {
+      allow update, delete: if request.auth != null && request.auth.uid == uuid;
+      allow create: if request.auth != null;
+      allow read: if true;
+      
+      match /avatar/{document=**} {
+      	allow write: if request.auth != null && request.auth.uid == uuid;
+        allow read: if true;
+      }
+      match /documentation/{document=**} {
+      	allow write: if request.auth != null && request.auth.uid == uuid;
+        allow read: if true;
+      }
+      match /ratings/{document=**} {
+      	allow create: if request.auth != null && request.resource.data.puid == request.auth.uid;
+        allow read: if true;
+      }
+    }
+    
+    match /parent_ad/{uuid} {
+    	allow write: if request.auth != null && request.auth.uid == uuid;
+      allow read: if true;
+    }
+    
+    match /babysitter_ad/{uuid} {
+    	allow write: if request.auth != null && request.auth.uid == uuid;
+      allow read: if true;
+    }
+    
+    match /babysitter_traits/{uuid} {
+    	allow write: if request.auth != null && request.auth.uid == uuid;
+      allow read: if true;
+    }
+    
+    match /availability/{uuid} {
+    	allow write: if request.auth != null && request.auth.uid == uuid;
+      allow read: if true;
+    }
+    
+    match /meeting/{document=**} {
+    	allow create, update: 
+        if request.auth != null && 
+           (request.resource.data.puid == request.auth.uid ||
+            request.resource.data.buid == request.auth.uid);
+      allow read, delete:
+      	if request.auth != null && 
+           (resource.data.puid == request.auth.uid ||
+            resource.data.buid == request.auth.uid);
+    }
+    match /collab/{document=**} {
+    	allow create: 
+        if request.auth != null && 
+           (request.resource.data.puid == request.auth.uid ||
+            request.resource.data.buid == request.auth.uid);
+      allow read, delete, update:
+      	if request.auth != null && 
+           (resource.data.puid == request.auth.uid ||
+            resource.data.buid == request.auth.uid);
+    }
+    match /payment/{document=**} {
+    	allow write:
+      	if request.auth != null &&
+        	(request.resource.data.puid == request.auth.uid && 
+          request.resource.data.collaboration.puid == request.auth.uid ||
+          request.resource.data.buid == request.auth.uid && 
+          request.resource.data.collaboration.buid == request.auth.uid)
+      allow read:
+      	if request.auth != null && 
+           (resource.data.puid == request.auth.uid ||
+            resource.data.buid == request.auth.uid);
+    }
+  }
+}```

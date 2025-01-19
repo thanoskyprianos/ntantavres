@@ -397,5 +397,28 @@
     "description": "Description (optional)",
     "descriptionLabel": "Description",
     "view": "View ratings"
-  }
+  },
+  "questions": {
+    "title": "Frequently Asked Questions from Parents/Guardians",
+    "onea": "1. What is the process for finding a nanny?",
+    "oneb": "Parents can post job listings and use the search filters to find nannies that meet their criteria. Once suitable professionals are found, they can schedule introduction meetings and send collaboration requests.",
+    "twoa": "2. What criteria must be met for hiring a nanny/professional?",
+    "twob": "Parents should ensure that nannies have the necessary qualifications and experience and verify their references.",
+    "threea": "3. How and when is payment processed by the system?",
+    "threeb": "Payment is made at the end of each month after the parent certifies the completion of the work. A digital voucher will be issued, which can be redeemed directly through the platform.",
+    "foura": "4. How can I manage my availability calendar?",
+    "fourb": "Through your account, you can access the calendar tool to indicate your available hours and days, schedule breaks or adjustments, and update your job listings."
+  },
+  "questionsb": {
+    "title": "Frequently Asked Questions from Professionals/Nannies",
+    "onea": "1. How can I find listings that interest me?",
+    "oneb": "Professionals can use the search filters to find listings that meet their criteria. They can also post their profile and wait for requests from parents.",
+    "twoa": "2. How can I contact parents?",
+    "twob": "Through the platform, you can send messages to parents and schedule introductory meetings.",
+    "threea": "3. How and when is payment processed?",
+    "threeb": "Payment is made at the end of each month, once the parent confirms the completion of the work. You will receive a digital voucher that you can redeem directly through the platform.",
+    "foura": "4. How can I set up my availability calendar?",
+    "fourb": "Through your account, you have access to the calendar tool. You can declare available hours and days, schedule time off or changes, and update your listings."
+}
+
 }

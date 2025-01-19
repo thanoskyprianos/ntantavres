@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Stack } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export const QuestionsPage = () => {
     const [activeBox, setActiveBox] = useState('box1');
+    const { t } = useTranslation();
 
     return (
         <div>
@@ -46,33 +48,33 @@ export const QuestionsPage = () => {
                         mt: 4,
                     }}
                 >
-                    <Typography variant='h4'>
-                        Συχνές Ερωτήσεις από γονείς/κηδεμόνες
-                    </Typography>
-                    <Typography variant='h5'>
-                        1. Ποια η διαδικασία που πρέπει να ακολουθηθεί για την εύρεση νταντάς; 
-                    </Typography>
-                    <Typography variant='h6' color='text.secondary'>
-                        Οι γονείς μπορούν να αναρτήσουν αγγελίες και να χρησιμοποιήσουν τα φίλτρα αναζήτησης για να βρουν νταντάδες που πληρούν τα κριτήριά τους. Αφού βρουν υποψήφιους επαγγελματίες, μπορούν να κλείσουν ραντεβού γνωριμίας και να αποστείλουν αιτήματα συνεργασίας.
-                    </Typography>
-                    <Typography variant='h5'>
-                        2. Ποια κριτήρια πρέπει να ικανοποιούνται για την πρόσληψη επαγγελματία/νταντας;
-                    </Typography>
-                    <Typography variant='h6' color='text.secondary'>
-                        Οι γονείς πρέπει να βεβαιωθούν ότι οι νταντάδες διαθέτουν τα απαραίτητα προσόντα και εμπειρία, καθώς και να ελέγξουν τις συστάσεις τους.
-                    </Typography>
-                    <Typography variant='h5'>
-                        3. Πώς και πότε πραγματοποιείται η πληρωμή από το σύστημα;
-                    </Typography>
-                    <Typography variant='h6' color='text.secondary'>
-                        Η πληρωμή γίνεται στο τέλος κάθε μήνα, αφού ο γονέας πιστοποιήσει την ολοκλήρωση της εργασίας. Θα λάβετε ένα ψηφιακό voucher που μπορείτε να εξαργυρώσετε απευθείας μέσω της πλατφόρμας.
-                    </Typography>
-                    <Typography variant='h5'>
-                        4. Πώς μπορώ να διαμορφώσω το ημερολόγιο με τη διαθεσιμότητά μου;
-                    </Typography>
-                    <Typography variant='h6' color='text.secondary'>
-                        Μέσα από τον λογαριασμό σας, έχετε πρόσβαση στο εργαλείο ημερολογίου. Μπορείτε να δηλώσετε διαθέσιμες ώρες και ημέρες, να προγραμματίσετε ρεπό ή αλλαγές, και να ενημερώσετε τις αγγελίες σας.
-                    </Typography>
+                <Typography variant='h4'>
+                    {t('questions.title')}
+                </Typography>
+                <Typography variant='h5'>
+                    {t('questions.onea')}
+                </Typography>
+                <Typography variant='h6' color='text.secondary'>
+                    {t('questions.oneb')}
+                </Typography>
+                <Typography variant='h5'>
+                    {t('questions.twoa')}
+                </Typography>
+                <Typography variant='h6' color='text.secondary'>
+                    {t('questions.twob')}
+                </Typography>
+                <Typography variant='h5'>
+                    {t('questions.threea')}
+                </Typography>
+                <Typography variant='h6' color='text.secondary'>
+                    {t('questions.threeb')}
+                </Typography>
+                <Typography variant='h5'>
+                    {t('questions.foura')}
+                </Typography>
+                <Typography variant='h6' color='text.secondary'>
+                    {t('questions.fourb')}
+                </Typography>
                 </Box>
             )}
             {activeBox === 'box2' && (
@@ -89,34 +91,36 @@ export const QuestionsPage = () => {
                     }}
                 >
                     <Typography variant='h4'>
-                        Συχνές Ερωτήσεις από επαγγελματίες/νταντάδες
+                        {t('questionsb.title')}
                     </Typography>
                     <Typography variant='h5'>
-                        1. Πώς μπορώ να βρω αγγελίες που με ενδιαφέρουν;
+                        {t('questionsb.onea')}
                     </Typography>
                     <Typography variant='h6' color='text.secondary'>
-                        Οι επαγγελματίες μπορούν να χρησιμοποιήσουν τα φίλτρα αναζήτησης για να βρουν αγγελίες που πληρούν τα κριτήριά τους. Μπορούν επίσης να αναρτήσουν το προφίλ τους και να περιμένουν αιτήματα από γονείς.
+                        {t('questionsb.oneb')}
                     </Typography>
                     <Typography variant='h5'>
-                        2. Πώς μπορώ να επικοινωνήσω με τους γονείς;
+                        {t('questionsb.twoa')}
                     </Typography>
                     <Typography variant='h6' color='text.secondary'>
-                        Μέσα από την πλατφόρμα, μπορείτε να στείλετε μηνύματα στους γονείς και να προγραμματίσετε ραντεβού γνωριμίας.
+                        {t('questionsb.twob')}
                     </Typography>
                     <Typography variant='h5'>
-                        3. Πώς και πότε πραγματοποιείται η πληρωμή από το σύστημα;
+                        {t('questionsb.threea')}
                     </Typography>
                     <Typography variant='h6' color='text.secondary'>
-                        Η πληρωμή γίνεται στο τέλος κάθε μήνα, αφού ο γονέας πιστοποιήσει την ολοκλήρωση της εργασίας. Θα λάβετε ένα ψηφιακό voucher που μπορείτε να εξαργυρώσετε απευθείας μέσω της πλατφόρμας.
+                        {t('questionsb.threeb')}
                     </Typography>
                     <Typography variant='h5'>
-                        4. Πώς μπορώ να διαμορφώσω το ημερολόγιο με τη διαθεσιμότητά μου;
+                        {t('questionsb.foura')}
                     </Typography>
                     <Typography variant='h6' color='text.secondary'>
-                        Μέσα από τον λογαριασμό σας, έχετε πρόσβαση στο εργαλείο ημερολογίου. Μπορείτε να δηλώσετε διαθέσιμες ώρες και ημέρες, να προγραμματίσετε ρεπό ή αλλαγές, και να ενημερώσετε τις αγγελίες σας.
+                        {t('questionsb.fourb')}
                     </Typography>
                 </Box>
             )}
         </div>
     );
 };
+
+export default QuestionsPage;

@@ -4,19 +4,33 @@ import { useProfileContext } from '@/context/ProfileProvider.tsx';
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { LoadingSpinner } from '@components/LoadingSpinner.tsx';
 import { ProfileTabs } from '@pages/profile/ProfileTabs.tsx';
-import { Box, Card, Stack, Typography } from '@mui/material';
+import { Box, Card, Rating as Stars, Stack, Typography } from '@mui/material';
 import { AvatarDisplay } from '@components/util/AvatarDisplay.tsx';
 import { ProfileNav } from '@components/tabs/ProfileNav.tsx';
 import { useDeviceDetect } from '@hooks/useDeviceDetect.hook.ts';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Rating } from '@/types/Rating.ts';
+import { useRating } from '@hooks/useRating.hook.ts';
+import { useTranslation } from 'react-i18next';
+import { ChevronRight } from '@mui/icons-material';
 
 export const ProfileContent = () => {
+  const { t } = useTranslation();
   const { user } = useAuthContext();
-  const { uid, role } = useProfileContext();
+  const { uid, firstName, lastName, avatar, location, role } =
+    useProfileContext();
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchParams] = useSearchParams();
   const { device } = useDeviceDetect();
-  const { firstName, lastName, avatar, location } = useProfileContext();
+  const { getRatings } = useRating();
+
+  const [ratings, setRatings] = useState<Rating[]>([]);
+  const averageRating =
+    ratings.length > 0
+      ? ratings
+          .map(rating => rating.rating)
+          .reduce((prev, curr) => prev + (curr || 0), 0) / ratings.length
+      : 0;
 
   const validTabs = ProfileTabs.filter(tab => {
     const requiresAuth = tab.requiresAuth ? !!user : true;
@@ -40,6 +54,23 @@ export const ProfileContent = () => {
   useEffect(() => {
     setSelectedTabStr(currentTab || '');
   }, [currentTab]);
+
+  useEffect(() => {
+    if (!uid || !role) {
+      return;
+    }
+
+    if (role === 'PARENT') {
+      return;
+    }
+
+    const fetch = async () => {
+      const data = await getRatings(uid);
+      setRatings(data || []);
+    };
+
+    fetch().then();
+  }, [uid, role]);
 
   const mobileOverflowFix = device !== 'desktop' ? { width: '100%' } : {};
 
@@ -92,6 +123,22 @@ export const ProfileContent = () => {
               </Typography>
               {location?.city && (
                 <Typography variant="h6">{location.city}</Typography>
+              )}
+              {role === 'BABYSITTER' && (
+                <Link to={`/ratings/${uid}`} style={{ textDecoration: 'none' }}>
+                  <Stack direction="row" spacing={1}>
+                    <Stars value={averageRating} readOnly />{' '}
+                    <Stack
+                      direction="row"
+                      sx={{ alignItems: 'center', color: 'text.secondary' }}
+                    >
+                      <Typography
+                        sx={{ textWrap: 'nowrap' }}
+                      >{`${t('rating.view')}`}</Typography>
+                      <ChevronRight sx={{ transform: 'scale(0.8)' }} />
+                    </Stack>
+                  </Stack>
+                </Link>
               )}
             </Stack>
           </Stack>

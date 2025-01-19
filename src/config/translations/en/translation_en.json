@@ -16,7 +16,8 @@
     "questions": "Questions",
     "auth": "Auth",
     "profile": "Profile",
-    "collaboration": "Collaboration"
+    "collaboration": "Collaboration",
+    "ratings": "Ratings"
   },
   "title": {
     "parent": "Parent",
@@ -24,7 +25,8 @@
     "questions": "Questions",
     "auth": "Auth",
     "profile": "Profile",
-    "collaboration": "Collaboration"
+    "collaboration": "Collaboration",
+    "ratings": "Ratings"
   },
   "error": {
     "generic": "There was an error, please try again later",
@@ -335,7 +337,7 @@
     "payment": {
       "pay": "PAYMENT",
       "final": "FINAL PAYMENT",
-      "success": "Successful payment",
+      "success": "Successful payment!",
       "error": "Payment error",
       "nowCancel": "You collaboration ended successfully"
     },
@@ -353,5 +355,17 @@
     "meetings": "Appointments",
     "collaborations": "Collaborations",
     "payment": "Payments"
+  },
+  "rating": {
+    "header": "RATE USER",
+    "notFound": "No ratings found",
+    "of": "Ratings of {{firstName}} {{lastName}}",
+    "success": "Successfully rated user",
+    "error": "Error while rating user",
+    "noRating": "NO RATING",
+    "satisfaction": "Satisfaction",
+    "description": "Description (optional)",
+    "descriptionLabel": "Description",
+    "view": "View ratings"
   }
 }

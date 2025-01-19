@@ -17,6 +17,7 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  Rating,
   Select,
   Stack,
   ToggleButton,
@@ -46,6 +47,9 @@ import {
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import CloseIcon from '@mui/icons-material/Close';
 import { MeetingState } from '@/types/Meeting.ts';
+import { ValidRating } from '@/types/Rating.ts';
+import { useRating } from '@hooks/useRating.hook.ts';
+import { TextFieldSmall } from '@components/util/TextFieldSmall.tsx';
 
 export const CollaborationPage = () => {
   const { t } = useTranslation();
@@ -56,12 +60,14 @@ export const CollaborationPage = () => {
   const { updateMeeting } = useMeeting();
   const navigate = useNavigate();
   const dispatch = useSnackbarContext();
+  const { isLoading: isRating, addRating } = useRating();
 
   const [isLoading, setIsLoading] = useState(false);
   const [collaboration, setCollaboration] = useState<Collaboration>();
 
   const [isAboutToSign, setIsAboutToSign] = useState(false);
   const [isAboutToEndCollab, setIsAboutToEndCollab] = useState(false);
+  const [rate, setRate] = useState(false);
 
   const [parent, setParent] = useState<UserDetails | null>(null);
   const [babysitter, setBabysitter] = useState<UserDetails | null>(null);
@@ -74,6 +80,9 @@ export const CollaborationPage = () => {
   const [locationStr, setLocationStr] = useState<
     'parent' | 'babysitter' | null
   >(null);
+
+  const [rating, setRating] = useState<ValidRating | null>(null);
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     if (!collaboration) {
@@ -326,13 +335,7 @@ export const CollaborationPage = () => {
           state: MeetingState.ENDED,
         });
 
-        dispatch!({
-          type: 'success',
-          payload: {
-            message: `${t('collaboration.payment.success')}. ${t('collaboration.payment.nowCancel')}`,
-          },
-        });
-        setTimeout(() => navigate(`/profile/${user?.uid}`), 2000);
+        setRate(true);
       } else {
         await updateCollaboration(collaboration.collaborationId, {
           state: CollaborationState.ONGOING,
@@ -341,7 +344,9 @@ export const CollaborationPage = () => {
 
         dispatch!({
           type: 'success',
-          payload: { message: t('collaboration.payment.success') },
+          payload: {
+            message: `${t('collaboration.payment.success')} ${t('general.reloading')}`,
+          },
         });
         setTimeout(() => window.location.reload(), 2000);
       }
@@ -350,6 +355,37 @@ export const CollaborationPage = () => {
         type: 'error',
         payload: { message: t('collaboration.payment.error') },
       });
+    }
+  };
+
+  const handleRating = async () => {
+    if (
+      !collaboration ||
+      !rating ||
+      !collaboration.buid ||
+      !collaboration.puid
+    ) {
+      return;
+    }
+
+    try {
+      await addRating(collaboration.buid, {
+        rating,
+        puid: collaboration.puid,
+        description,
+        time: new Date(),
+      });
+
+      dispatch!({
+        type: 'success',
+        payload: {
+          message: `${t('rating.success')}. ${t('collaboration.payment.success')} ${t('collaboration.payment.nowCancel')}`,
+        },
+      });
+      setTimeout(() => setRate(false), 2000);
+      setTimeout(() => navigate(`/profile/${user?.uid}`), 3000);
+    } catch {
+      dispatch!({ type: 'error', payload: { message: t('rating.error') } });
     }
   };
 
@@ -728,90 +764,186 @@ export const CollaborationPage = () => {
       </Card>
       {(isUpdating || isUpdatingMeeting || isPaying) && <LoadingSpinner />}
 
-      <Dialog open={isAboutToEndCollab}>
-        <DialogTitle>
-          <Stack
-            direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <Stack direction="row" sx={{ alignItems: 'center' }} spacing={1}>
-              <WarningAmber />
-              <Typography variant="h6">
-                {t('collaboration.sign.header')}
-              </Typography>
+      <Dialog
+        open={isAboutToEndCollab}
+        PaperProps={{ style: { borderRadius: '15px' } }}
+      >
+        <Card sx={{ borderRadius: '15px' }}>
+          <DialogTitle>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <Stack direction="row" sx={{ alignItems: 'center' }} spacing={1}>
+                <WarningAmber />
+                <Typography variant="h6">
+                  {t('collaboration.sign.header')}
+                </Typography>
+              </Stack>
+              <IconButton
+                edge="end"
+                onClick={() => setIsAboutToEndCollab(false)}
+              >
+                <CloseIcon />
+              </IconButton>
             </Stack>
-            <IconButton edge="end" onClick={() => setIsAboutToEndCollab(false)}>
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ color: 'text.secondary' }}>
-            {t('collaboration.finished.prompt1')}
-          </Typography>
-          {collaboration.state !== CollaborationState.TEMPORARY && (
-            <>
-              <br />
-              <Typography sx={{ color: 'text.secondary' }}>
-                {t('collaboration.finished.prompt2')}
-              </Typography>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleEndCollab}
-            sx={{ color: 'warning.main' }}
-            disabled={isUpdating}
-          >
-            {t('general.yes')}
-          </Button>
-        </DialogActions>
+          </DialogTitle>
+          <DialogContent>
+            <Typography sx={{ color: 'text.secondary' }}>
+              {t('collaboration.finished.prompt1')}
+            </Typography>
+            {collaboration.state !== CollaborationState.TEMPORARY && (
+              <>
+                <br />
+                <Typography sx={{ color: 'text.secondary' }}>
+                  {t('collaboration.finished.prompt2')}
+                </Typography>
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleEndCollab}
+              sx={{ color: 'warning.main' }}
+              disabled={isUpdating}
+            >
+              {t('general.yes')}
+            </Button>
+          </DialogActions>
+        </Card>
       </Dialog>
 
-      <Dialog open={isAboutToSign}>
-        <DialogTitle>
-          <Stack
-            direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <Stack direction="row" sx={{ alignItems: 'center' }} spacing={1}>
-              <WarningAmber />
-              <Typography variant="h6">
-                {t('collaboration.sign.header')}
-              </Typography>
+      <Dialog
+        open={isAboutToSign}
+        PaperProps={{ style: { borderRadius: '15px' } }}
+      >
+        <Card sx={{ borderRadius: '15px' }}>
+          <DialogTitle>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <Stack direction="row" sx={{ alignItems: 'center' }} spacing={1}>
+                <WarningAmber />
+                <Typography variant="h6">
+                  {t('collaboration.sign.header')}
+                </Typography>
+              </Stack>
+              <IconButton edge="end" onClick={() => setIsAboutToSign(false)}>
+                <CloseIcon />
+              </IconButton>
             </Stack>
-            <IconButton edge="end" onClick={() => setIsAboutToSign(false)}>
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ color: 'text.secondary' }}>
-            {t('collaboration.sign.prompt1')}
-          </Typography>{' '}
-          <br />
-          <Typography sx={{ color: 'text.secondary' }}>
-            {t('collaboration.sign.prompt2')}
-          </Typography>{' '}
-          <br />
-          <Typography sx={{ color: 'text.secondary' }}>
-            {t('collaboration.sign.prompt3')}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={
-              details?.role === 'BABYSITTER'
-                ? handleSignBabysitter
-                : handleSignParent
-            }
-            sx={{ color: 'warning.main' }}
-            disabled={isUpdating}
-          >
-            {t('general.yes')}
-          </Button>
-        </DialogActions>
+          </DialogTitle>
+          <DialogContent>
+            <Typography sx={{ color: 'text.secondary' }}>
+              {t('collaboration.sign.prompt1')}
+            </Typography>{' '}
+            <br />
+            <Typography sx={{ color: 'text.secondary' }}>
+              {t('collaboration.sign.prompt2')}
+            </Typography>{' '}
+            <br />
+            <Typography sx={{ color: 'text.secondary' }}>
+              {t('collaboration.sign.prompt3')}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={
+                details?.role === 'BABYSITTER'
+                  ? handleSignBabysitter
+                  : handleSignParent
+              }
+              sx={{ color: 'warning.main' }}
+              disabled={isUpdating}
+            >
+              {t('general.yes')}
+            </Button>
+          </DialogActions>
+        </Card>
+      </Dialog>
+
+      <Dialog
+        maxWidth="sm"
+        fullWidth
+        open={rate}
+        PaperProps={{ style: { borderRadius: '15px' } }}
+      >
+        <Card sx={{ borderRadius: '15px' }}>
+          <DialogTitle>
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <Typography variant="h6">{t('rating.header')}</Typography>
+              <IconButton
+                edge="end"
+                onClick={() => {
+                  setRate(false);
+
+                  dispatch!({
+                    type: 'success',
+                    payload: {
+                      message: `${t('collaboration.payment.success')} ${t('collaboration.payment.nowCancel')}`,
+                    },
+                  });
+
+                  setTimeout(() => navigate(`/profile/${user?.uid}`), 2000);
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={1}>
+              <Stack direction="row" spacing={1}>
+                <InputLabel>{t('rating.satisfaction')}</InputLabel>
+                <Rating
+                  value={rating}
+                  max={5}
+                  onChange={(_e, v) => setRating(v as ValidRating)}
+                />
+              </Stack>
+              <TextFieldSmall
+                placeholder={t('rating.description')}
+                multiline
+                rows={4}
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+              />
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Stack direction="row" spacing={1}>
+              <Button
+                onClick={() => {
+                  setRate(false);
+
+                  dispatch!({
+                    type: 'success',
+                    payload: {
+                      message: `${t('collaboration.payment.success')} ${t('collaboration.payment.nowCancel')}`,
+                    },
+                  });
+
+                  setTimeout(() => navigate(`/profile/${user?.uid}`), 2000);
+                }}
+                disabled={isRating}
+                sx={{ color: 'text.secondary' }}
+              >
+                {t('rating.noRating')}
+              </Button>
+              <Button
+                onClick={handleRating}
+                sx={{ color: 'success.main' }}
+                disabled={isRating}
+              >
+                {t('general.submit')}
+              </Button>
+            </Stack>
+          </DialogActions>
+        </Card>
       </Dialog>
     </Stack>
   );

@@ -213,6 +213,9 @@ export const CollaborationPage = () => {
     try {
       await updateCollaboration(collaboration.collaborationId, {
         babysitterSignature: true,
+        location,
+        type,
+        currentMonth: month,
       });
       dispatch!({
         type: 'success',

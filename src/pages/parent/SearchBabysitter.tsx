@@ -92,21 +92,40 @@ const BabysitterSearchComponent: React.FC = () => {
   };
 
   return (
-    <Stack spacing={2}>
+    <Stack direction='row' spacing={2}>
       <Box 
-        sx={{ 
-          width: '1320px',
-          padding: '20px 30px',
+        sx={{
+          marginLeft: '300px',
+          width: '450px',
+          height: '500px',
+          padding: '10px 10px',
           backgroundColor: isDarkMode ? 'rgba(58, 58, 58, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '16px',
+          borderRadius: '5px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '4px solid transparent',
+
+          borderImage: isDarkMode
+            ? 'linear-gradient(to right, #727eff, #1a81e9) 1'
+            : 'linear-gradient(to right, #c3c8ff, #86c3ff) 1',
         }}
-      >  
+      > 
+      <Typography variant='h6' sx={{marginLeft: '40px', marginBottom: '10px', fontWeight: 'bold'}}>
+        ΦΙΛΤΡΑ ΑΝΑΖΗΤΗΣΗΣ
+      </Typography>
+
+      <Divider
+        flexItem
+        sx={{
+          margin: '0 16px',
+          opacity: isDarkMode ? 0.2 : 0.15,
+          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+          marginBottom: '10px'
+        }}
+      />
 
         <Stack 
-          direction="row" 
+          direction="column" 
           spacing={2} 
           alignItems="center"
           sx={{ 
@@ -118,10 +137,10 @@ const BabysitterSearchComponent: React.FC = () => {
             startIcon={<Clear />}
             onClick={clearFilters}
             sx={{
+              fontWeight: 'bold',
               height: '45px',
               minWidth: '120px',
-              borderRadius: '10px',
-              fontWeight: 500,
+              borderRadius: '5px',
               color: 'rgb(255, 88, 88)',
               background: 'rgba(255, 107, 107, 0.31)',
               transition: 'all 0.3s ease',
@@ -137,7 +156,6 @@ const BabysitterSearchComponent: React.FC = () => {
           </Button>
 
           <Divider
-            orientation="vertical"
             flexItem
             sx={{
               margin: '0 16px',
@@ -146,18 +164,19 @@ const BabysitterSearchComponent: React.FC = () => {
             }}
           />
 
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={0.2}>
             <Button
               onClick={() => setType('FULL_TIME')}
               sx={{
                 minWidth: '120px',
                 height: '45px',
+                fontWeight: 'bold',
+                borderRadius: '5px',
                 color: type === 'FULL_TIME' ? 'white' : 'black',
                 background: type === 'FULL_TIME' 
                   ? 'linear-gradient(45deg, #00b09b, #96c93d)'
                   : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
                 transition: 'all 0.3s ease',
-                borderRadius: '10px',
                 '&:hover': {
                   transform: 'translateY(-2px)',
                   boxShadow: type === 'FULL_TIME' ? '0 5px 15px rgba(0,176,155,0.4)' : 'none',
@@ -171,12 +190,13 @@ const BabysitterSearchComponent: React.FC = () => {
               sx={{
                 minWidth: '120px',
                 height: '45px',
+                fontWeight: 'bold',
+                borderRadius: '5px',
                 color: type === 'PART_TIME' ? 'white' : 'black',
                 background: type === 'PART_TIME' 
                   ? 'linear-gradient(45deg, #FF8B42, #F54E5E)'
                   : isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
                 transition: 'all 0.3s ease',
-                borderRadius: '10px',
                 '&:hover': {
                   transform: 'translateY(-2px)',
                   boxShadow: type === 'PART_TIME' ? '0 5px 15px rgba(245,78,94,0.4)' : 'none',
@@ -188,7 +208,6 @@ const BabysitterSearchComponent: React.FC = () => {
           </Stack>
 
           <Divider
-            orientation="vertical"
             flexItem
             sx={{
               margin: '0 16px',
@@ -211,15 +230,14 @@ const BabysitterSearchComponent: React.FC = () => {
               />
             )}
             sx={{
-              minWidth: '200px',
+              minWidth: '230px',
               '& .MuiOutlinedInput-root': {
-                borderRadius: '10px',
+                borderRadius: '5px',
               }
             }}
           />
 
           <Divider
-            orientation="vertical"
             flexItem
             sx={{
               margin: '0 16px',
@@ -262,7 +280,6 @@ const BabysitterSearchComponent: React.FC = () => {
           </Stack>
 
           <Divider
-            orientation="vertical"
             flexItem
             sx={{
               margin: '0 16px',
@@ -305,7 +322,6 @@ const BabysitterSearchComponent: React.FC = () => {
           </Stack>
 
           <Divider
-            orientation="vertical"
             flexItem
             sx={{
               margin: '0 16px',
@@ -319,11 +335,11 @@ const BabysitterSearchComponent: React.FC = () => {
             onClick={handleSearch}
             sx={{
               height: '45px',
-              minWidth: '130px',
-              borderRadius: '10px',
+              minWidth: '230px',
+              borderRadius: '5px',
               fontWeight: 600,
               color: 'white',
-              background: 'linear-gradient(45deg, #5361ff 20%, #3f51b5 90%)',
+              background: 'linear-gradient(to right,rgb(65, 81, 255),rgb(78, 166, 255))',
               transition: 'all 0.3s ease',
               textTransform: 'none',
               fontSize: '0.95rem',
@@ -338,6 +354,16 @@ const BabysitterSearchComponent: React.FC = () => {
 
         </Stack>
       </Box>
+
+      <Divider
+        orientation='vertical'
+        flexItem
+        sx={{
+          margin: '0 16px',
+          opacity: isDarkMode ? 0.2 : 0.15,
+          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+        }}
+      />
 
       {isLoading ? (
         <CircularProgress />
@@ -355,28 +381,28 @@ const BabysitterSearchComponent: React.FC = () => {
         >
           {babysitters.map(babysitter => (
             <Box
-                key={babysitter.id}
-                onClick={() => handleAdClick(babysitter.id)}
-                sx={{
-                    width: '300px',
-                    flex: 'none',
-                    backgroundColor: 'white',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '8px',
-                }}
-                >
-                <UserCard
-                    name={babysitter.name}
-                    description={babysitter.description}
-                    photo={babysitter.photoUrl}
-                    showButton={false}
-                >
-                    <Typography variant="body2">
-                    Type: {babysitter.type} <br />
-                    Duration: {babysitter.duration} months <br />
-                    </Typography>
-                </UserCard>
-                </Box>
+              key={babysitter.id}
+              onClick={() => handleAdClick(babysitter.id)}
+              sx={{
+                  width: '800px',
+                  flex: 'none',
+                  backgroundColor: 'white',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  borderRadius: '8px',
+              }}
+            >
+              <UserCard
+                name={babysitter.name}
+                description={babysitter.description}
+                photo={babysitter.photoUrl}
+                showButton={true}
+              >
+              <Typography variant="body2">
+              Type: {babysitter.type} <br />
+              Duration: {babysitter.duration} months <br />
+              </Typography>
+            </UserCard>
+            </Box>
           ))}
         </Box>
       )}

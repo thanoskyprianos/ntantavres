@@ -76,14 +76,13 @@ export const UserCard = ({
             className="interested-button"
             sx={{
               bgcolor: 'primary.main',
-              width: '170px',
+              width: '270px',
+              fontrWeight: 'bold',
               color: isDarkMode ? '#fff' : '#000',
               background: isDarkMode
                 ? 'linear-gradient(to right, #5361ff, #11508e)'
                 : 'linear-gradient(to right, #aeb5ff, #6496c8)',
             }}
-            component={Link}
-            to="/interested"
           >
             ΕΝΔΙΑΦΕΡΟΜΑΙ
           </Button>

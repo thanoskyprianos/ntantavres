@@ -55,7 +55,7 @@ export const Ratings = () => {
           lastName: details.lastName,
         })}
       </Typography>
-      {!ratings ? (
+      {!ratings || ratings.length == 0 ? (
         <Typography variant="h5" sx={{ color: 'text.secondary' }}>
           {t('rating.notFound')}
         </Typography>

@@ -6,22 +6,16 @@ export const TitleSetter = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const titles = new Map<string, string>([
-    ['parent', t('title.parent')],
-    ['babysitter', t('title.babysitter')],
-    ['questions', t('title.questions')],
-    ['auth', t('title.auth')],
-    ['profile', t('title.profile')],
-    ['collaboration', t('title.collaboration')],
-  ]);
-
   useEffect(() => {
-    let title = titles.get(location.pathname.split('/')[1]);
-    if (title) {
+    let title = t(`title.${location.pathname.split('/')[1]}`, {
+      defaultValue: 'undefined',
+    });
+    if (title !== 'undefined') {
       title = title + ' - NtantaVres';
+      document.title = title;
+    } else {
+      document.title = 'NtantaVres';
     }
-
-    document.title = title || 'NtantaVres';
   }, [location, t]);
 
   return <></>;

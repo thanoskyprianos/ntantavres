@@ -31,14 +31,16 @@ export const BreadcrumbsWrapper = ({ sx }: BreadcrumbsProps) => {
       {breadcrumbs.map((path, i) =>
         i !== breadcrumbs.length - 1 &&
         path !== 'profile' &&
-        path !== 'collaboration' ? (
+        path !== 'collaboration' &&
+        path !== 'ratings' ? (
           <LinkRouter to={{ pathname: `/${path}` }} key={path}>
             <Typography variant="subtitle2">
               {t(`breadcrumbs.${path}`, { defaultValue: path })}
             </Typography>
           </LinkRouter>
         ) : breadcrumbs[i - 1] === 'profile' ||
-          breadcrumbs[i - 1] === 'collaboration' ? (
+          breadcrumbs[i - 1] === 'collaboration' ||
+          breadcrumbs[i - 1] === 'ratings' ? (
           ''
         ) : (
           <Typography variant="subtitle2" key={path}>

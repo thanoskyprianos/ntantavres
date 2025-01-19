@@ -52,7 +52,7 @@ const router = createBrowserRouter([
         lazy: AuthPage,
       },
       {
-        path: '/ratings',
+        path: '/ratings/:uid',
         lazy: Ratings,
       },
       {

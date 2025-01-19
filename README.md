@@ -119,4 +119,4 @@ service cloud.firestore {
             resource.data.buid == request.auth.uid);
     }
   }
-}```
+}

@@ -14,7 +14,7 @@ export const Footer = (props: any) => {
       }}
     >
       <Typography variant="body2" color="primary.contrastText" align="center">
-        © {new Date().getFullYear()} Network Team (Team 58)
+        © {new Date().getFullYear()} NetWork Team (Team 58)
       </Typography>
     </Box>
   );

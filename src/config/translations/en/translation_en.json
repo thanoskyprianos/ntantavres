@@ -28,6 +28,36 @@
     "collaboration": "Collaboration",
     "ratings": "Ratings"
   },
+  "home": {
+    "slogan": "Child care up to 2 years old",
+    "am": "I AM A",
+    "search": "SEARCH",
+    "parent": "PARENT | GUARDIAN",
+    "babysitter": "PROFESSIONAL | BABYSITTER",
+    "professionals": "Professionals",
+    "parents": "Parents",
+    "vouchers": "Issued vouchers",
+    "steps": {
+      "parent": {
+        "title": "STEPS TO FOLLOW AS A PARENT",
+        "step1": "1. Find the professional that suits me",
+        "step2": "2. Make an appointment with the professional",
+        "step3": "3. Create, sign and start collaborating"
+      },
+      "babysitter": {
+        "title": "STEPS TO FOLLOW AS A PROFESSIONAL",
+        "step1": "1. Create my ad",
+        "step2": "2. Approve appointment requests from parents",
+        "step3": "3. Approve, sign and start collaborating"
+      }
+    },
+    "both": "Ads & Professionals",
+    "questions": "FREQUENTLY ASKED QUESTIONS",
+    "more": {
+      "parent": "MORE PARENT ADS",
+      "babysitter": "MORE BABYSITTER ADS"
+    }
+  },
   "error": {
     "generic": "There was an error, please try again later",
     "emailExists": "Email '{{email}}' is already in use",

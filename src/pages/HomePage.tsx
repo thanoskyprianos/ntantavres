@@ -19,13 +19,18 @@ import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
 import HelpIcon from '@mui/icons-material/Help';
 import { SearchBar } from './SearchBar';
-
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import { EventAvailable, ManageSearch, Task } from '@mui/icons-material';
+import {
+  AddCircleOutline,
+  Draw,
+  EventAvailable,
+  ManageSearch,
+} from '@mui/icons-material';
 import Carousel from 'react-material-ui-carousel';
+import { useTranslation } from 'react-i18next';
 
 export const HomePage = () => {
+  const { t } = useTranslation();
   const { ref, inView, entry } = useInView({
     triggerOnce: true, // Trigger the animation only once
     threshold: 0.3, // Trigger when 10% of the element is in view
@@ -84,7 +89,7 @@ export const HomePage = () => {
               NtantaVres
             </Typography>
             <Typography variant="h5" fontWeight="bold">
-              Φροντίδα παιδιών έως και 2 ετών
+              {t('home.slogan')}
             </Typography>
           </Stack>
 
@@ -207,6 +212,8 @@ function TopButtonsSection({
   showButtons: boolean;
   showQuickSearch: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={2}>
       <Stack direction="row" spacing={1} justifyContent="center">
@@ -214,13 +221,13 @@ function TopButtonsSection({
           handleClick={toggleButtons}
           isActive={activeButton === 'buttons'}
         >
-          ΕΙΜΑΙ
+          {t('home.am')}
         </GradientButton>
         <GradientButton
           handleClick={toggleQuickSearch}
           isActive={activeButton === 'search'}
         >
-          ΑΝΑΖΗΤΗΣΗ
+          {t('home.search')}
         </GradientButton>
       </Stack>
 
@@ -229,9 +236,9 @@ function TopButtonsSection({
       >
         {showButtons && (
           <Stack spacing={1} alignItems="center">
-            <OutlinedButton to="/parent">Γονεας/Κηδεμονας</OutlinedButton>
+            <OutlinedButton to="/parent">{t('home.parent')}</OutlinedButton>
             <OutlinedButton to="/babysitter">
-              Επαγγελματιας/Νταντα
+              {t('home.babysitter')}
             </OutlinedButton>
           </Stack>
         )}
@@ -252,6 +259,7 @@ function StatsSection({
   refProp: Ref<Element>;
   inView: boolean;
 }) {
+  const { t } = useTranslation();
   const { device } = useDeviceDetect();
 
   return (
@@ -266,9 +274,12 @@ function StatsSection({
             fontWeight="bold"
             sx={{ textAlign: 'center' }}
           >
-            <CountUp start={0} end={1000} duration={5} />+ Επαγγελματίες <br />
-            <CountUp start={0} end={17500} duration={5} />+ Γονείς <br />
-            <CountUp start={0} end={36000} duration={5} />+ Χορηγημένα Voucher
+            <CountUp start={0} end={1000} duration={5} />
+            {`+ ${t('home.professionals')}`} <br />
+            <CountUp start={0} end={17500} duration={5} />
+            {`+ ${t('home.parents')}`} <br />
+            <CountUp start={0} end={36000} duration={5} />
+            {`+ ${t('home.vouchers')}`}
           </Typography>
           <Button
             component={Link}
@@ -278,7 +289,7 @@ function StatsSection({
               color: 'secondary.contrastText',
             }}
           >
-            ΣΥΧΝΕΣ ΕΡΩΤΗΣΕΙΣ
+            {t('home.questions')}
           </Button>
         </Stack>
       )}
@@ -293,6 +304,8 @@ function StepsSection({
   activeBox: string;
   setActiveBox: Dispatch<string>;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={4} sx={{ justifyContent: 'center', alignItems: 'center' }}>
       <Stack direction="row" spacing={1}>
@@ -300,27 +313,27 @@ function StepsSection({
           handleClick={() => setActiveBox('box1')}
           isActive={activeBox === 'box1'}
         >
-          ΓΟΝΕΙΣ
+          {t('home.parents')}
         </GradientButton>
         <GradientButton
           handleClick={() => setActiveBox('box2')}
           isActive={activeBox === 'box2'}
         >
-          ΕΠΑΓΓΕΛΜΑΤΙΕΣ
+          {t('home.professionals')}
         </GradientButton>
       </Stack>
 
       {activeBox === 'box1' && (
         <Stack spacing={2} sx={{ placeContent: 'center', width: '350px' }}>
           <Typography variant="h5" fontWeight="bold" align="center">
-            ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΓΟΝΙΟΣ
+            {t('home.steps.parent.title')}
           </Typography>
           <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
             <CardHeader
-              avatar={<AutoAwesomeIcon />}
+              avatar={<ManageSearch />}
               title={
                 <Typography variant="h6" align="center">
-                  1. Βρίσκω τον επαγγελματία που μου ταιριάζει
+                  {t('home.steps.parent.step1')}
                 </Typography>
               }
             />
@@ -330,17 +343,17 @@ function StepsSection({
               avatar={<EventAvailable />}
               title={
                 <Typography variant="h6" align="center">
-                  2. Προγραμματίζω ραντεβού γνωριμίας με τον επαγγελματία
+                  {t('home.steps.parent.step2')}
                 </Typography>
               }
             />
           </Card>
           <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
             <CardHeader
-              avatar={<Task />}
+              avatar={<Draw />}
               title={
                 <Typography variant="h6" align="center">
-                  3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
+                  {t('home.steps.parent.step3')}
                 </Typography>
               }
             />
@@ -350,14 +363,14 @@ function StepsSection({
       {activeBox === 'box2' && (
         <Stack spacing={2} sx={{ placeContent: 'center', width: '350px' }}>
           <Typography variant="h5" fontWeight="bold" align="center">
-            ΒΗΜΑΤΑ ΠΟΥ ΑΚΟΛΟΥΘΩ ΩΣ ΕΠΑΓΓΕΛΜΑΤΙΑΣ
+            {t('home.steps.babysitter.title')}
           </Typography>
           <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
             <CardHeader
-              avatar={<ManageSearch />}
+              avatar={<AddCircleOutline />}
               title={
                 <Typography variant="h6" align="center">
-                  1. Βρίσκω την αγγελία που μου ταιριάζει
+                  {t('home.steps.babysitter.step1')}
                 </Typography>
               }
             />
@@ -367,17 +380,17 @@ function StepsSection({
               avatar={<EventAvailable />}
               title={
                 <Typography variant="h6" align="center">
-                  2. Προγραμματίζω ραντεβού γνωριμίας με τον γονέα/κηδεμονα
+                  {t('home.steps.babysitter.step2')}
                 </Typography>
               }
             />
           </Card>
           <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
             <CardHeader
-              avatar={<Task />}
+              avatar={<Draw />}
               title={
-                <Typography variant="h6">
-                  3. Δημιουργώ και Υποβάλω την αίτηση συνεργασίας
+                <Typography variant="h6" align="center">
+                  {t('home.steps.babysitter.step3')}
                 </Typography>
               }
             />
@@ -389,6 +402,7 @@ function StepsSection({
 }
 
 function UserCardsSection() {
+  const { t } = useTranslation();
   const { device } = useDeviceDetect();
 
   return (
@@ -400,7 +414,7 @@ function UserCardsSection() {
       }}
     >
       <Typography variant="h5" fontWeight="bold">
-        Αγγελίες & Επαγγελματίες
+        {t('home.both')}
       </Typography>
       <Stack
         direction={device !== 'mobile' ? 'row' : 'column'}
@@ -457,7 +471,7 @@ function UserCardsSection() {
               height: '20px',
             }}
           >
-            ΠΕΡΙΣΣΟΤΕΡΕΣ ΑΓΓΕΛΙΕΣ ΓΟΝΕΩΝ
+            {t('home.more.parent')}
           </Button>
         </Stack>
         <Stack sx={{ width: '100%', placeItems: 'center' }} spacing={0}>
@@ -514,7 +528,7 @@ function UserCardsSection() {
               height: '12px',
             }}
           >
-            ΠΕΡΙΣΣΟΤΕΡΟΙ ΕΠΑΓΓΕΛΜΑΤΙΕΣ
+            {t('home.more.babysitter')}
           </Button>
         </Stack>
       </Stack>

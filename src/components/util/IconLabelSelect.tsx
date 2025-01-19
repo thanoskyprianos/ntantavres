@@ -35,6 +35,7 @@ export const IconLabelSelect = ({
     <FormControl>
       <Select
         variant={variant}
+        disableUnderline
         sx={{ ...rest.sx }}
         hiddenLabel
         value={label}

@@ -51,11 +51,6 @@ export const theme = createTheme({
         disableElevation: true,
       },
     },
-    MuiSelect: {
-      defaultProps: {
-        disableUnderline: true,
-      },
-    },
     MuiAppBar: {
       defaultProps: {
         enableColorOnDark: true,

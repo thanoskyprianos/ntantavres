@@ -127,11 +127,6 @@ const services = [
   { title: 'Δουλειές γύρω από το παιδί' },
 ];
 
-const typeOfUser = [
-    { title: 'Επαγγελματίας' },
-    { title: 'Γονέας' },
-];
-
 interface SearchBarProps {
     showTypeOfUser?: boolean;
     isParentPage?: boolean;
@@ -143,7 +138,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [selectedAge, setSelectedAge] = useState<string>('0-6 μηνών');
   const [selectedLocation, setSelectedLocation] = useState<{ title: string }[]>([locations[0]]);
-  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<{ title: string }[]>([]);
   const [months, setMonths] = useState<number>(30);
   const [selectedAgeProf, setSelectedAgeProf] = useState<string[]>([]);
@@ -176,7 +170,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
     setSelectedAge('0-6 μηνών');
     setSelectedAgeProf([]);
     setSelectedLocation([locations[0]]);
-    setSelectedEmploymentType(null);
     setSelectedServices([]);
     setMonths(30);
     setSelectedProfileOptions([]);
@@ -226,7 +219,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
           options={locations}
           getOptionLabel={(option) => option.title}
           value={selectedLocation}
-          onChange={(event, newValue) => setSelectedLocation(newValue)}
+          onChange={(_, newValue) => setSelectedLocation(newValue)}
           renderInput={(params) => (
             <TextField {...params} label="Περιοχή" placeholder="Επιλογή περιοχής" />
           )}
@@ -280,7 +273,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
                   options={services}
                   getOptionLabel={(option) => option.title}
                   value={selectedServices}
-                  onChange={(event, newValue) => setSelectedServices(newValue)}
+                  onChange={(_, newValue) => setSelectedServices(newValue)}
                   renderInput={(params) => (
                       <TextField {...params} label="Άλλες Υπηρεσίες" placeholder="Επιλογή υπηρεσιών" />
                   )}
@@ -355,7 +348,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ showTypeOfUser = false, is
               <Slider
                   aria-label="Months"
                   value={months}
-                  onChange={(event, newValue) => setMonths(newValue as number)}
+                  onChange={(_, newValue) => setMonths(newValue as number)}
                   valueLabelDisplay="auto"
                   shiftStep={30}
                   step={1}

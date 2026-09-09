@@ -11,7 +11,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
 
 interface UserCardProps {
   name: string;

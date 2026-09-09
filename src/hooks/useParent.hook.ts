@@ -1,17 +1,13 @@
 import { useAuthContext } from '@/context/AuthProvider.tsx';
 import { useState } from 'react';
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@config/firebase.ts';
 import { ParentAd } from '@/types/ParentAd.ts';
+import {
+  AdResult,
+  queryAdsForCollection,
+  SearchCriterion,
+} from '@util/util.ts';
 
 const _getAd = (uuid: string) => {
   return getDoc(doc(db, 'parent_ad', uuid));
@@ -25,16 +21,8 @@ const _updateAd = (uuid: string, ad: ParentAd) => {
   return updateDoc(doc(db, 'parent_ad', uuid), { ...ad });
 };
 
-const _queryAds = async (
-  criteria: { field: string; operator?: string; value: any }[]
-) => {
-  const collectionRef = collection(db, 'parent_ad'); // Adjust the collection name based on your project
-  let queryConstraints = criteria.map(({ field, operator, value }) =>
-    where(field, (operator || '==') as any, value)
-  );
-
-  const q = query(collectionRef, ...queryConstraints);
-  return await getDocs(q);
+const _queryAds = async (criteria: SearchCriterion[]) => {
+  return queryAdsForCollection('parent_ad', criteria);
 };
 
 export const useParent = () => {
@@ -81,14 +69,14 @@ export const useParent = () => {
     setIsLoading(false);
   };
 
-  const queryAds = async (criteria: { field: string; value: any }[]) => {
+  const queryAds = async (criteria: SearchCriterion[]) => {
     setIsLoading(true);
 
     const adsSnapshot = await _queryAds(criteria);
     const adsList = adsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    })) as AdResult[];
 
     setIsLoading(false);
 

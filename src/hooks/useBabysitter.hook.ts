@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { MonthAvailability } from '@/types/MonthAvailability.ts';
-import { doc, getDoc, setDoc, updateDoc,collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@config/firebase.ts';
 import { BabysitterAd, BabysitterTraits } from '@/types/BabysitterTypes.ts';
+import {
+  AdResult,
+  queryAdsForCollection,
+  SearchCriterion,
+} from '@util/util.ts';
 
 const _getAvailability = (uid: string) => {
   return getDoc(doc(db, 'availability', uid));
@@ -32,14 +37,8 @@ const _updateAd = (uid: string, ad: BabysitterAd) => {
   return updateDoc(doc(db, 'babysitter_ad', uid), { ...ad });
 };
 
-const _queryAds = async (criteria: { field: string, operator?: string, value: any }[]) => {
-  const collectionRef = collection(db, 'babysitter_ad'); // Adjust the collection name based on your project
-  let queryConstraints = criteria.map(({ field, operator, value }) => 
-    where(field, (operator || '==') as any, value)
-  );
-
-  const q = query(collectionRef, ...queryConstraints);
-  return await getDocs(q);
+const _queryAds = async (criteria: SearchCriterion[]) => {
+  return queryAdsForCollection('babysitter_ad', criteria);
 };
 
 export const useBabysitter = () => {
@@ -145,11 +144,14 @@ export const useBabysitter = () => {
     }
   };
 
-  const queryAds = async (criteria: { field: string, value: any }[]) => {
+  const queryAds = async (criteria: SearchCriterion[]) => {
     setIsLoading(true);
 
     const adsSnapshot = await _queryAds(criteria);
-    const adsList = adsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const adsList = adsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as AdResult[];
 
     setIsLoading(false);
 

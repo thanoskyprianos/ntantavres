@@ -1,9 +1,39 @@
 import { MonthAvailability } from '@/types/MonthAvailability.ts';
+import { WhereFilterOp, collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@config/firebase.ts';
 
-export const removeEmptyFields = (obj: any) =>
-  Object.fromEntries(Object.entries(obj).filter(([_, v]) => !!v));
+export interface SearchCriterion {
+  field: string;
+  operator?: string;
+  value: unknown;
+}
 
-export const isEmpty = (obj: any) => Object.entries(obj).length === 0;
+export interface AdResult {
+  id: string;
+  name: string;
+  photoUrl: string;
+  type?: string;
+  duration?: number;
+  children?: { age: number }[];
+  description?: string;
+}
+
+export const removeEmptyFields = (obj?: object) =>
+  Object.fromEntries(Object.entries(obj ?? {}).filter(([, v]) => !!v));
+
+export const isEmpty = (obj?: object) => Object.entries(obj ?? {}).length === 0;
+
+export const queryAdsForCollection = async (
+  collectionName: string,
+  criteria: SearchCriterion[]
+) => {
+  const collectionRef = collection(db, collectionName);
+  const constraints = criteria.map(({ field, operator, value }) =>
+    where(field, (operator || '==') as WhereFilterOp, value)
+  );
+
+  return await getDocs(query(collectionRef, ...constraints));
+};
 
 // for some reason timestamps are different in firestore
 export const firestoreTimestampToDate = (obj?: Date | null) => {
